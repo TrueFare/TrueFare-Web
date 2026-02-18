@@ -1,4 +1,5 @@
 <template>
-  <div class="h-25 w-25 bg-amber-700">
+  <Navbar />
+  <div class="bg-amber-700 h-25 w-25 ">
   </div>
 </template>

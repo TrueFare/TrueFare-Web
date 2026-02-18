@@ -17,6 +17,12 @@ export default defineNuxtConfig({
       nodeCompat: true
     }
   },
-
-  modules: ["nitro-cloudflare-dev"]
+  app: {
+    head: {
+      bodyAttrs: {
+        class: "h-screen"
+      }
+    }
+  },
+  modules: ["nitro-cloudflare-dev", "@nuxt/icon"]
 })
