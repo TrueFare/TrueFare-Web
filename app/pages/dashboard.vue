@@ -102,10 +102,25 @@
         </div>
       </div>
 
-      <!-- Placeholder for other tabs -->
-      <div v-if="activeTab === 'tricycles'" class="text-gray-500">
-        Tricycles content coming soon...
+      <!-- TRICYCLES List -->
+      <div v-if="activeTab === 'tricycles'" class="space-y-4">
+        <h2 class="text-xl font-bold mb-4">TRICYCLES</h2>
+        <div
+          class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+        >
+          <TricycleCard
+            v-for="tricycle in tricycles"
+            :key="tricycle.id"
+            :f_name="tricycle.f_name"
+            :l_name="tricycle.l_name"
+            :toda="tricycle.toda"
+            :franchise="tricycle.franchise"
+            :status="tricycle.status"
+          />
+        </div>
       </div>
+
+      <!-- Placeholder for other tabs -->
       <div v-if="activeTab === 'reports'" class="text-gray-500">
         Reports content coming soon...
       </div>
@@ -120,6 +135,7 @@
 import { ref } from "vue";
 import DashboardCard from "~/components/DashboardCard.vue";
 import TodaCard from "~/components/TodaCard.vue";
+import TricycleCard from "~/components/TricycleCard.vue";
 
 // Track which tab is active
 const activeTab = ref("dashboard");
@@ -157,6 +173,42 @@ const todas = ref([
     tricycles: 3,
     trips: 2,
     admins: 0,
+  },
+]);
+
+// Dummy tricycles list
+const tricycles = ref([
+  {
+    id: 1,
+    f_name: "Juan",
+    l_name: "Dela Cruz",
+    toda: "TODA 1",
+    franchise: "#34123",
+    status: "Active",
+  },
+  {
+    id: 2,
+    f_name: "Pedro",
+    l_name: "Santos",
+    toda: "TODA 1",
+    franchise: "#34132",
+    status: "Active",
+  },
+  {
+    id: 3,
+    f_name: "Maria",
+    l_name: "Reyes",
+    toda: "TODA 2",
+    franchise: "#34167",
+    status: "Inactive",
+  },
+  {
+    id: 4,
+    f_name: "Jose",
+    l_name: "Garcia",
+    toda: "TODA 3",
+    franchise: "#34562",
+    status: "Active",
   },
 ]);
 </script>
