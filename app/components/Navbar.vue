@@ -8,9 +8,5 @@
 
       <a class="btn btn-ghost text-xl">TrueFare</a>
     </div>
-
-    <div class="flex-none">
-      <a class="btn btn-ghost text-xl">Logout</a>
-    </div>
   </div>
 </template>
