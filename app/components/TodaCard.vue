@@ -1,6 +1,6 @@
 <template>
   <div
-    class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-md transition"
+    class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-xl transition"
   >
     <!-- TODA name and location -->
     <div class="mb-4">
