@@ -1,6 +1,5 @@
-export default {
-  async fetch(request: Request, env: any) {
-    const result = await env.database.prepare("SELECT * FROM users").run();
-    return new Response(JSON.stringify(result));
-  }
-}
+export default defineEventHandler(async (event) => {
+  const db = event.context.cloudflare.env.truefare_db;
+  const result = await db.prepare("SELECT * FROM users").run();
+  return result;
+});
