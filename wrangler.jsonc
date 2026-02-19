@@ -16,6 +16,14 @@
 	},
 	"compatibility_flags": [
 		"nodejs_compat"
+	],
+	"d1_databases": [
+		{
+			"binding": "truefare_db",
+			"database_name": "truefare-db",
+			"database_id": "5248cb21-a578-4f2a-ade4-a258ac0880cc",
+			"remote": true
+		}
 	]
 	/**
 	 * Smart Placement
