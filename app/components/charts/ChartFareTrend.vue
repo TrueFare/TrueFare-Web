@@ -1,11 +1,13 @@
 <template>
   <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
     <!-- Header -->
-    <div class="flex justify-between items-center mb-4">
+    <div
+      class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4"
+    >
       <h2 class="text-lg font-semibold">Fare Trend</h2>
 
       <!-- Toggle Buttons -->
-      <div class="flex gap-2">
+      <div class="flex flex-col sm:flex-row gap-2">
         <button
           v-for="option in ['weekly', 'monthly', 'yearly']"
           :key="option"
@@ -22,8 +24,10 @@
       </div>
     </div>
 
-    <!-- Chart -->
-    <canvas ref="chartRef"></canvas>
+    <!-- Chart Container -->
+    <div class="w-full h-64 sm:h-72 md:h-80 lg:h-96">
+      <canvas ref="chartRef"></canvas>
+    </div>
   </div>
 </template>
 
@@ -40,6 +44,7 @@ import {
   Legend,
 } from "chart.js";
 
+// Register Chart.js components
 Chart.register(
   LineController,
   LineElement,
@@ -54,10 +59,7 @@ const chartRef = ref(null);
 const selectedRange = ref("monthly");
 let chartInstance = null;
 
-/*
-  Dummy data for now.
-  Later replace with API call depending on selectedRange.
-*/
+// Dummy data (replace later with API call)
 const getChartData = (range) => {
   if (range === "weekly") {
     return {
@@ -82,9 +84,7 @@ const getChartData = (range) => {
 const renderChart = () => {
   const { labels, data } = getChartData(selectedRange.value);
 
-  if (chartInstance) {
-    chartInstance.destroy();
-  }
+  if (chartInstance) chartInstance.destroy();
 
   chartInstance = new Chart(chartRef.value, {
     type: "line",
@@ -97,30 +97,24 @@ const renderChart = () => {
           tension: 0.4,
           borderWidth: 2,
           fill: false,
+          pointRadius: 4,
+          pointHoverRadius: 6,
         },
       ],
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false, // important for mobile resizing
       plugins: {
-        legend: {
-          display: true,
-        },
+        legend: { display: true },
       },
       scales: {
-        y: {
-          beginAtZero: false,
-        },
+        y: { beginAtZero: false },
       },
     },
   });
 };
 
-onMounted(() => {
-  renderChart();
-});
-
-watch(selectedRange, () => {
-  renderChart();
-});
+onMounted(() => renderChart());
+watch(selectedRange, () => renderChart());
 </script>
