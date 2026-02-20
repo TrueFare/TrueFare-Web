@@ -1,5 +1,5 @@
 <template>
-  <div class="card bg-base-200 shadow-md p-4 w-full sm:w-60">
+  <div class="card bg-base-200 shadow-md p-4 w-full sm:w-56">
     <div class="flex items-center gap-4">
       <div
         class="icon w-10 h-10 flex items-center justify-center rounded-lg"
