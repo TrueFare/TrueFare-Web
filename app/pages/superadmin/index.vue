@@ -2,7 +2,9 @@
   <div>
     <h1>Welcome to the Homepage</h1>
     <p>This is your root page.</p>
-    <nuxt-link to="/dashboard">Go to Dashboard</nuxt-link>
+    <button>
+      <nuxt-link to="/superadmin/dashboard">Go to Dashboard</nuxt-link>
+    </button>
   </div>
 </template>
 
