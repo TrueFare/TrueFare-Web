@@ -1,5 +1,3 @@
-import { st } from "vue-router/dist/router-CWoNjPRp.mjs";
-
 export default defineEventHandler(async (event) => {
   const table = event.context.params?.table as string;
   const db = event.context.cloudflare.env.truefare_db;
