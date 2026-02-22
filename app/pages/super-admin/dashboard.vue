@@ -158,8 +158,23 @@
       </div>
 
       <!-- Users -->
-      <div v-if="activeTab === 'users'" class="text-gray-500">
-        Users content coming soon...
+      <div v-if="activeTab === 'users'" class="space-y-4">
+        <h2 class="text-xl font-bold mb-4">Users</h2>
+
+        <div
+          class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+        >
+          <UserCard
+            v-for="user in users"
+            :key="user.id"
+            :first_name="user.first_name"
+            :last_name="user.last_name"
+            :email="user.email"
+            :contact_number="user.contact_number"
+            :status="'Active'"
+            :date_created="user.date_created"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -171,6 +186,7 @@ import DashboardCard from "~/components/DashboardCard.vue";
 import TodaCard from "~/components/TodaCard.vue";
 import TricycleCard from "~/components/TricycleCard.vue";
 import ChartFareTrend from "~/components/charts/ChartFareTrend.vue";
+import UserCard from "~/components/UserCard.vue";
 
 const activeTab = ref("dashboard");
 
@@ -215,4 +231,21 @@ const tricycles = ref([
     status: "Active",
   },
 ]);
+
+import { onMounted } from "vue";
+
+const users = ref([]);
+
+const fetchUsers = async () => {
+  try {
+    const response = await $fetch("/api/user");
+    users.value = response.results || [];
+  } catch (error) {
+    console.error("Failed to fetch users:", error);
+  }
+};
+
+onMounted(() => {
+  fetchUsers();
+});
 </script>
