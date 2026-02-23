@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
       .prepare(
         `SELECT id, name, password, barangay, city, date_created, date_updated FROM toda`,
       )
-      .run();
+      .all();
 
     return result;
   } catch (error: any) {

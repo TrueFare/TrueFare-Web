@@ -113,21 +113,22 @@
         </div>
       </div>
 
-      <!-- ========================= -->
-      <!-- TODAs -->
-      <!-- ========================= -->
+      <!-- Todas -->
       <div v-if="activeTab === 'todas'" class="space-y-4">
         <h2 class="text-xl font-bold mb-4">TODA Associations</h2>
+
         <div
           class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
         >
           <TodaCard
-            v-for="toda in todos"
+            v-for="toda in todas"
             :key="toda.id"
             :name="toda.name"
-            :location="toda.location"
-            :tricycles="toda.tricycles"
-            :trips="toda.trips"
+            :password="toda.password"
+            :barangay="toda.barangay""
+            :date_created="toda.date_created"
+            :date_update="toda.date_updated"
+
           />
         </div>
       </div>
@@ -190,13 +191,6 @@ import UserCard from "~/components/UserCard.vue";
 
 const activeTab = ref("dashboard");
 
-const todos = ref([
-  { id: 1, name: "TODA 1", location: "Barangay 1", tricycles: 3, trips: 2 },
-  { id: 2, name: "TODA 2", location: "Barangay 2", tricycles: 3, trips: 2 },
-  { id: 3, name: "TODA 3", location: "Barangay 3", tricycles: 3, trips: 2 },
-  { id: 4, name: "TODA 4", location: "Barangay 4", tricycles: 3, trips: 2 },
-]);
-
 const tricycles = ref([
   {
     id: 1,
@@ -234,8 +228,8 @@ const tricycles = ref([
 
 import { onMounted } from "vue";
 
+// USERS
 const users = ref([]);
-
 const fetchUsers = async () => {
   try {
     const response = await $fetch("/api/user");
@@ -245,7 +239,19 @@ const fetchUsers = async () => {
   }
 };
 
+// TODAS
+const todas = ref([]);
+const fetchTodas = async () => {
+  try {
+    const response = await $fetch("/api/toda");
+    todas.value = response.results || [];
+  } catch (error) {
+    console.error("Failed to fetch todas:", error);
+  }
+};
+
 onMounted(() => {
   fetchUsers();
+  fetchTodas();
 });
 </script>
