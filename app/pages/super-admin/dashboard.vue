@@ -125,10 +125,10 @@
             :key="toda.id"
             :id="toda.id"
             :name="toda.name"
-            :barangay="toda.barangay""
+            :barangay="toda.barangay"
+            :city="toda.city"
             :date_created="toda.date_created"
             :date_update="toda.date_updated"
-
           />
         </div>
       </div>

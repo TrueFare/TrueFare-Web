@@ -1,34 +1,95 @@
 <template>
   <div
-    class="bg-white dark:bg-gray-800 shadow-md rounded-xl p-6 space-y-3 hover:shadow-lg transition"
+    class="bg-white dark:bg-gray-800 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 p-6 space-y-4 border border-gray-100 dark:border-gray-700"
   >
     <!-- Header -->
-    <div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-        {{ name }}
-      </h3>
-      <p class="text-sm text-gray-500 dark:text-gray-300">
-        {{ barangay }}, {{ city }}
-      </p>
+    <div class="flex items-center justify-between">
+      <div>
+        <h3
+          class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2"
+        >
+          <i class="fa-solid fa-building text-purple-500"></i>
+          {{ name }}
+        </h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+          {{ barangay }}, {{ city }}
+        </p>
+      </div>
     </div>
 
-    <!-- Drivers -->
-    <div class="text-sm text-blue-500 font-medium">
-      Drivers: {{ driverCount }}
+    <!-- Drivers Count -->
+    <div
+      class="flex items-center justify-between bg-blue-50 dark:bg-blue-900/30 p-3 rounded-xl"
+    >
+      <div
+        class="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-medium"
+      >
+        <i class="fa-solid fa-users"></i>
+        Drivers
+      </div>
+      <div class="text-lg font-bold text-blue-700 dark:text-blue-300">
+        {{ driverCount }}
+      </div>
     </div>
 
     <!-- Trip Stats -->
-    <div
-      class="grid grid-cols-2 gap-2 text-xs text-gray-500 dark:text-gray-400"
-    >
-      <div>Today: {{ dailyTrips }}</div>
-      <div>This Week: {{ weeklyTrips }}</div>
-      <div>This Month: {{ monthlyTrips }}</div>
-      <div>All Time: {{ allTimeTrips }}</div>
+    <div class="grid grid-cols-2 gap-3 text-sm">
+      <!-- Daily -->
+      <div
+        class="flex items-center justify-between bg-green-50 dark:bg-green-900/30 p-3 rounded-xl"
+      >
+        <div class="flex items-center gap-2 text-green-600 dark:text-green-400">
+          <i class="fa-solid fa-calendar-day"></i>
+          Today
+        </div>
+        <span class="font-semibold">{{ dailyTrips }}</span>
+      </div>
+
+      <!-- Weekly -->
+      <div
+        class="flex items-center justify-between bg-yellow-50 dark:bg-yellow-900/30 p-3 rounded-xl"
+      >
+        <div
+          class="flex items-center gap-2 text-yellow-600 dark:text-yellow-400"
+        >
+          <i class="fa-solid fa-calendar-week"></i>
+          Week
+        </div>
+        <span class="font-semibold">{{ weeklyTrips }}</span>
+      </div>
+
+      <!-- Monthly -->
+      <div
+        class="flex items-center justify-between bg-purple-50 dark:bg-purple-900/30 p-3 rounded-xl"
+      >
+        <div
+          class="flex items-center gap-2 text-purple-600 dark:text-purple-400"
+        >
+          <i class="fa-solid fa-calendar-alt"></i>
+          Month
+        </div>
+        <span class="font-semibold">{{ monthlyTrips }}</span>
+      </div>
+
+      <!-- All Time -->
+      <div
+        class="flex items-center justify-between bg-gray-100 dark:bg-gray-700 p-3 rounded-xl"
+      >
+        <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+          <i class="fa-solid fa-chart-line"></i>
+          All Time
+        </div>
+        <span class="font-semibold">{{ allTimeTrips }}</span>
+      </div>
     </div>
 
-    <!-- Created -->
-    <p class="text-xs text-gray-400">Created: {{ formatDate(date_created) }}</p>
+    <!-- Footer -->
+    <div
+      class="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-2"
+    >
+      <i class="fa-solid fa-clock"></i>
+      Created: {{ formatDate(date_created) }}
+    </div>
   </div>
 </template>
 
@@ -43,7 +104,6 @@ const props = defineProps({
   date_created: String,
 });
 
-// Counts
 const driverCount = ref(0);
 const dailyTrips = ref(0);
 const weeklyTrips = ref(0);
@@ -74,8 +134,7 @@ const fetchStats = async () => {
 
 const formatDate = (dateString) => {
   if (!dateString) return "-";
-  const date = new Date(dateString);
-  return date.toLocaleDateString();
+  return new Date(dateString).toLocaleDateString();
 };
 
 onMounted(fetchStats);
