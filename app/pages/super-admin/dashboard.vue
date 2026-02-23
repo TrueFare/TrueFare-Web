@@ -123,8 +123,8 @@
           <TodaCard
             v-for="toda in todas"
             :key="toda.id"
+            :id="toda.id"
             :name="toda.name"
-            :password="toda.password"
             :barangay="toda.barangay""
             :date_created="toda.date_created"
             :date_update="toda.date_updated"
