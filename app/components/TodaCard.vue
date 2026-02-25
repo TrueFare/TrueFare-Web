@@ -120,6 +120,7 @@ const fetchStats = async () => {
       $fetch(`/api/trip/count/toda/${id}/weekly`),
       $fetch(`/api/trip/count/toda/${id}/monthly`),
       $fetch(`/api/trip/count/toda/${id}/all-time`),
+      // add an api that counts the number of admins (toda manager)
     ]);
 
     driverCount.value = drivers.count;
