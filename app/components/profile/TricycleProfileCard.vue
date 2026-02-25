@@ -40,7 +40,7 @@
         </div>
 
         <!-- BASIC INFO -->
-        <div>
+        <div class="flex flex-col gap-2">
           <h2 class="text-2xl font-bold">
             {{ driver.first_name }} {{ driver.last_name }}
           </h2>
@@ -48,8 +48,12 @@
           <p class="opacity-90">Plate: {{ driver.plate_number }}</p>
 
           <span
-            class="badge mt-2"
-            :class="driver.is_registered ? 'badge-success' : 'badge-error'"
+            class="inline-flex items-center justify-center text-xs font-semibold rounded-full px-3 py-1 mt-2 w-24 text-center"
+            :class="
+              driver.is_registered
+                ? 'bg-green-50 dark:bg-green-400 text-green-600 dark:text-white'
+                : 'bg-red-50 dark:bg-red-400 text-red-600 dark:text-white'
+            "
           >
             {{ driver.is_registered ? "Registered" : "Unregistered" }}
           </span>
@@ -58,47 +62,58 @@
 
       <!-- ================= BODY ================= -->
       <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-        <div>
-          <p class="text-gray-400">Email</p>
-          <p class="font-semibold">
-            {{ driver.email || "N/A" }}
-          </p>
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-envelope text-gray-400"></i>
+          <div>
+            <p class="text-gray-400">Email</p>
+            <p class="font-semibold">{{ driver.email || "N/A" }}</p>
+          </div>
         </div>
 
-        <div>
-          <p class="text-gray-400">Contact Number</p>
-          <p class="font-semibold">
-            {{ driver.contact_number }}
-          </p>
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-phone text-gray-400"></i>
+          <div>
+            <p class="text-gray-400">Contact Number</p>
+            <p class="font-semibold">{{ driver.contact_number }}</p>
+          </div>
         </div>
 
-        <div>
-          <p class="text-gray-400">Franchise Number</p>
-          <p class="font-semibold">
-            {{ driver.franchise_number }}
-          </p>
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-id-badge text-gray-400"></i>
+          <div>
+            <p class="text-gray-400">Franchise Number</p>
+            <p class="font-semibold">{{ driver.franchise_number }}</p>
+          </div>
         </div>
 
-        <div>
-          <p class="text-gray-400">TODA ID</p>
-          <p class="font-semibold">
-            {{ driver.toda_name }}
-          </p>
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-building text-gray-400"></i>
+          <div>
+            <p class="text-gray-400">TODA</p>
+            <p class="font-semibold">{{ driver.toda_name }}</p>
+          </div>
         </div>
 
-        <div class="md:col-span-2">
-          <p class="text-gray-400">Date Created</p>
-          <p class="font-semibold">
-            {{ driver.date_created }}
-          </p>
+        <div class="md:col-span-2 flex items-center gap-2">
+          <i class="fa-solid fa-calendar text-gray-400"></i>
+          <div>
+            <p class="text-gray-400">Date Created</p>
+            <p class="font-semibold">{{ driver.date_created }}</p>
+          </div>
         </div>
       </div>
 
       <!-- ================= ACTIONS ================= -->
       <div class="border-t dark:border-gray-700 p-5 flex justify-end gap-3">
-        <button class="btn btn-outline">Edit</button>
+        <button class="btn btn-outline flex items-center gap-2">
+          <i class="fa-solid fa-pen-to-square"></i>
+          Edit
+        </button>
 
-        <button class="btn btn-error">Delete</button>
+        <button class="btn btn-error flex items-center gap-2">
+          <i class="fa-solid fa-trash"></i>
+          Delete
+        </button>
       </div>
     </div>
   </div>
@@ -117,13 +132,8 @@ const props = defineProps({
 
 defineEmits(["close"]);
 
-/*
-  Convert BLOB → image
-  Cloudflare D1 usually returns ArrayBuffer/Base64
-*/
 const imageSrc = computed(() => {
   if (!props.driver?.profile_pic) return null;
-
   return `data:image/jpeg;base64,${props.driver.profile_pic}`;
 });
 </script>
