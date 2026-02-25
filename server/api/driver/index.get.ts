@@ -4,7 +4,25 @@ export default defineEventHandler(async (event) => {
   try {
     const result = await db
       .prepare(
-        `SELECT id, first_name, last_name, contact_number, email, plate_number, franchise_number, is_registered, profile_pic, toda_id, date_created, date_updated FROM driver`
+        `
+        SELECT
+          driver.id,
+          driver.first_name,
+          driver.last_name,
+          driver.contact_number,
+          driver.email,
+          driver.plate_number,
+          driver.franchise_number,
+          driver.is_registered,
+          driver.profile_pic,
+          driver.toda_id,
+          toda.name AS toda_name,
+          driver.date_created,
+          driver.date_updated
+        FROM driver
+        LEFT JOIN toda
+        ON driver.toda_id = toda.id
+      `,
       )
       .run();
 
@@ -12,7 +30,7 @@ export default defineEventHandler(async (event) => {
   } catch (error: any) {
     throw createError({
       statusCode: 500,
-      statusMessage: error.message || 'Failed to fetch drivers'
+      statusMessage: error.message || "Failed to fetch drivers",
     });
   }
 });

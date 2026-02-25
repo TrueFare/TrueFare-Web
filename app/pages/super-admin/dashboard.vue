@@ -136,25 +136,8 @@
       <!-- Tricycles -->
       <div v-if="activeTab === 'tricycles'" class="space-y-4">
         <h2 class="text-xl font-bold mb-4">Tricycles</h2>
-        <div
-          class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
-        >
-          <TricycleCard
-            v-for="tricycle in tricycles"
-            :key="tricycle.id"
-            :first_name="tricycle.first_name"
-            :last_name="tricycle.last_name"
-            :contact_number="tricycle.contact_number"
-            :email="tricycle.email"
-            :plate_number="tricycle.plate_number"
-            :franchise_number="tricycle.franchise_number"
-            :is_registered="tricycle.is_registered"
-            :profile_pic="tricycle.profile_pic"
-            :toda_id="tricycle.toda_id"
-            :date_created="tricycle.date_created"
-            :date_updated="tricycle.date_updated"
-          />
-        </div>
+
+        <TricycleTable :drivers="tricycles" />
       </div>
 
       <!-- Reports -->
@@ -192,6 +175,7 @@ import TodaCard from "~/components/TodaCard.vue";
 import TricycleTable from "~/components/TricycleTable.vue";
 import ChartFareTrend from "~/components/charts/ChartFareTrend.vue";
 import UserCard from "~/components/UserCard.vue";
+import TricycleProfileCard from "~/components/profile/TricycleProfileCard.vue";
 
 const activeTab = ref("dashboard");
 
