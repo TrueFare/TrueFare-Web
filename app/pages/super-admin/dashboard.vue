@@ -133,22 +133,26 @@
         </div>
       </div>
 
-      <!-- ========================= -->
-      <!-- TRICYCLES -->
-      <!-- ========================= -->
+      <!-- Tricycles -->
       <div v-if="activeTab === 'tricycles'" class="space-y-4">
-        <h2 class="text-xl font-bold mb-4">TRICYCLES</h2>
+        <h2 class="text-xl font-bold mb-4">Tricycles</h2>
         <div
           class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
         >
           <TricycleCard
             v-for="tricycle in tricycles"
             :key="tricycle.id"
-            :f_name="tricycle.f_name"
-            :l_name="tricycle.l_name"
-            :toda="tricycle.toda"
-            :franchise="tricycle.franchise"
-            :status="tricycle.status"
+            :first_name="tricycle.first_name"
+            :last_name="tricycle.last_name"
+            :contact_number="tricycle.contact_number"
+            :email="tricycle.email"
+            :plate_number="tricycle.plate_number"
+            :franchise_number="tricycle.franchise_number"
+            :is_registered="tricycle.is_registered"
+            :profile_pic="tricycle.profile_pic"
+            :toda_id="tricycle.toda_id"
+            :date_created="tricycle.date_created"
+            :date_updated="tricycle.date_updated"
           />
         </div>
       </div>
@@ -185,46 +189,11 @@
 import { ref } from "vue";
 import DashboardCard from "~/components/DashboardCard.vue";
 import TodaCard from "~/components/TodaCard.vue";
-import TricycleCard from "~/components/TricycleCard.vue";
+import TricycleTable from "~/components/TricycleTable.vue";
 import ChartFareTrend from "~/components/charts/ChartFareTrend.vue";
 import UserCard from "~/components/UserCard.vue";
 
 const activeTab = ref("dashboard");
-
-const tricycles = ref([
-  {
-    id: 1,
-    f_name: "Juan",
-    l_name: "Dela Cruz",
-    toda: "TODA 1",
-    franchise: "#34123",
-    status: "Active",
-  },
-  {
-    id: 2,
-    f_name: "Pedro",
-    l_name: "Santos",
-    toda: "TODA 1",
-    franchise: "#34132",
-    status: "Active",
-  },
-  {
-    id: 3,
-    f_name: "Maria",
-    l_name: "Reyes",
-    toda: "TODA 2",
-    franchise: "#34167",
-    status: "Inactive",
-  },
-  {
-    id: 4,
-    f_name: "Jose",
-    l_name: "Garcia",
-    toda: "TODA 3",
-    franchise: "#34562",
-    status: "Active",
-  },
-]);
 
 import { onMounted } from "vue";
 
@@ -250,8 +219,20 @@ const fetchTodas = async () => {
   }
 };
 
+//TRICYCLE
+const tricycles = ref([]);
+const fetchTricycles = async () => {
+  try {
+    const response = await $fetch("/api/driver");
+    tricycles.value = response.results || [];
+  } catch (error) {
+    console.error("Failed to fetch drivers:", error);
+  }
+};
+
 onMounted(() => {
   fetchUsers();
   fetchTodas();
+  fetchTricycles();
 });
 </script>
