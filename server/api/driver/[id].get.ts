@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
   try {
     const result = await db
       .prepare(
-        'SELECT id, first_name, last_name, contact_number, email, plate_number, franchise_number, is_registered, profile_pic, toda_id, date_created, date_updated FROM driver WHERE id = ?'
+        'SELECT id, first_name, last_name, contact_number, email, plate_number, franchise_number, is_registered, toda_id, date_created, date_updated FROM driver WHERE id = ?'
       )
       .bind(id)
       .run();

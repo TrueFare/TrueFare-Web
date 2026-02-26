@@ -116,6 +116,46 @@
               </span>
             </div>
 
+            <!-- Profile Picture -->
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text font-semibold">Profile Picture (Optional)</span>
+              </label>
+              
+              <!-- Image Preview -->
+              <div v-if="previewImage" class="mb-3">
+                <div class="relative inline-block">
+                  <img 
+                    :src="previewImage" 
+                    alt="Preview" 
+                    class="w-32 h-32 object-cover rounded-lg border-2 border-base-300"
+                  />
+                  <button
+                    type="button"
+                    @click="removeImage"
+                    class="absolute -top-2 -right-2 btn btn-circle btn-sm btn-error"
+                  >
+                    <Icon name="mdi:close" />
+                  </button>
+                </div>
+              </div>
+
+              <!-- File Input -->
+              <div v-else class="flex items-center gap-3">
+                <input
+                  ref="fileInputRef"
+                  type="file"
+                  accept="image/*"
+                  @change="handleImageUpload"
+                  class="file-input file-input-bordered file-input-sm w-full max-w-xs"
+                />
+              </div>
+              
+              <span v-if="errors.profile_pic" class="text-error text-sm">
+                {{ errors.profile_pic }}
+              </span>
+            </div>
+
             <!-- Success -->
             <div v-if="successMessage" class="alert alert-success">
               {{ successMessage }}
@@ -165,6 +205,7 @@ interface DriverForm {
   plate_number: string;
   franchise_number: number | null;
   toda_id: number | null;
+  profile_pic: string | null;
 }
 
 const form = reactive<DriverForm>({
@@ -175,7 +216,11 @@ const form = reactive<DriverForm>({
   plate_number: "",
   franchise_number: null,
   toda_id: null,
+  profile_pic: null,
 });
+
+const previewImage = ref<string | null>(null);
+const fileInputRef = ref<HTMLInputElement | null>(null);
 
 const errors = reactive<Record<string, string>>({});
 const isLoading = ref(false);
@@ -200,6 +245,46 @@ const validateForm = () => {
   }
 
   return Object.keys(errors).length === 0;
+};
+
+const handleImageUpload = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  const file = target.files?.[0];
+
+  if (!file) return;
+
+  // Validate file type
+  if (!file.type.startsWith('image/')) {
+    errors.profile_pic = "Please select an image file";
+    return;
+  }
+
+  // Validate file size (max 2MB)
+  if (file.size > 2 * 1024 * 1024) {
+    errors.profile_pic = "Image size must be less than 2MB";
+    return;
+  }
+
+  // Convert to base64
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const result = e.target?.result as string;
+    // Remove the data URL prefix and store just the base64 data
+    form.profile_pic = result.replace(/^data:image\/\w+;base64,/, '');
+    previewImage.value = result;
+  };
+  reader.onerror = () => {
+    errors.profile_pic = "Failed to read image file";
+  };
+  reader.readAsDataURL(file);
+};
+
+const removeImage = () => {
+  form.profile_pic = null;
+  previewImage.value = null;
+  if (fileInputRef.value) {
+    fileInputRef.value.value = '';
+  }
 };
 
 const submitForm = async () => {
@@ -236,6 +321,12 @@ const resetForm = () => {
   form.plate_number = "";
   form.franchise_number = null;
   form.toda_id = null;
+  form.profile_pic = null;
+  previewImage.value = null;
+
+  if (fileInputRef.value) {
+    fileInputRef.value.value = '';
+  }
 
   Object.keys(errors).forEach((key) => delete errors[key]);
   successMessage.value = "";
