@@ -1,12 +1,11 @@
 <template>
-  <!-- BACKDROP -->
   <div
     v-if="show"
     class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50"
   >
     <!-- MODAL -->
     <div
-      class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden relative animate-fadeIn"
+      class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden relative"
     >
       <!-- CLOSE -->
       <button
@@ -18,101 +17,143 @@
 
       <!-- ================= HEADER ================= -->
       <div
-        class="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white flex items-center gap-5"
+        class="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white flex gap-5"
       >
-        <!-- PROFILE IMAGE -->
+        <!-- IMAGE -->
         <div
-          class="w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-lg"
+          class="w-24 h-24 rounded-full overflow-hidden border-4 border-white relative"
         >
           <img
-            v-if="driver?.profile_pic"
-            :src="imageSrc"
+            v-if="previewImage"
+            :src="previewImage"
             class="w-full h-full object-cover"
           />
 
-          <!-- FALLBACK -->
-          <div
-            v-else
-            class="w-full h-full flex items-center justify-center bg-gray-300 text-gray-600 text-3xl font-bold"
-          >
-            {{ driver?.first_name?.charAt(0) }}
-          </div>
+          <!-- Upload -->
+          <input
+            type="file"
+            accept="image/*"
+            class="absolute inset-0 opacity-0 cursor-pointer"
+            @change="handleImageUpload"
+          />
         </div>
 
-        <!-- BASIC INFO -->
-        <div class="flex flex-col gap-2">
+        <div>
           <h2 class="text-2xl font-bold">
-            {{ driver.first_name }} {{ driver.last_name }}
+            {{ editableDriver.first_name }}
+            {{ editableDriver.last_name }}
           </h2>
 
-          <p class="opacity-90">Plate: {{ driver.plate_number }}</p>
+          <p>Plate: {{ editableDriver.plate_number }}</p>
 
+          <!-- STATUS BADGE -->
           <span
-            class="inline-flex items-center justify-center text-xs font-semibold rounded-full px-3 py-1 mt-2 w-24 text-center"
+            class="inline-flex text-xs font-semibold rounded-full px-3 py-1 mt-2"
             :class="
-              driver.is_registered
-                ? 'bg-green-50 dark:bg-green-400 text-green-600 dark:text-white'
-                : 'bg-red-50 dark:bg-red-400 text-red-600 dark:text-white'
+              editableDriver.is_registered
+                ? 'bg-green-100 text-green-700'
+                : 'bg-red-100 text-red-700'
             "
           >
-            {{ driver.is_registered ? "Registered" : "Unregistered" }}
+            {{ editableDriver.is_registered ? "Registered" : "Unregistered" }}
           </span>
         </div>
       </div>
 
       <!-- ================= BODY ================= -->
-      <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-        <div class="flex items-center gap-2">
-          <i class="fa-solid fa-envelope text-gray-400"></i>
-          <div>
-            <p class="text-gray-400">Email</p>
-            <p class="font-semibold">{{ driver.email || "N/A" }}</p>
-          </div>
+      <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <p class="text-gray-400 text-sm">First Name</p>
+          <input
+            v-model="editableDriver.first_name"
+            class="input input-bordered w-full"
+          />
         </div>
 
-        <div class="flex items-center gap-2">
-          <i class="fa-solid fa-phone text-gray-400"></i>
-          <div>
-            <p class="text-gray-400">Contact Number</p>
-            <p class="font-semibold">{{ driver.contact_number }}</p>
-          </div>
+        <div>
+          <p class="text-gray-400 text-sm">Last Name</p>
+          <input
+            v-model="editableDriver.last_name"
+            class="input input-bordered w-full"
+          />
         </div>
 
-        <div class="flex items-center gap-2">
-          <i class="fa-solid fa-id-badge text-gray-400"></i>
-          <div>
-            <p class="text-gray-400">Franchise Number</p>
-            <p class="font-semibold">{{ driver.franchise_number }}</p>
-          </div>
+        <div>
+          <p class="text-gray-400 text-sm">Contact</p>
+          <input
+            v-model="editableDriver.contact_number"
+            class="input input-bordered w-full"
+          />
         </div>
 
-        <div class="flex items-center gap-2">
-          <i class="fa-solid fa-building text-gray-400"></i>
-          <div>
-            <p class="text-gray-400">TODA</p>
-            <p class="font-semibold">{{ driver.toda_name }}</p>
-          </div>
+        <div>
+          <p class="text-gray-400 text-sm">Email</p>
+          <input
+            v-model="editableDriver.email"
+            class="input input-bordered w-full"
+          />
         </div>
 
-        <div class="md:col-span-2 flex items-center gap-2">
-          <i class="fa-solid fa-calendar text-gray-400"></i>
-          <div>
-            <p class="text-gray-400">Date Created</p>
-            <p class="font-semibold">{{ driver.date_created }}</p>
-          </div>
+        <div>
+          <p class="text-gray-400 text-sm">Plate Number</p>
+          <input
+            v-model="editableDriver.plate_number"
+            class="input input-bordered w-full"
+          />
+        </div>
+
+        <div>
+          <p class="text-gray-400 text-sm">Franchise</p>
+          <input
+            v-model="editableDriver.franchise_number"
+            class="input input-bordered w-full"
+          />
+        </div>
+
+        <!-- STATUS -->
+        <div>
+          <p class="text-gray-400 text-sm">Status</p>
+          <select
+            v-model="editableDriver.is_registered"
+            class="select select-bordered w-full"
+          >
+            <option :value="true">Registered</option>
+            <option :value="false">Unregistered</option>
+          </select>
+        </div>
+
+        <!-- DATE CREATED -->
+        <div>
+          <p class="text-gray-400 text-sm">Date Created</p>
+          <p class="font-semibold">
+            {{ editableDriver.date_created }}
+          </p>
+        </div>
+
+        <!-- DATE UPDATED -->
+        <div v-if="editableDriver.date_updated">
+          <p class="text-gray-400 text-sm">Last Updated</p>
+          <p class="font-semibold">
+            {{ editableDriver.date_updated }}
+          </p>
         </div>
       </div>
 
       <!-- ================= ACTIONS ================= -->
       <div class="border-t dark:border-gray-700 p-5 flex justify-end gap-3">
-        <button class="btn btn-outline flex items-center gap-2">
-          <i class="fa-solid fa-pen-to-square"></i>
-          Edit
-        </button>
-
-        <button class="btn btn-error flex items-center gap-2">
+        <!-- DELETE (NON FUNCTIONAL) -->
+        <button class="btn btn-error">
           <i class="fa-solid fa-trash"></i>
           Delete
+        </button>
+
+        <!-- SAVE -->
+        <button
+          class="btn btn-primary"
+          :class="{ loading: saving }"
+          @click="saveDriver"
+        >
+          💾 Save
         </button>
       </div>
     </div>
@@ -120,37 +161,75 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { reactive, watch, ref } from "vue";
 
 const props = defineProps({
   show: Boolean,
-  driver: {
-    type: Object,
-    default: () => ({}),
+  driver: Object,
+});
+
+const emit = defineEmits(["close", "updated"]);
+
+const editableDriver = reactive({});
+const saving = ref(false);
+const previewImage = ref(null);
+
+/* =============================
+   COPY DRIVER DATA
+============================= */
+watch(
+  () => props.driver,
+  (val) => {
+    if (!val) return;
+
+    Object.assign(editableDriver, val);
+
+    editableDriver.is_registered =
+      val.is_registered === 1 || val.is_registered === true;
+
+    previewImage.value = val?.id ? `/api/driver/picture/${val.id}` : null;
   },
-});
+  { immediate: true },
+);
 
-defineEmits(["close"]);
+/* =============================
+   IMAGE UPLOAD
+============================= */
+const handleImageUpload = (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
 
-const imageSrc = computed(() => {
-  if (!props.driver?.profile_pic) return null;
-  return `data:image/jpeg;base64,${props.driver.profile_pic}`;
-});
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    previewImage.value = reader.result;
+    editableDriver.profile_pic = reader.result;
+  };
+
+  reader.readAsDataURL(file);
+};
+
+/* =============================
+   SAVE DRIVER
+============================= */
+const saveDriver = async () => {
+  try {
+    saving.value = true;
+
+    const response = await $fetch(`/api/driver/${editableDriver.id}`, {
+      method: "POST",
+      body: editableDriver,
+    });
+
+    Object.assign(editableDriver, response.data);
+
+    emit("updated");
+    alert("Driver updated successfully!");
+  } catch (err) {
+    console.error(err);
+    alert("Update failed");
+  } finally {
+    saving.value = false;
+  }
+};
 </script>
-
-<style scoped>
-.animate-fadeIn {
-  animation: fadeIn 0.25s ease;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-</style>

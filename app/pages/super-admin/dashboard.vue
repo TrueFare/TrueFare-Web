@@ -137,7 +137,10 @@
       <div v-if="activeTab === 'tricycles'" class="space-y-4">
         <h2 class="text-xl font-bold mb-4">Tricycles</h2>
 
-        <TricycleTable :drivers="paginatedTricycles" />
+        <TricycleTable
+          :drivers="paginatedTricycles"
+          @refresh="fetchTricycles"
+        />
 
         <Pagination
           v-model:page="tricyclePage"

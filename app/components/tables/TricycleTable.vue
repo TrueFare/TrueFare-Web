@@ -121,6 +121,7 @@
     :show="showProfile"
     :driver="selectedDriver"
     @close="closeProfile"
+    @updated="refreshDrivers"
   />
 </template>
 
@@ -146,5 +147,10 @@ const openProfile = (driver) => {
 const closeProfile = () => {
   showProfile.value = false;
   selectedDriver.value = null;
+};
+
+const emit = defineEmits(["refresh"]);
+const refreshDrivers = () => {
+  emit("refresh");
 };
 </script>
