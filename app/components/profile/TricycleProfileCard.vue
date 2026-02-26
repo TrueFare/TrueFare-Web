@@ -29,7 +29,6 @@
             class="w-full h-full object-cover"
           />
 
-          <!-- Upload -->
           <input
             type="file"
             accept="image/*"
@@ -46,7 +45,6 @@
 
           <p>Plate: {{ editableDriver.plate_number }}</p>
 
-          <!-- STATUS BADGE -->
           <span
             class="inline-flex text-xs font-semibold rounded-full px-3 py-1 mt-2"
             :class="
@@ -110,7 +108,6 @@
           />
         </div>
 
-        <!-- STATUS -->
         <div>
           <p class="text-gray-400 text-sm">Status</p>
           <select
@@ -122,32 +119,24 @@
           </select>
         </div>
 
-        <!-- DATE CREATED -->
         <div>
           <p class="text-gray-400 text-sm">Date Created</p>
-          <p class="font-semibold">
-            {{ editableDriver.date_created }}
-          </p>
+          <p class="font-semibold">{{ editableDriver.date_created }}</p>
         </div>
 
-        <!-- DATE UPDATED -->
         <div v-if="editableDriver.date_updated">
           <p class="text-gray-400 text-sm">Last Updated</p>
-          <p class="font-semibold">
-            {{ editableDriver.date_updated }}
-          </p>
+          <p class="font-semibold">{{ editableDriver.date_updated }}</p>
         </div>
       </div>
 
       <!-- ================= ACTIONS ================= -->
       <div class="border-t dark:border-gray-700 p-5 flex justify-end gap-3">
-        <!-- DELETE (NON FUNCTIONAL) -->
         <button class="btn btn-error">
           <i class="fa-solid fa-trash"></i>
           Delete
         </button>
 
-        <!-- SAVE -->
         <button
           class="btn btn-primary"
           :class="{ loading: saving }"
@@ -161,7 +150,7 @@
 </template>
 
 <script setup>
-import { reactive, watch, ref } from "vue";
+import { reactive, watch, ref, onUnmounted } from "vue";
 
 const props = defineProps({
   show: Boolean,
@@ -173,6 +162,26 @@ const emit = defineEmits(["close", "updated"]);
 const editableDriver = reactive({});
 const saving = ref(false);
 const previewImage = ref(null);
+
+/* =============================
+   LOCK BODY SCROLL
+============================= */
+watch(
+  () => props.show,
+  (visible) => {
+    if (visible) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+  },
+  { immediate: true },
+);
+
+/* cleanup safety */
+onUnmounted(() => {
+  document.body.style.overflow = "";
+});
 
 /* =============================
    COPY DRIVER DATA
