@@ -1,15 +1,15 @@
 <template>
   <div
     v-if="show"
-    class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50"
+    class="fixed top-0 left-0 w-full h-dvh bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
   >
     <!-- MODAL -->
     <div
-      class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden relative"
+      class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90dvh] overflow-y-auto relative"
     >
       <!-- CLOSE -->
       <button
-        class="absolute right-4 top-4 btn btn-sm btn-circle"
+        class="absolute right-4 top-4 btn btn-sm btn-circle z-10"
         @click="$emit('close')"
       >
         ✕
@@ -21,7 +21,7 @@
       >
         <!-- IMAGE -->
         <div
-          class="w-24 h-24 rounded-full overflow-hidden border-4 border-white relative"
+          class="w-24 h-24 rounded-full overflow-hidden border-4 border-white relative shrink-0"
         >
           <img
             v-if="previewImage"
@@ -121,12 +121,16 @@
 
         <div>
           <p class="text-gray-400 text-sm">Date Created</p>
-          <p class="font-semibold">{{ editableDriver.date_created }}</p>
+          <p class="font-semibold">
+            {{ editableDriver.date_created }}
+          </p>
         </div>
 
         <div v-if="editableDriver.date_updated">
           <p class="text-gray-400 text-sm">Last Updated</p>
-          <p class="font-semibold">{{ editableDriver.date_updated }}</p>
+          <p class="font-semibold">
+            {{ editableDriver.date_updated }}
+          </p>
         </div>
       </div>
 
@@ -164,23 +168,25 @@ const saving = ref(false);
 const previewImage = ref(null);
 
 /* =============================
-   LOCK BODY SCROLL
+   LOCK BACKGROUND SCROLL
 ============================= */
 watch(
   () => props.show,
   (visible) => {
     if (visible) {
       document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
     }
   },
   { immediate: true },
 );
 
-/* cleanup safety */
 onUnmounted(() => {
   document.body.style.overflow = "";
+  document.documentElement.style.overflow = "";
 });
 
 /* =============================
