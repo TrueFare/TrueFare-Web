@@ -141,9 +141,8 @@
       </div>
 
       <!-- Reports -->
-      <div v-if="activeTab === 'reports'" class="space-y-4">
-        <h2 class="text-xl font-bold">Reports</h2>
-        <TicketTable />
+      <div v-if="activeTab === 'reports'" class="text-gray-500">
+        Reports content coming soon...
       </div>
 
       <!-- Users -->
@@ -171,13 +170,11 @@
 
 <script setup>
 import { ref } from "vue";
-import DashboardCard from "~/components/DashboardCard.vue";
-import TodaCard from "~/components/TodaCard.vue";
-import TricycleTable from "~/components/TricycleTable.vue";
-import TicketTable from "~/components/TicketTable.vue";
+import DashboardCard from "~/components/cards/DashboardCard.vue";
+import TodaCard from "~/components/cards/TodaCard.vue";
+import TricycleTable from "~/components/tables/TricycleTable.vue";
 import ChartFareTrend from "~/components/charts/ChartFareTrend.vue";
-import UserCard from "~/components/UserCard.vue";
-import TricycleProfileCard from "~/components/profile/TricycleProfileCard.vue";
+import UserCard from "~/components/cards/UserCard.vue";
 
 const activeTab = ref("dashboard");
 
