@@ -137,7 +137,13 @@
       <div v-if="activeTab === 'tricycles'" class="space-y-4">
         <h2 class="text-xl font-bold mb-4">Tricycles</h2>
 
-        <TricycleTable :drivers="tricycles" />
+        <TricycleTable :drivers="paginatedTricycles" />
+
+        <Pagination
+          v-model:page="tricyclePage"
+          :total-items="tricycles.length"
+          :per-page="perPage"
+        />
       </div>
 
       <!-- Reports -->
@@ -169,12 +175,13 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import DashboardCard from "~/components/cards/DashboardCard.vue";
 import TodaCard from "~/components/cards/TodaCard.vue";
 import TricycleTable from "~/components/tables/TricycleTable.vue";
 import ChartFareTrend from "~/components/charts/ChartFareTrend.vue";
 import UserCard from "~/components/cards/UserCard.vue";
+import Pagination from "~/components/Pagination.vue";
 
 const activeTab = ref("dashboard");
 
@@ -212,6 +219,14 @@ const fetchTricycles = async () => {
     console.error("Failed to fetch drivers:", error);
   }
 };
+
+//Pagination
+const tricyclePage = ref(1);
+const perPage = 6;
+const paginatedTricycles = computed(() => {
+  const start = (tricyclePage.value - 1) * perPage;
+  return tricycles.value.slice(start, start + perPage);
+});
 
 onMounted(() => {
   fetchUsers();
