@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="show"
-    class="fixed top-0 left-0 w-full h-dvh bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+    class="fixed inset-0 min-h-dvh bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
   >
     <!-- MODAL -->
     <div
@@ -17,7 +17,7 @@
 
       <!-- ================= HEADER ================= -->
       <div
-        class="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white flex gap-5"
+        class="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left"
       >
         <!-- IMAGE -->
         <div
@@ -45,8 +45,9 @@
 
           <p>Plate: {{ editableDriver.plate_number }}</p>
 
+          <!-- STATUS CAPSULE -->
           <span
-            class="inline-flex text-xs font-semibold rounded-full px-3 py-1 mt-2"
+            class="inline-flex w-fit self-start text-xs font-semibold rounded-full px-3 py-1 mt-2"
             :class="
               editableDriver.is_registered
                 ? 'bg-green-100 text-green-700'
@@ -142,11 +143,15 @@
         </button>
 
         <button
-          class="btn btn-primary"
-          :class="{ loading: saving }"
+          class="btn btn-primary flex items-center gap-2"
+          :disabled="saving"
           @click="saveDriver"
         >
-          💾 Save
+          <span v-if="saving" class="loading loading-spinner loading-sm"></span>
+
+          <span>
+            {{ saving ? "Saving..." : "💾 Save" }}
+          </span>
         </button>
       </div>
     </div>
@@ -173,13 +178,8 @@ const previewImage = ref(null);
 watch(
   () => props.show,
   (visible) => {
-    if (visible) {
-      document.body.style.overflow = "hidden";
-      document.documentElement.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-      document.documentElement.style.overflow = "";
-    }
+    document.body.style.overflow = visible ? "hidden" : "";
+    document.documentElement.style.overflow = visible ? "hidden" : "";
   },
   { immediate: true },
 );
@@ -211,14 +211,19 @@ watch(
    IMAGE UPLOAD
 ============================= */
 const handleImageUpload = (event) => {
-  const file = event.target.files[0];
+  const file = event.target.files?.[0];
   if (!file) return;
 
   const reader = new FileReader();
 
-  reader.onload = () => {
-    previewImage.value = reader.result;
-    editableDriver.profile_pic = reader.result;
+  reader.onload = (e) => {
+    const result = e.target?.result;
+
+    // preview
+    previewImage.value = result;
+
+    // ✅ send FULL data URL to API
+    editableDriver.profile_pic = result;
   };
 
   reader.readAsDataURL(file);

@@ -137,6 +137,8 @@
       <div v-if="activeTab === 'tricycles'" class="space-y-4">
         <h2 class="text-xl font-bold mb-4">Tricycles</h2>
 
+        <TricycleSearch @search="handleSearch" />
+
         <TricycleTable
           :drivers="paginatedTricycles"
           @refresh="fetchTricycles"
@@ -185,6 +187,7 @@ import TricycleTable from "~/components/tables/TricycleTable.vue";
 import ChartFareTrend from "~/components/charts/ChartFareTrend.vue";
 import UserCard from "~/components/cards/UserCard.vue";
 import Pagination from "~/components/Pagination.vue";
+import TricycleSearch from "~/components/search/TricycleSearch.vue";
 
 const activeTab = ref("dashboard");
 
@@ -230,6 +233,28 @@ const paginatedTricycles = computed(() => {
   const start = (tricyclePage.value - 1) * perPage;
   return tricycles.value.slice(start, start + perPage);
 });
+
+// SEARCH TRIKE
+const searchQuery = ref("");
+
+const handleSearch = async (query) => {
+  searchQuery.value = query;
+
+  if (!query) {
+    fetchTricycles(); // reset to all
+    return;
+  }
+
+  try {
+    const response = await $fetch("/api/driver/search", {
+      params: { search: query },
+    });
+    tricycles.value = response.results || response;
+    tricyclePage.value = 1; // reset pagination
+  } catch (error) {
+    console.error("Failed to search drivers:", error);
+  }
+};
 
 onMounted(() => {
   fetchUsers();
