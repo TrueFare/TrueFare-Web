@@ -53,21 +53,21 @@
         >
           <DashboardCard
             title="TODA Associations"
-            value="6"
+            :value="totalTODAs"
             icon="fa-solid fa-building"
             bgColor="bg-purple-700 text-white"
             textColor="text-purple-400"
           />
           <DashboardCard
             title="Total Tricycles"
-            value="24"
+            :value="totalTricycles"
             icon="fa-solid fa-bicycle"
             bgColor="bg-blue-700 text-white"
             textColor="text-blue-400"
           />
           <DashboardCard
             title="Total Trips"
-            value="5"
+            :value="totalTrips"
             icon="fa-solid fa-chart-line"
             bgColor="bg-green-700 text-white"
             textColor="text-green-400"
@@ -89,7 +89,7 @@
           />
           <DashboardCard
             title="Users"
-            value="1"
+            :value="totalUsers"
             icon="fa-solid fa-user"
             bgColor="bg-orange-900 text-white"
             textColor="text-orange-400"
@@ -257,6 +257,36 @@ const handleSearch = async (query) => {
     console.error("Failed to search drivers:", error);
   }
 };
+
+
+// DASHBOARD
+// TODA Total
+const { data: todaCount } = await useAsyncData("todaCount", () =>
+  $fetch("/api/toda/count")
+);
+
+const totalTODAs = computed(() => todaCount.value?.count || 0);
+
+// Trike Total
+const { data: driverCount } = await useAsyncData("driverCount", () =>
+  $fetch("/api/driver/count")
+);
+
+const totalTricycles = computed(() => driverCount.value?.count || 0);
+
+// User Total
+const { data: userCount } = await useAsyncData("userCount", () =>
+  $fetch("/api/user/count")
+);
+
+const totalUsers = computed(() => userCount.value?.count || 0);
+
+// Trips Total
+const { data: tripCount } = await useAsyncData("tripCount", () =>
+  $fetch("/api/user/count")
+);
+
+const totalTrips = computed(() => tripCount.value?.count || 0);
 
 onMounted(() => {
   fetchUsers();
