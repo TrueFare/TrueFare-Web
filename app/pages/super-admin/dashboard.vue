@@ -53,21 +53,21 @@
         >
           <DashboardCard
             title="TODA Associations"
-            :value="totalTODAs"
+            :value="loadingCounts ? '...' :totalTODAs"
             icon="fa-solid fa-building"
             bgColor="bg-purple-700 text-white"
             textColor="text-purple-400"
           />
           <DashboardCard
             title="Total Tricycles"
-            :value="totalTricycles"
+            :value="loadingCounts ? '...' :totalTricycles"
             icon="fa-solid fa-bicycle"
             bgColor="bg-blue-700 text-white"
             textColor="text-blue-400"
           />
           <DashboardCard
             title="Total Trips"
-            :value="totalTrips"
+            :value="loadingCounts ? '...' :totalTrips"
             icon="fa-solid fa-chart-line"
             bgColor="bg-green-700 text-white"
             textColor="text-green-400"
@@ -89,7 +89,7 @@
           />
           <DashboardCard
             title="Users"
-            :value="totalUsers"
+            :value="loadingCounts ? '...' :totalUsers"
             icon="fa-solid fa-user"
             bgColor="bg-orange-900 text-white"
             textColor="text-orange-400"
@@ -181,7 +181,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import DashboardCard from "~/components/cards/DashboardCard.vue";
 import TodaCard from "~/components/cards/TodaCard.vue";
 import TricycleTable from "~/components/tables/TricycleTable.vue";
@@ -193,7 +193,45 @@ import TicketTable from "~/components/tables/TicketTable.vue";
 
 const activeTab = ref("dashboard");
 
-import { onMounted } from "vue";
+// Loading state for counts
+const loadingCounts = ref(true);
+
+// Dashboard counts
+const totalCounts = ref({
+  todas: 0,
+  drivers: 0,
+  users: 0,
+  trips: 0,
+});
+
+// Computed for easy access
+const totalTODAs = computed(() => totalCounts.value.todas);
+const totalTricycles = computed(() => totalCounts.value.drivers);
+const totalUsers = computed(() => totalCounts.value.users);
+const totalTrips = computed(() => totalCounts.value.trips);
+
+// Fetch all counts in parallel
+const fetchCounts = async () => {
+  try {
+    const [todasRes, driversRes, usersRes, tripsRes] = await Promise.all([
+      $fetch("/api/toda/count"),
+      $fetch("/api/driver/count"),
+      $fetch("/api/user/count"),
+      $fetch("/api/trip/count"),
+    ]);
+
+    totalCounts.value = {
+      todas: todasRes.count || 0,
+      drivers: driversRes.count || 0,
+      users: usersRes.count || 0,
+      trips: tripsRes.count || 0,
+    };
+  } catch (error) {
+    console.error("Failed to fetch dashboard counts:", error);
+  } finally {
+    loadingCounts.value = false;
+  }
+};
 
 // USERS
 const users = ref([]);
@@ -217,7 +255,7 @@ const fetchTodas = async () => {
   }
 };
 
-//TRICYCLE
+// TRICYCLES
 const tricycles = ref([]);
 const fetchTricycles = async () => {
   try {
@@ -228,7 +266,7 @@ const fetchTricycles = async () => {
   }
 };
 
-//Pagination
+// Pagination for tricycles
 const tricyclePage = ref(1);
 const perPage = 6;
 const paginatedTricycles = computed(() => {
@@ -236,17 +274,14 @@ const paginatedTricycles = computed(() => {
   return tricycles.value.slice(start, start + perPage);
 });
 
-// SEARCH TRIKE
+// Search tricycles
 const searchQuery = ref("");
-
 const handleSearch = async (query) => {
   searchQuery.value = query;
-
   if (!query) {
     fetchTricycles(); // reset to all
     return;
   }
-
   try {
     const response = await $fetch("/api/driver/search", {
       params: { search: query },
@@ -258,19 +293,10 @@ const handleSearch = async (query) => {
   }
 };
 
-
-// DASHBOARD
-const useCount = async (key, url) => {
-  const { data } = await useAsyncData(key, () => $fetch(url));
-  return computed(() => data.value?.count || 0);
-};
-
-const totalTODAs = await useCount("todaCount", "/api/toda/count");
-const totalTricycles = await useCount("driverCount", "/api/driver/count");
-const totalUsers = await useCount("userCount", "/api/user/count");
-const totalTrips = await useCount("tripCount", "/api/trip/count");
-
-onMounted(() => {
+// On mounted
+onMounted(async () => {
+  loadingCounts.value = true;
+  await fetchCounts();
   fetchUsers();
   fetchTodas();
   fetchTricycles();
