@@ -13,7 +13,7 @@ import Footer from "~/components/Footer.vue";
     <div class="drawer-content flex flex-col min-h-screen">
       <Navbar />
 
-      <main class="flex-1 p-4">
+      <main class="flex-1">
         <NuxtPage />
       </main>
 

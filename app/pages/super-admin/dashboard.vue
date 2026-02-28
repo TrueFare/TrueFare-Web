@@ -153,7 +153,8 @@
 
       <!-- Reports -->
       <div v-if="activeTab === 'reports'" class="text-gray-500">
-        Reports content coming soon...
+            <h2 class="text-xl font-bold">Reports</h2>
+        <TicketTable />
       </div>
 
       <!-- Users -->
@@ -188,6 +189,7 @@ import ChartFareTrend from "~/components/charts/ChartFareTrend.vue";
 import UserCard from "~/components/cards/UserCard.vue";
 import Pagination from "~/components/Pagination.vue";
 import TricycleSearch from "~/components/search/TricycleSearch.vue";
+import TicketTable from "~/components/tables/TicketTable.vue";
 
 const activeTab = ref("dashboard");
 
