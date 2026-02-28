@@ -260,33 +260,15 @@ const handleSearch = async (query) => {
 
 
 // DASHBOARD
-// TODA Total
-const { data: todaCount } = await useAsyncData("todaCount", () =>
-  $fetch("/api/toda/count")
-);
+const useCount = async (key, url) => {
+  const { data } = await useAsyncData(key, () => $fetch(url));
+  return computed(() => data.value?.count || 0);
+};
 
-const totalTODAs = computed(() => todaCount.value?.count || 0);
-
-// Trike Total
-const { data: driverCount } = await useAsyncData("driverCount", () =>
-  $fetch("/api/driver/count")
-);
-
-const totalTricycles = computed(() => driverCount.value?.count || 0);
-
-// User Total
-const { data: userCount } = await useAsyncData("userCount", () =>
-  $fetch("/api/user/count")
-);
-
-const totalUsers = computed(() => userCount.value?.count || 0);
-
-// Trips Total
-const { data: tripCount } = await useAsyncData("tripCount", () =>
-  $fetch("/api/user/count")
-);
-
-const totalTrips = computed(() => tripCount.value?.count || 0);
+const totalTODAs = await useCount("todaCount", "/api/toda/count");
+const totalTricycles = await useCount("driverCount", "/api/driver/count");
+const totalUsers = await useCount("userCount", "/api/user/count");
+const totalTrips = await useCount("tripCount", "/api/trip/count");
 
 onMounted(() => {
   fetchUsers();
