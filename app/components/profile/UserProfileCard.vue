@@ -80,9 +80,17 @@
 
       <!-- ================= ACTIONS ================= -->
       <div class="border-t dark:border-gray-700 p-5 flex justify-end gap-3">
-        <button class="btn btn-error">
-          <i class="fa-solid fa-trash"></i>
-          Delete
+        <button
+          class="btn btn-error"
+          :disabled="deleting || saving"
+          @click="deleteUser"
+        >
+          <span
+            v-if="deleting"
+            class="loading loading-spinner loading-sm"
+          ></span>
+          <i v-else class="fa-solid fa-trash"></i>
+          {{ deleting ? "Deleting..." : "Delete" }}
         </button>
 
         <button
@@ -113,6 +121,7 @@ const emit = defineEmits(["close", "updated"]);
 
 const editableUser = reactive({});
 const saving = ref(false);
+const deleting = ref(false);
 
 /* =============================
    LOCK BACKGROUND SCROLL
@@ -165,6 +174,34 @@ const saveUser = async () => {
     alert("Update failed");
   } finally {
     saving.value = false;
+  }
+};
+
+/* =============================
+   DELETE user
+============================= */
+const deleteUser = async () => {
+  if (
+    !confirm(
+      `Are you sure you want to delete user ${editableUser.first_name} ${editableUser.last_name}?`,
+    )
+  ) {
+    return;
+  }
+
+  try {
+    deleting.value = true;
+    await $fetch(`/api/user/${editableUser.id}`, {
+      method: "DELETE",
+    });
+    emit("updated");
+    emit("close");
+    alert("User deleted successfully!");
+  } catch (err) {
+    console.error(err);
+    alert("Delete failed");
+  } finally {
+    deleting.value = false;
   }
 };
 </script>
