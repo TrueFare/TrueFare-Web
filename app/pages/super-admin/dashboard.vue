@@ -167,20 +167,15 @@
       <div v-if="activeTab === 'users'" class="space-y-4">
         <h2 class="text-xl font-bold mb-4">Users</h2>
 
-        <div
-          class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
-        >
-          <UserCard
-            v-for="user in users"
-            :key="user.id"
-            :first_name="user.first_name"
-            :last_name="user.last_name"
-            :email="user.email"
-            :contact_number="user.contact_number"
-            :status="'Active'"
-            :date_created="user.date_created"
-          />
-        </div>
+        <UserSearch @search="handleSearchUser" />
+
+        <UserTable :users="paginatedUsers" @refresh="fetchUsers" />
+
+        <Pagination
+          v-model:page="userPage"
+          :total-items="users.length"
+          :per-page="perUserPage"
+        />
       </div>
     </div>
   </div>
@@ -192,11 +187,12 @@ import DashboardCard from "~/components/cards/DashboardCard.vue";
 import TodaCard from "~/components/cards/TodaCard.vue";
 import TricycleTable from "~/components/tables/TricycleTable.vue";
 import ChartFareTrend from "~/components/charts/ChartFareTrend.vue";
-import UserCard from "~/components/cards/UserCard.vue";
+import UserTable from "~/components/tables/UserTable.vue";
 import Pagination from "~/components/Pagination.vue";
 import TricycleSearch from "~/components/search/TricycleSearch.vue";
 import TodaSearch from "~/components/search/TodaSearch.vue";
 import TicketTable from "~/components/tables/TicketTable.vue";
+import UserSearch from "~/components/search/UserSearch.vue";
 
 const activeTab = ref("dashboard");
 
@@ -289,6 +285,14 @@ const paginatedTodas = computed(() => {
   return todas.value.slice(start, start + perTodaPage);
 });
 
+// Pagination for users
+const userPage = ref(1);
+const perUserPage = 6;
+const paginatedUsers = computed(() => {
+  const start = (userPage.value - 1) * perUserPage;
+  return users.value.slice(start, start + perUserPage);
+});
+
 // Search tricycles
 const searchDriver = ref("");
 const handleSearchDriver = async (query) => {
@@ -327,6 +331,24 @@ const handleSearchToda = async (query) => {
   }
 };
 
+// Search users
+const searchUser = ref("");
+const handleSearchUser = async (query) => {
+  searchUser.value = query;
+  if (!query) {
+    fetchUsers(); // reset to all
+    return;
+  }
+  try {
+    const response = await $fetch("/api/user/search", {
+      params: { search: query },
+    });
+    users.value = response.results || response;
+    userPage.value = 1; // reset pagination
+  } catch (error) {
+    console.error("Failed to search user:", error);
+  }
+};
 // On mounted
 onMounted(async () => {
   loadingCounts.value = true;
