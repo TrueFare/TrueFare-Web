@@ -173,12 +173,14 @@
           <UserCard
             v-for="user in users"
             :key="user.id"
+            :id="user.id"
             :first_name="user.first_name"
             :last_name="user.last_name"
             :email="user.email"
             :contact_number="user.contact_number"
             :status="'Active'"
             :date_created="user.date_created"
+            @updated="fetchUsers"
           />
         </div>
       </div>
