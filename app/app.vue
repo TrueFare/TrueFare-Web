@@ -2,26 +2,29 @@
 import Navbar from "~/components/Navbar.vue";
 import Sidebar from "~/components/Sidebar.vue";
 import Footer from "~/components/Footer.vue";
+
+const route = useRoute();
+const isPrintPage = computed(() => route.path.includes('/print/'));
 </script>
 
 <template>
-  <div class="drawer">
+  <div class="drawer" :class="{ 'bg-white': isPrintPage }">
     <!-- Drawer Toggle -->
     <input id="sidebar-toggle" type="checkbox" class="drawer-toggle" />
 
     <!-- PAGE CONTENT -->
     <div class="drawer-content flex flex-col min-h-screen">
-      <Navbar />
+      <Navbar v-if="!isPrintPage" />
 
       <main class="flex-1">
         <NuxtPage />
       </main>
 
-      <Footer />
+      <Footer v-if="!isPrintPage" />
     </div>
 
     <!-- SIDEBAR -->
-    <div class="drawer-side z-400">
+    <div v-if="!isPrintPage" class="drawer-side z-400">
       <label for="sidebar-toggle" class="drawer-overlay"></label>
       <Sidebar />
     </div>

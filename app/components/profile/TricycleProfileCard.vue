@@ -61,6 +61,26 @@
 
       <!-- ================= BODY ================= -->
       <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="md:col-span-2 flex flex-col items-center justify-center p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700 mb-4">
+          <p class="text-sm font-bold text-gray-500 uppercase mb-2">Tricycle QR Code</p>
+          <img 
+            v-if="editableDriver.id"
+            :src="`/api/driver/qr/${editableDriver.id}`" 
+            class="w-48 h-48 bg-white p-2 rounded-lg shadow-sm"
+            alt="Tricycle QR Code"
+          />
+          <p class="text-xs text-gray-400 mt-2">ID: {{ editableDriver.id }} | Plate: {{ editableDriver.plate_number }}</p>
+          <a 
+            v-if="editableDriver.id"
+            :href="`/api/driver/qr/${editableDriver.id}`" 
+            download="qr-code.svg"
+            class="btn btn-xs btn-outline mt-3"
+          >
+            <i class="fa-solid fa-download"></i>
+            Download QR
+          </a>
+        </div>
+
         <div>
           <p class="text-gray-400 text-sm">First Name</p>
           <input
@@ -136,7 +156,17 @@
       </div>
 
       <!-- ================= ACTIONS ================= -->
-      <div class="border-t dark:border-gray-700 p-5 flex justify-end gap-3">
+      <div class="border-t dark:border-gray-700 p-5 flex justify-end gap-3 flex-wrap">
+        <a 
+          v-if="editableDriver.id"
+          :href="`/super-admin/print/driver/${editableDriver.id}`" 
+          target="_blank"
+          class="btn btn-outline btn-info flex items-center gap-2"
+        >
+          <i class="fa-solid fa-print"></i>
+          <span>Print ID Profile</span>
+        </a>
+
         <button 
           class="btn btn-error"
           :disabled="deleting || saving"
