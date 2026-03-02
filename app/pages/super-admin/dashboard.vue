@@ -53,21 +53,21 @@
         >
           <DashboardCard
             title="TODA Associations"
-            :value="loadingCounts ? '...' :totalTODAs"
+            :value="loadingCounts ? '...' : totalTODAs"
             icon="fa-solid fa-building"
             bgColor="bg-purple-700 text-white"
             textColor="text-purple-400"
           />
           <DashboardCard
             title="Total Tricycles"
-            :value="loadingCounts ? '...' :totalTricycles"
+            :value="loadingCounts ? '...' : totalTricycles"
             icon="fa-solid fa-bicycle"
             bgColor="bg-blue-700 text-white"
             textColor="text-blue-400"
           />
           <DashboardCard
             title="Total Trips"
-            :value="loadingCounts ? '...' :totalTrips"
+            :value="loadingCounts ? '...' : totalTrips"
             icon="fa-solid fa-chart-line"
             bgColor="bg-green-700 text-white"
             textColor="text-green-400"
@@ -89,7 +89,7 @@
           />
           <DashboardCard
             title="Users"
-            :value="loadingCounts ? '...' :totalUsers"
+            :value="loadingCounts ? '...' : totalUsers"
             icon="fa-solid fa-user"
             bgColor="bg-orange-900 text-white"
             textColor="text-orange-400"
@@ -117,11 +117,12 @@
       <div v-if="activeTab === 'todas'" class="space-y-4">
         <h2 class="text-xl font-bold mb-4">TODA Associations</h2>
 
+        <TodaSearch @search="handleSearchToda" />
         <div
           class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
         >
           <TodaCard
-            v-for="toda in todas"
+            v-for="toda in paginatedTodas"
             :key="toda.id"
             :id="toda.id"
             :name="toda.name"
@@ -131,13 +132,18 @@
             :date_update="toda.date_updated"
           />
         </div>
+        <Pagination
+          v-model:page="todaPage"
+          :total-items="todas.length"
+          :per-page="perTodaPage"
+        />
       </div>
 
       <!-- Tricycles -->
       <div v-if="activeTab === 'tricycles'" class="space-y-4">
         <h2 class="text-xl font-bold mb-4">Tricycles</h2>
 
-        <TricycleSearch @search="handleSearch" />
+        <TricycleSearch @search="handleSearchDriver" />
 
         <TricycleTable
           :drivers="paginatedTricycles"
@@ -147,13 +153,13 @@
         <Pagination
           v-model:page="tricyclePage"
           :total-items="tricycles.length"
-          :per-page="perPage"
+          :per-page="perTricyclePage"
         />
       </div>
 
       <!-- Reports -->
       <div v-if="activeTab === 'reports'" class="text-gray-500">
-            <h2 class="text-xl font-bold">Reports</h2>
+        <h2 class="text-xl font-bold">Reports</h2>
         <TicketTable />
       </div>
 
@@ -189,6 +195,7 @@ import ChartFareTrend from "~/components/charts/ChartFareTrend.vue";
 import UserCard from "~/components/cards/UserCard.vue";
 import Pagination from "~/components/Pagination.vue";
 import TricycleSearch from "~/components/search/TricycleSearch.vue";
+import TodaSearch from "~/components/search/TodaSearch.vue";
 import TicketTable from "~/components/tables/TicketTable.vue";
 
 const activeTab = ref("dashboard");
@@ -268,16 +275,24 @@ const fetchTricycles = async () => {
 
 // Pagination for tricycles
 const tricyclePage = ref(1);
-const perPage = 6;
+const perTricyclePage = 6;
 const paginatedTricycles = computed(() => {
-  const start = (tricyclePage.value - 1) * perPage;
-  return tricycles.value.slice(start, start + perPage);
+  const start = (tricyclePage.value - 1) * perTricyclePage;
+  return tricycles.value.slice(start, start + perTricyclePage);
+});
+
+// Pagination for todas
+const todaPage = ref(1);
+const perTodaPage = 8;
+const paginatedTodas = computed(() => {
+  const start = (todaPage.value - 1) * perTodaPage;
+  return todas.value.slice(start, start + perTodaPage);
 });
 
 // Search tricycles
-const searchQuery = ref("");
-const handleSearch = async (query) => {
-  searchQuery.value = query;
+const searchDriver = ref("");
+const handleSearchDriver = async (query) => {
+  searchDriver.value = query;
   if (!query) {
     fetchTricycles(); // reset to all
     return;
@@ -290,6 +305,25 @@ const handleSearch = async (query) => {
     tricyclePage.value = 1; // reset pagination
   } catch (error) {
     console.error("Failed to search drivers:", error);
+  }
+};
+
+// Search todas
+const searchToda = ref("");
+const handleSearchToda = async (query) => {
+  searchToda.value = query;
+  if (!query) {
+    fetchTodas(); // reset to all
+    return;
+  }
+  try {
+    const response = await $fetch("/api/toda/search", {
+      params: { search: query },
+    });
+    todas.value = response.results || response;
+    todaPage.value = 1; // reset pagination
+  } catch (error) {
+    console.error("Failed to search toda:", error);
   }
 };
 
