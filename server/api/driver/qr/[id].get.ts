@@ -25,11 +25,8 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    // Prepare the data to encode
-    const dataToEncode = JSON.stringify({
-      id: driver.id,
-      plate_number: driver.plate_number
-    });
+    // Prepare the data to encode: "id|plate_number"
+    const dataToEncode = `${driver.id}|${driver.plate_number}`;
 
     // Generate QR code as SVG
     const svg = renderSVG(dataToEncode);
