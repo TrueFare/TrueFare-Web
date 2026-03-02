@@ -55,9 +55,14 @@
           Edit
         </button>
 
-        <button class="btn btn-sm btn-outline btn-error">
-          <Icon name="mdi:delete" />
-          Delete
+        <button 
+          class="btn btn-sm btn-outline btn-error"
+          :disabled="deleting"
+          @click="deleteUser"
+        >
+          <span v-if="deleting" class="loading loading-spinner loading-xs"></span>
+          <Icon v-else name="mdi:delete" />
+          {{ deleting ? "Deleting..." : "Delete" }}
         </button>
       </div>
     </div>
@@ -65,10 +70,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { Icon } from "#components";
 
 interface Props {
+  id: number;
   first_name: string;
   last_name: string;
   email: string;
@@ -78,6 +84,9 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+const emit = defineEmits(["updated"]);
+
+const deleting = ref(false);
 
 /* =========================
    Computed Properties
@@ -106,4 +115,24 @@ const formattedDate = computed(() => {
   if (!props.date_created) return "—";
   return new Date(props.date_created).toLocaleDateString();
 });
+
+const deleteUser = async () => {
+  if (!confirm(`Are you sure you want to delete user ${fullName.value}?`)) {
+    return;
+  }
+
+  try {
+    deleting.value = true;
+    await $fetch(`/api/user/${props.id}`, {
+      method: "DELETE",
+    });
+    emit("updated");
+    alert("User deleted successfully!");
+  } catch (err) {
+    console.error(err);
+    alert("Delete failed");
+  } finally {
+    deleting.value = false;
+  }
+};
 </script>

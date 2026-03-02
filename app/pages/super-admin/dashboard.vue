@@ -158,7 +158,7 @@
       </div>
 
       <!-- Reports -->
-      <div v-if="activeTab === 'reports'" class="text-gray-500">
+      <div v-if="activeTab === 'reports'" class="space-y-4">
         <h2 class="text-xl font-bold">Reports</h2>
         <TicketTable />
       </div>

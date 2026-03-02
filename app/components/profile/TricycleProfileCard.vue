@@ -137,14 +137,19 @@
 
       <!-- ================= ACTIONS ================= -->
       <div class="border-t dark:border-gray-700 p-5 flex justify-end gap-3">
-        <button class="btn btn-error">
-          <i class="fa-solid fa-trash"></i>
-          Delete
+        <button 
+          class="btn btn-error"
+          :disabled="deleting || saving"
+          @click="deleteDriver"
+        >
+          <span v-if="deleting" class="loading loading-spinner loading-sm"></span>
+          <i v-else class="fa-solid fa-trash"></i>
+          {{ deleting ? "Deleting..." : "Delete" }}
         </button>
 
         <button
           class="btn btn-primary flex items-center gap-2"
-          :disabled="saving"
+          :disabled="saving || deleting"
           @click="saveDriver"
         >
           <span v-if="saving" class="loading loading-spinner loading-sm"></span>
@@ -170,6 +175,7 @@ const emit = defineEmits(["close", "updated"]);
 
 const editableDriver = reactive({});
 const saving = ref(false);
+const deleting = ref(false);
 const previewImage = ref(null);
 
 /* =============================
@@ -250,6 +256,30 @@ const saveDriver = async () => {
     alert("Update failed");
   } finally {
     saving.value = false;
+  }
+};
+
+/* =============================
+   DELETE DRIVER
+============================= */
+const deleteDriver = async () => {
+  if (!confirm(`Are you sure you want to delete driver ${editableDriver.first_name} ${editableDriver.last_name}?`)) {
+    return;
+  }
+
+  try {
+    deleting.value = true;
+    await $fetch(`/api/driver/${editableDriver.id}`, {
+      method: "DELETE",
+    });
+    emit("updated");
+    emit("close");
+    alert("Driver deleted successfully!");
+  } catch (err) {
+    console.error(err);
+    alert("Delete failed");
+  } finally {
+    deleting.value = false;
   }
 };
 </script>
