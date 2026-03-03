@@ -118,6 +118,16 @@
         <h2 class="text-xl font-bold mb-4">TODA Associations</h2>
 
         <TodaSearch @search="handleSearchToda" />
+
+        <div
+          v-if="todas.length === 0"
+          class="flex flex-col items-center justify-center py-20 text-gray-400"
+        >
+          <i class="fa-solid fa-building-circle-xmark text-5xl mb-4"></i>
+          <p class="text-lg font-semibold">No TODAs available</p>
+          <p class="text-sm">Create or register a TODA to get started.</p>
+        </div>
+
         <div
           class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
         >
