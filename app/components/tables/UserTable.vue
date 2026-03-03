@@ -39,6 +39,9 @@
               <span class="font-semibold"
                 >{{ user.first_name }} {{ user.last_name }}</span
               >
+              <span class="text-xs text-blue-600 font-medium">{{
+                user.email || "No Email"
+              }}</span>
             </div>
           </td>
           <td class="px-6 py-4">{{ user.contact_number }}</td>
@@ -68,6 +71,9 @@
           <div>
             <p class="font-semibold">
               {{ user.first_name }} {{ user.last_name }}
+            </p>
+            <p class="text-xs text-blue-600 font-medium">
+              {{ user.email || "No Email" }}
             </p>
           </div>
           <button
