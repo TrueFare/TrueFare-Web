@@ -250,7 +250,7 @@ const fetchCounts = async () => {
 const users = ref([]);
 const fetchUsers = async () => {
   try {
-    const response = await $fetch("/api/user");
+    const response = await $fetch("/api/account");
     users.value = response.results || [];
   } catch (error) {
     console.error("Failed to fetch users:", error);

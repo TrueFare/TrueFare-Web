@@ -42,6 +42,13 @@
               <span class="text-xs text-blue-600 font-medium">{{
                 user.email || "No Email"
               }}</span>
+              <!-- ROLE CAPSULE -->
+              <span
+                class="inline-flex items-center px-2 py-[2px] text-[10px] font-semibold leading-none rounded-full w-fit max-w-max"
+                :class="roleClass(user.role)"
+              >
+                {{ formatRole(user.role) }}
+              </span>
             </div>
           </td>
           <td class="px-6 py-4">{{ user.contact_number }}</td>
@@ -75,6 +82,12 @@
             <p class="text-xs text-blue-600 font-medium">
               {{ user.email || "No Email" }}
             </p>
+            <span
+              class="px-3 py-1 text-xs font-semibold rounded-full"
+              :class="roleClass(user.role)"
+            >
+              {{ formatRole(user.role) }}
+            </span>
           </div>
           <button
             class="px-3 py-1 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition shadow-sm"
@@ -93,9 +106,29 @@
   </div>
 
   <!-- USER PROFILE MODAL -->
+  <!-- USER -->
   <UserProfileCard
+    v-if="selectedUser?.role === 'user'"
     :show="showProfile"
     :user="selectedUser"
+    @close="closeProfile"
+    @updated="refreshUsers"
+  />
+
+  <!-- ADMIN -->
+  <AdminProfileCard
+    v-if="selectedUser?.role === 'admin'"
+    :show="showProfile"
+    :admin="selectedUser"
+    @close="closeProfile"
+    @updated="refreshUsers"
+  />
+
+  <!-- SUPER ADMIN -->
+  <SuperAdminProfileCard
+    v-if="selectedUser?.role === 'super_admin'"
+    :show="showProfile"
+    :superAdmin="selectedUser"
     @close="closeProfile"
     @updated="refreshUsers"
   />
@@ -104,6 +137,8 @@
 <script setup>
 import { ref } from "vue";
 import UserProfileCard from "~/components/profile/UserProfileCard.vue";
+import AdminProfileCard from "~/components/profile/AdminProfileCard.vue";
+import SuperAdminProfileCard from "~/components/profile/SuperAdminProfileCard.vue";
 
 defineProps({
   users: {
@@ -128,5 +163,21 @@ const closeProfile = () => {
 const emit = defineEmits(["refresh"]);
 const refreshUsers = () => {
   emit("refresh");
+};
+
+const roleClass = (role) => {
+  switch (role) {
+    case "super_admin":
+      return "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300";
+    case "admin":
+      return "bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300";
+    default:
+      return "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300";
+  }
+};
+
+const formatRole = (role) => {
+  if (!role) return "User";
+  return role.replace("_", " ").replace(/\b\w/g, (c) => c.toUpperCase());
 };
 </script>
