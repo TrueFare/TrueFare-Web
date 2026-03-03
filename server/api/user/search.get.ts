@@ -6,19 +6,55 @@ export default defineEventHandler(async (event) => {
     const result = await db
       .prepare(
         `
-        SELECT
-          user.id,
-          user.first_name,
-          user.last_name,
-          user.email,
-          user.contact_number,
-          user.date_created,
-          user.date_updated
+        SELECT 
+          id,
+          first_name,
+          last_name,
+          email,
+          NULL as contact_number,
+          date_created,
+          date_updated,
+          'super_admin' as role
+        FROM super_admin
+        WHERE super_admin.first_name LIKE ? OR super_admin.last_name LIKE ?
+
+        UNION ALL
+
+        SELECT 
+          id,
+          first_name,
+          last_name,
+          email,
+          NULL as contact_number,
+          date_created,
+          date_updated,
+          'admin' as role
+        FROM admin
+        WHERE admin.first_name LIKE ? OR admin.last_name LIKE ?
+
+        UNION ALL
+
+        SELECT 
+          id,
+          first_name,
+          last_name,
+          email,
+          contact_number,
+          date_created,
+          date_updated,
+          'user' as role
         FROM user
         WHERE user.first_name LIKE ? OR user.last_name LIKE ?
         `,
       )
-      .bind(`%${search}%`, `%${search}%`)
+      .bind(
+        `%${search}%`,
+        `%${search}%`,
+        `%${search}%`,
+        `%${search}%`,
+        `%${search}%`,
+        `%${search}%`,
+      )
       .all();
 
     return result;
