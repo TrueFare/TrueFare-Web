@@ -50,8 +50,16 @@
         </div>
 
         <div>
-          <p class="text-gray-400 text-sm">TODA ID</p>
-          <p class="font-semibold">{{ editableAdmin.toda_id }}</p>
+          <p class="text-gray-400 text-sm">TODA</p>
+          <select
+            v-model="editableAdmin.toda_id"
+            class="select select-bordered w-full"
+          >
+            <option value="" disabled>Select a TODA</option>
+            <option v-for="toda in todas" :key="toda.id" :value="toda.id">
+              {{ toda.name }} - {{ toda.barangay }}, {{ toda.city }}
+            </option>
+          </select>
         </div>
       </div>
 
@@ -65,7 +73,7 @@
 </template>
 
 <script setup>
-import { reactive, watch } from "vue";
+import { reactive, ref, watch, onMounted } from "vue";
 
 const props = defineProps({
   show: Boolean,
@@ -75,6 +83,20 @@ const props = defineProps({
 const emit = defineEmits(["close", "updated"]);
 
 const editableAdmin = reactive({});
+const todas = ref([]);
+
+const fetchTodas = async () => {
+  try {
+    const response = await $fetch("/api/toda");
+    todas.value = response.results || [];
+  } catch (error) {
+    console.error("Failed to fetch TODAs:", error);
+  }
+};
+
+onMounted(() => {
+  fetchTodas();
+});
 
 watch(
   () => props.admin,
