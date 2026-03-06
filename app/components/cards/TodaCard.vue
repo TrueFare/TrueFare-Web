@@ -3,7 +3,7 @@
     class="bg-white dark:bg-gray-800 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 p-6 space-y-4 border border-gray-100 dark:border-gray-700"
   >
     <!-- Header -->
-    <div class="flex items-center justify-between">
+    <div class="flex items-start justify-between">
       <div>
         <h3
           class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2"
@@ -15,6 +15,16 @@
           {{ barangay }}, {{ city }}
         </p>
       </div>
+
+      <!-- TODA ADMIN COUNT -->
+      <button
+        @click="viewAdmins"
+        class="flex items-center gap-2 bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300 px-3 py-1.5 rounded-full hover:bg-purple-200 dark:hover:bg-purple-800 transition"
+        title="View TODA Admins"
+      >
+        <i class="fa-solid fa-user-shield text-sm"></i>
+        <span class="text-sm font-semibold">{{ adminCount }}</span>
+      </button>
     </div>
 
     <!-- Drivers Count -->
@@ -104,6 +114,7 @@ const props = defineProps({
   date_created: String,
 });
 
+const adminCount = ref(0);
 const driverCount = ref(0);
 const dailyTrips = ref(0);
 const weeklyTrips = ref(0);
@@ -114,28 +125,34 @@ const fetchStats = async () => {
   try {
     const id = props.id;
 
-    const [drivers, daily, weekly, monthly, allTime] = await Promise.all([
-      $fetch(`/api/driver/count/toda/${id}`),
-      $fetch(`/api/trip/count/toda/${id}/daily`),
-      $fetch(`/api/trip/count/toda/${id}/weekly`),
-      $fetch(`/api/trip/count/toda/${id}/monthly`),
-      $fetch(`/api/trip/count/toda/${id}/all-time`),
-      // add an api that counts the number of admins (toda manager)
-    ]);
+    const [drivers, admins, daily, weekly, monthly, allTime] =
+      await Promise.all([
+        $fetch(`/api/driver/count/toda/${id}`),
+        $fetch(`/api/toda/count_admin/${id}`),
+        $fetch(`/api/trip/count/toda/${id}/daily`),
+        $fetch(`/api/trip/count/toda/${id}/weekly`),
+        $fetch(`/api/trip/count/toda/${id}/monthly`),
+        $fetch(`/api/trip/count/toda/${id}/all-time`),
+      ]);
 
     driverCount.value = drivers.count;
+    adminCount.value = admins.count;
     dailyTrips.value = daily.count;
     weeklyTrips.value = weekly.count;
     monthlyTrips.value = monthly.count;
     allTimeTrips.value = allTime.count;
   } catch (err) {
-    console.error("Failed to fetch TODA stats:", err);
+    console.error("Failed to fetch TODA satats:", err);
   }
 };
 
 const formatDate = (dateString) => {
   if (!dateString) return "-";
   return new Date(dateString).toLocaleDateString();
+};
+
+const viewAdmins = () => {
+  console.log("View TODA admins for TODA ID:", props.id);
 };
 
 onMounted(fetchStats);
