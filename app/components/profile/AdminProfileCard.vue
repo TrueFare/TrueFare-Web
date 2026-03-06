@@ -61,6 +61,20 @@
             </option>
           </select>
         </div>
+
+        <div>
+          <p class="text-gray-400 text-sm">Date Created</p>
+          <p class="font-semibold">
+            {{ editableAdmin.date_created || "N/A" }}
+          </p>
+        </div>
+
+        <div>
+          <p class="text-gray-400 text-sm">Last Updated</p>
+          <p class="font-semibold">
+            {{ editableAdmin.date_updated || "N/A" }}
+          </p>
+        </div>
       </div>
 
       <!-- ACTIONS -->
