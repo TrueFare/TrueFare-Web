@@ -23,10 +23,10 @@ export default defineEventHandler(async (event) => {
           driver.date_updated
         FROM driver
         LEFT JOIN toda ON driver.toda_id = toda.id
-        WHERE driver.first_name LIKE ? OR driver.last_name LIKE ?
+        WHERE driver.first_name LIKE ? OR driver.last_name LIKE ? OR (driver.first_name || ' ' || driver.last_name) LIKE ?
         `,
       )
-      .bind(`%${search}%`, `%${search}%`)
+      .bind(`%${search}%`, `%${search}%`, `%${search}%`)
       .all();
 
     return result;

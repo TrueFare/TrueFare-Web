@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
           date_updated,
           'super_admin' as role
         FROM super_admin
-        WHERE super_admin.first_name LIKE ? OR super_admin.last_name LIKE ?
+        WHERE super_admin.first_name LIKE ? OR super_admin.last_name LIKE ? OR (super_admin.first_name || ' ' || super_admin.last_name) LIKE ?
 
         UNION ALL
 
@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
           date_updated,
           'admin' as role
         FROM admin
-        WHERE admin.first_name LIKE ? OR admin.last_name LIKE ?
+        WHERE admin.first_name LIKE ? OR admin.last_name LIKE ? OR (admin.first_name || ' ' || admin.last_name) LIKE ?
 
         UNION ALL
 
@@ -44,10 +44,13 @@ export default defineEventHandler(async (event) => {
           date_updated,
           'user' as role
         FROM user
-        WHERE user.first_name LIKE ? OR user.last_name LIKE ?
+        WHERE user.first_name LIKE ? OR user.last_name LIKE ? OR (user.first_name || ' ' || user.last_name) LIKE ?
         `,
       )
       .bind(
+        `%${search}%`,
+        `%${search}%`,
+        `%${search}%`,
         `%${search}%`,
         `%${search}%`,
         `%${search}%`,
