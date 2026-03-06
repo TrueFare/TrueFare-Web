@@ -7,11 +7,11 @@ export default defineEventHandler(async (event) => {
     .prepare(
       `
     UPDATE admin
-    SET first_name = ?, last_name = ?, email = ?, date_updated = datetime('now')
+    SET first_name = ?, last_name = ?, email = ?, toda_id = ?, date_updated = datetime('now')
     WHERE id = ?
   `,
     )
-    .bind(body.first_name, body.last_name, body.email, id)
+    .bind(body.first_name, body.last_name, body.email, body.toda_id, id)
     .run();
 
   return { success: true };

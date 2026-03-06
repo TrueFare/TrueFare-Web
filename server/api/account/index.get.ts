@@ -13,7 +13,8 @@ export default defineEventHandler(async (event) => {
         NULL as contact_number,
         date_created,
         date_updated,
-        'super_admin' as role
+        'super_admin' as role,
+        NULL as toda_id
       FROM super_admin
 
       UNION ALL
@@ -26,7 +27,8 @@ export default defineEventHandler(async (event) => {
         NULL as contact_number,
         date_created,
         date_updated,
-        'admin' as role
+        'admin' as role,
+        toda_id
       FROM admin
 
       UNION ALL
@@ -39,7 +41,8 @@ export default defineEventHandler(async (event) => {
         contact_number,
         date_created,
         date_updated,
-        'user' as role
+        'user' as role,
+        NULL as toda_id
       FROM user
     `,
       )
