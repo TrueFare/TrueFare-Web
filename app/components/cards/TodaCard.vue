@@ -29,7 +29,9 @@
 
     <!-- Drivers Count -->
     <div
-      class="flex items-center justify-between bg-blue-50 dark:bg-blue-900/30 p-3 rounded-xl"
+      @click="viewDrivers"
+      class="flex items-center justify-between bg-blue-50 dark:bg-blue-900/30 p-3 rounded-xl cursor-pointer hover:scale-[1.02] transition"
+      title="View TODA Drivers"
     >
       <div
         class="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-medium"
@@ -114,7 +116,7 @@ const props = defineProps({
   date_created: String,
 });
 
-const emit = defineEmits(["view-admins"]);
+const emit = defineEmits(["view-admins", "view-drivers"]);
 
 const adminCount = ref(0);
 const driverCount = ref(0);
@@ -122,7 +124,6 @@ const dailyTrips = ref(0);
 const weeklyTrips = ref(0);
 const monthlyTrips = ref(0);
 const allTimeTrips = ref(0);
-
 
 const fetchStats = async () => {
   try {
@@ -156,6 +157,10 @@ const formatDate = (dateString) => {
 
 const viewAdmins = () => {
   emit("view-admins", props.id);
+};
+
+const viewDrivers = () => {
+  emit("view-drivers", props.id);
 };
 
 onMounted(fetchStats);

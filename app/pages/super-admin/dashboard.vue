@@ -141,6 +141,7 @@
             :date_created="toda.date_created"
             :date_update="toda.date_updated"
             @view-admins="openAdminView"
+            @view-drivers="openDriverView"
           />
         </div>
         <Pagination
@@ -153,6 +154,12 @@
           :show="showAdminModal"
           :todaId="selectedToda"
           @close="showAdminModal = false"
+        />
+
+        <TodaDriverView
+          :show="showDriverModal"
+          :todaId="selectedDriverToda"
+          @close="showDriverModal = false"
         />
 
       </div>
@@ -212,6 +219,7 @@ import TodaSearch from "~/components/search/TodaSearch.vue";
 import TicketTable from "~/components/tables/TicketTable.vue";
 import UserSearch from "~/components/search/UserSearch.vue";
 import TodaAdminView from "~/components/profile/TodaAdminView.vue";
+import TodaDriverView from "~/components/profile/TodaDriverView.vue";
 
 const activeTab = ref("dashboard");
 
@@ -376,6 +384,15 @@ const selectedToda = ref(null);
 const openAdminView = (id) => {
   selectedToda.value = id;
   showAdminModal.value = true;
+};
+
+// Open TODA Driver View
+const showDriverModal = ref(false);
+const selectedDriverToda = ref(null);
+
+const openDriverView = (id) => {
+  selectedDriverToda.value = id;
+  showDriverModal.value = true;
 };
 
 // On mounted
