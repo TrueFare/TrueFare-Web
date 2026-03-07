@@ -140,6 +140,7 @@
             :city="toda.city"
             :date_created="toda.date_created"
             :date_update="toda.date_updated"
+            @view-admins="openAdminView"
           />
         </div>
         <Pagination
@@ -147,6 +148,13 @@
           :total-items="todas.length"
           :per-page="perTodaPage"
         />
+
+        <TodaAdminView
+          :show="showAdminModal"
+          :todaId="selectedToda"
+          @close="showAdminModal = false"
+        />
+
       </div>
 
       <!-- Tricycles -->
@@ -203,6 +211,7 @@ import TricycleSearch from "~/components/search/TricycleSearch.vue";
 import TodaSearch from "~/components/search/TodaSearch.vue";
 import TicketTable from "~/components/tables/TicketTable.vue";
 import UserSearch from "~/components/search/UserSearch.vue";
+import TodaAdminView from "~/components/profile/TodaAdminView.vue";
 
 const activeTab = ref("dashboard");
 
@@ -359,6 +368,16 @@ const handleSearchUser = async (query) => {
     console.error("Failed to search user:", error);
   }
 };
+
+// Open TODA Admin View
+const showAdminModal = ref(false);
+const selectedToda = ref(null);
+
+const openAdminView = (id) => {
+  selectedToda.value = id;
+  showAdminModal.value = true;
+};
+
 // On mounted
 onMounted(async () => {
   loadingCounts.value = true;

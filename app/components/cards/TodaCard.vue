@@ -114,12 +114,15 @@ const props = defineProps({
   date_created: String,
 });
 
+const emit = defineEmits(["view-admins"]);
+
 const adminCount = ref(0);
 const driverCount = ref(0);
 const dailyTrips = ref(0);
 const weeklyTrips = ref(0);
 const monthlyTrips = ref(0);
 const allTimeTrips = ref(0);
+
 
 const fetchStats = async () => {
   try {
@@ -142,7 +145,7 @@ const fetchStats = async () => {
     monthlyTrips.value = monthly.count;
     allTimeTrips.value = allTime.count;
   } catch (err) {
-    console.error("Failed to fetch TODA satats:", err);
+    console.error("Failed to fetch TODA stats:", err);
   }
 };
 
@@ -152,7 +155,7 @@ const formatDate = (dateString) => {
 };
 
 const viewAdmins = () => {
-  console.log("View TODA admins for TODA ID:", props.id);
+  emit("view-admins", props.id);
 };
 
 onMounted(fetchStats);
