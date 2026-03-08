@@ -32,7 +32,7 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from "vue";
+import { ref, watch, onMounted, nextTick } from "vue";
 import {
   Chart,
   LineController,
@@ -44,7 +44,6 @@ import {
   Legend,
 } from "chart.js";
 
-// Register Chart.js components
 Chart.register(
   LineController,
   LineElement,
@@ -52,69 +51,56 @@ Chart.register(
   LinearScale,
   CategoryScale,
   Tooltip,
-  Legend,
+  Legend
 );
 
 const chartRef = ref(null);
 const selectedRange = ref("monthly");
 let chartInstance = null;
 
-// Dummy data (replace later with API call)
-const getChartData = (range) => {
-  if (range === "weekly") {
-    return {
-      labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-      data: [25, 26, 27, 26, 28, 30, 29],
-    };
-  }
+const fetchChartData = async () => {
+  const res = await $fetch("/api/analytics/fare-trend", {
+    query: { range: selectedRange.value },
+  });
 
-  if (range === "monthly") {
-    return {
-      labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-      data: [25, 27, 26, 29, 30, 32],
-    };
-  }
-
-  return {
-    labels: ["2021", "2022", "2023", "2024", "2025"],
-    data: [20, 22, 25, 28, 32],
-  };
+  return res;
 };
 
-const renderChart = () => {
-  const { labels, data } = getChartData(selectedRange.value);
+const renderChart = async () => {
+  await nextTick(); // ⭐ wait for DOM render
 
-  if (chartInstance) chartInstance.destroy();
+  if (!chartRef.value) return;
 
-  chartInstance = new Chart(chartRef.value, {
+  const ctx = chartRef.value.getContext("2d");
+
+  const { labels, data } = await fetchChartData();
+
+  if (chartInstance) {
+    chartInstance.destroy();
+  }
+
+  chartInstance = new Chart(ctx, {
     type: "line",
     data: {
       labels,
       datasets: [
         {
-          label: "Average Fare",
+          label: "Trips",
           data,
           tension: 0.4,
           borderWidth: 2,
           fill: false,
-          pointRadius: 4,
-          pointHoverRadius: 6,
         },
       ],
     },
     options: {
       responsive: true,
-      maintainAspectRatio: false, // important for mobile resizing
-      plugins: {
-        legend: { display: true },
-      },
-      scales: {
-        y: { beginAtZero: false },
-      },
+      maintainAspectRatio: false,
     },
   });
 };
 
 onMounted(() => renderChart());
+
 watch(selectedRange, () => renderChart());
 </script>

@@ -103,6 +103,7 @@
           <!-- Two Charts Side-by-Side -->
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <ChartFareTrend />
+            <ChartTopToda />
 
             <div
               class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 flex items-center justify-center text-gray-400"
@@ -220,6 +221,7 @@ import TicketTable from "~/components/tables/TicketTable.vue";
 import UserSearch from "~/components/search/UserSearch.vue";
 import TodaAdminView from "~/components/profile/TodaAdminView.vue";
 import TodaDriverView from "~/components/profile/TodaDriverView.vue";
+import ChartTopToda from "~/components/charts/ChartTopToda.vue";
 
 const activeTab = ref("dashboard");
 
