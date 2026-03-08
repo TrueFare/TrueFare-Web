@@ -1,19 +1,18 @@
 <template>
-  <!-- Backdrop & Modal Wrapper -->
   <div
     v-if="show"
-    class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-hidden"
+    class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
   >
-    <!-- Modal Container -->
     <div
       class="bg-white dark:bg-gray-900 rounded-2xl w-full max-w-3xl shadow-xl relative flex flex-col max-h-[80vh]"
     >
       <!-- Header -->
-      <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+      <div class="flex items-center justify-between p-6 border-b">
         <h2 class="text-xl font-bold flex items-center gap-2">
           <i class="fa-solid fa-bicycle text-blue-500"></i>
           TODA Drivers
         </h2>
+
         <button
           @click="$emit('close')"
           class="text-gray-500 hover:text-red-500"
@@ -22,8 +21,30 @@
         </button>
       </div>
 
-      <!-- Body: Scrollable Drivers List -->
+      <!-- Search -->
+      <div class="p-6 border-b">
+        <div class="relative">
+          <input
+            v-model="search"
+            type="text"
+            placeholder="Search drivers..."
+            class="w-full border rounded-xl px-4 py-2 pr-10 focus:outline-none focus:ring focus:ring-blue-200"
+          />
+
+          <!-- Clear button -->
+          <button
+            v-if="search"
+            @click="clearSearch"
+            class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600"
+          >
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Body -->
       <div class="p-6 flex-1 overflow-y-auto">
+
         <!-- Loading -->
         <div v-if="loading" class="text-center py-8 text-gray-400">
           Loading drivers...
@@ -45,8 +66,12 @@
               <p class="font-semibold">
                 {{ driver.first_name }} {{ driver.last_name }}
               </p>
-              <p class="text-sm text-gray-500">Plate: {{ driver.plate_number }}</p>
-              <p class="text-sm text-gray-500">Contact: {{ driver.contact_number }}</p>
+              <p class="text-sm text-gray-500">
+                Plate: {{ driver.plate_number }}
+              </p>
+              <p class="text-sm text-gray-500">
+                Contact: {{ driver.contact_number }}
+              </p>
             </div>
 
             <span
@@ -59,60 +84,75 @@
             </span>
           </div>
         </div>
+
       </div>
-
-
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, watch, onUnmounted } from "vue";
+import { ref, watch, onUnmounted } from "vue"
 
 const props = defineProps({
   show: Boolean,
-  todaId: Number,
-});
+  todaId: Number
+})
 
-const drivers = ref([]);
-const loading = ref(false);
+const drivers = ref([])
+const loading = ref(false)
+const search = ref("")
 
-// Fetch drivers from API
+let debounceTimer = null
+
+// fetch drivers
 const fetchDrivers = async () => {
-  if (!props.todaId) return;
-  loading.value = true;
+  if (!props.todaId) return
+
+  loading.value = true
 
   try {
-    const res = await $fetch(`/api/toda/driver/${props.todaId}`);
-    drivers.value = res.data || [];
+    const res = await $fetch("/api/toda/driver/search", {
+      query: {
+        toda_id: props.todaId,
+        search: search.value
+      }
+    })
+
+    drivers.value = res.results || res.data || []
   } catch (err) {
-    console.error("Failed to fetch drivers:", err);
+    console.error("Failed to fetch drivers:", err)
   }
 
-  loading.value = false;
-};
+  loading.value = false
+}
 
-// Prevent body scroll when modal is open
-const disableBodyScroll = () => {
-  document.body.style.overflow = "hidden";
-};
+// debounce search
+watch(search, () => {
+  clearTimeout(debounceTimer)
 
-const enableBodyScroll = () => {
-  document.body.style.overflow = "";
-};
+  debounceTimer = setTimeout(() => {
+    fetchDrivers()
+  }, 400)
+})
 
-// Watch for show prop
+// open modal
 watch(() => props.show, (val) => {
   if (val) {
-    fetchDrivers();
-    disableBodyScroll();
+    fetchDrivers()
+    document.body.style.overflow = "hidden"
   } else {
-    enableBodyScroll();
+    document.body.style.overflow = ""
   }
-});
+})
 
-// Clean up in case component is destroyed while modal is open
+// clear search
+const clearSearch = () => {
+  search.value = ""
+  fetchDrivers()
+}
+
+// cleanup
 onUnmounted(() => {
-  enableBodyScroll();
-});
+  document.body.style.overflow = ""
+})
 </script>
