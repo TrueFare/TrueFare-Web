@@ -10,6 +10,13 @@
         >
           <i class="fa-solid fa-building text-purple-500"></i>
           {{ name }}
+          <button
+            @click="$emit('edit', id)"
+            class="ml-1 p-1.5 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-blue-100 dark:hover:bg-blue-900 text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition"
+            title="Edit TODA"
+          >
+            <i class="fa-solid fa-pen text-xs"></i>
+          </button>
         </h3>
         <p class="text-sm text-gray-500 dark:text-gray-400">
           {{ barangay }}, {{ city }}
@@ -116,7 +123,7 @@ const props = defineProps({
   date_created: String,
 });
 
-const emit = defineEmits(["view-admins", "view-drivers"]);
+const emit = defineEmits(["view-admins", "view-drivers", "edit"]);
 
 const adminCount = ref(0);
 const driverCount = ref(0);

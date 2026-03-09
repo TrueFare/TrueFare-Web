@@ -143,6 +143,7 @@
             :date_update="toda.date_updated"
             @view-admins="openAdminView"
             @view-drivers="openDriverView"
+            @edit="openEditToda"
           />
         </div>
         <Pagination
@@ -163,6 +164,12 @@
           @close="showDriverModal = false"
         />
 
+        <TodaProfileCard
+          :show="showEditModal"
+          :toda="selectedTodaData"
+          @close="closeEditToda"
+          @updated="refreshTodas"
+        />
       </div>
 
       <!-- Tricycles -->
@@ -221,6 +228,7 @@ import TicketTable from "~/components/tables/TicketTable.vue";
 import UserSearch from "~/components/search/UserSearch.vue";
 import TodaAdminView from "~/components/profile/TodaAdminView.vue";
 import TodaDriverView from "~/components/profile/TodaDriverView.vue";
+import TodaProfileCard from "~/components/profile/TodaProfileCard.vue";
 import ChartTopToda from "~/components/charts/ChartTopToda.vue";
 
 const activeTab = ref("dashboard");
@@ -395,6 +403,32 @@ const selectedDriverToda = ref(null);
 const openDriverView = (id) => {
   selectedDriverToda.value = id;
   showDriverModal.value = true;
+};
+
+// Open TODA Edit Modal
+const showEditModal = ref(false);
+const selectedTodaData = ref(null);
+
+const openEditToda = async (id) => {
+  // Fetch the toda details
+  try {
+    const response = await $fetch(`/api/toda/${id}`);
+    selectedTodaData.value = response.results?.[0] || response;
+    showEditModal.value = true;
+  } catch (error) {
+    console.error("Failed to fetch toda details:", error);
+    alert("Failed to load TODA details");
+  }
+};
+
+const closeEditToda = () => {
+  showEditModal.value = false;
+  selectedTodaData.value = null;
+};
+
+const refreshTodas = () => {
+  fetchTodas();
+  fetchCounts();
 };
 
 // On mounted
