@@ -12,7 +12,7 @@
           {{ name }}
           <button
             @click="$emit('edit', id)"
-            class="ml-1 p-1.5 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-blue-100 dark:hover:bg-blue-900 text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition"
+            class="ml-1 p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-blue-100 dark:hover:bg-blue-900 text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition"
             title="Edit TODA"
           >
             <i class="fa-solid fa-pen text-xs"></i>

@@ -39,12 +39,25 @@
 
         <div>
           <p class="text-gray-400 text-sm">Password</p>
-          <input
-            v-model="editableToda.password"
-            type="password"
-            class="input input-bordered w-full"
-            placeholder="Enter password"
-          />
+          <div class="relative">
+            <input
+              v-model="editableToda.password"
+              :type="showPassword ? 'text' : 'password'"
+              class="input input-bordered w-full pr-10"
+              placeholder="Enter password"
+            />
+            <button
+              type="button"
+              @click="showPassword = !showPassword"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+            >
+              <i
+                :class="
+                  showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'
+                "
+              ></i>
+            </button>
+          </div>
         </div>
 
         <div>
@@ -128,6 +141,7 @@ const emit = defineEmits(["close", "updated"]);
 const editableToda = reactive({});
 const saving = ref(false);
 const deleting = ref(false);
+const showPassword = ref(false);
 
 /* =============================
    LOCK BACKGROUND SCROLL
