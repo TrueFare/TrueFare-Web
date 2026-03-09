@@ -118,6 +118,11 @@
       <div v-if="activeTab === 'todas'" class="space-y-4">
         <h2 class="text-xl font-bold mb-4">TODA Associations</h2>
 
+        <button class="btn btn-primary" @click="showAddToda = true">
+          <i class="fa-solid fa-plus mr-2"></i>
+          Add TODA
+        </button>
+
         <TodaSearch @search="handleSearchToda" />
 
         <div
@@ -170,11 +175,22 @@
           @close="closeEditToda"
           @updated="refreshTodas"
         />
+
+        <AddToda
+          :show="showAddToda"
+          @close="showAddToda = false"
+          @created="refreshTodas"
+        />
       </div>
 
       <!-- Tricycles -->
       <div v-if="activeTab === 'tricycles'" class="space-y-4">
         <h2 class="text-xl font-bold mb-4">Tricycles</h2>
+
+        <button class="btn btn-primary" @click="showAddTricycle = true">
+          <i class="fa-solid fa-plus mr-2"></i>
+          Add Driver
+        </button>
 
         <TricycleSearch @search="handleSearchDriver" />
 
@@ -188,6 +204,12 @@
           :total-items="tricycles.length"
           :per-page="perTricyclePage"
         />
+
+        <AddTricycle
+          :show="showAddTricycle"
+          @close="showAddTricycle = false"
+          @created="fetchTricycles"
+        />
       </div>
 
       <!-- Reports -->
@@ -200,6 +222,11 @@
       <div v-if="activeTab === 'users'" class="space-y-4">
         <h2 class="text-xl font-bold mb-4">Users</h2>
 
+        <button class="btn btn-primary" @click="showAddAdmin = true">
+          <i class="fa-solid fa-plus mr-2"></i>
+          Add Admin
+        </button>
+
         <UserSearch @search="handleSearchUser" />
 
         <UserTable :users="paginatedUsers" @refresh="fetchUsers" />
@@ -208,6 +235,11 @@
           v-model:page="userPage"
           :total-items="users.length"
           :per-page="perUserPage"
+        />
+        <AddAdmin
+          :show="showAddAdmin"
+          @close="showAddAdmin = false"
+          @created="fetchUsers"
         />
       </div>
     </div>
@@ -228,6 +260,9 @@ import TicketTable from "~/components/tables/TicketTable.vue";
 import UserSearch from "~/components/search/UserSearch.vue";
 import TodaAdminView from "~/components/profile/TodaAdminView.vue";
 import TodaDriverView from "~/components/profile/TodaDriverView.vue";
+import AddToda from "~/components/create/AddToda.vue";
+import AddTricycle from "~/components/create/AddTricycle.vue";
+import AddAdmin from "~/components/create/AddAdmin.vue";
 import TodaProfileCard from "~/components/profile/TodaProfileCard.vue";
 import ChartTopToda from "~/components/charts/ChartTopToda.vue";
 
@@ -430,6 +465,11 @@ const refreshTodas = () => {
   fetchTodas();
   fetchCounts();
 };
+
+// ADD toda/ drivers/ admins
+const showAddToda = ref(false);
+const showAddTricycle = ref(false);
+const showAddAdmin = ref(false);
 
 // On mounted
 onMounted(async () => {
