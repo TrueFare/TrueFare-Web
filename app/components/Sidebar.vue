@@ -35,7 +35,6 @@
           <span class="font-medium">Admin Panel</span>
         </NuxtLink>
       </li>
-      // hi
 
       <li>
         <NuxtLink
