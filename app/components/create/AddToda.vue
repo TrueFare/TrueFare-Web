@@ -1,52 +1,79 @@
 <template>
   <div
     v-if="show"
-    class="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
+    class="fixed inset-0 min-h-dvh bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
   >
-    <div class="bg-white dark:bg-gray-900 rounded-2xl p-6 w-full max-w-md">
-      <h2 class="text-xl font-bold mb-4">Add TODA</h2>
+    <div
+      class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90dvh] overflow-y-auto relative"
+    >
+      <!-- CLOSE -->
+      <button
+        class="absolute right-4 top-4 btn btn-sm btn-circle z-10"
+        @click="closeModal"
+      >
+        ✕
+      </button>
 
-      <form @submit.prevent="createToda" class="space-y-3">
-        <input
-          v-model="form.name"
-          placeholder="TODA Name"
-          class="input input-bordered w-full"
-        />
-
-        <input
-          v-model="form.password"
-          type="password"
-          placeholder="Password"
-          class="input input-bordered w-full"
-        />
-
-        <input
-          v-model="form.barangay"
-          placeholder="Barangay"
-          class="input input-bordered w-full"
-        />
-
-        <input
-          v-model="form.city"
-          placeholder="City"
-          class="input input-bordered w-full"
-        />
-
-        <div class="flex justify-end gap-2 pt-4">
-          <button type="button" class="btn" @click="$emit('close')">
-            Cancel
-          </button>
-
-          <button class="btn btn-primary" :disabled="loading">
-            {{ loading ? "Creating..." : "Create TODA" }}
-          </button>
+      <!-- HEADER -->
+      <div
+        class="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white flex items-center gap-5"
+      >
+        <div>
+          <h2 class="text-2xl font-bold">Add New TODA</h2>
+          <p class="text-sm opacity-90">
+            Register a new transport organization
+          </p>
         </div>
-      </form>
+      </div>
+
+      <!-- BODY -->
+      <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <p class="text-gray-400 text-sm">TODA Name</p>
+          <input v-model="form.name" class="input input-bordered w-full" />
+        </div>
+
+        <div>
+          <p class="text-gray-400 text-sm">Password</p>
+          <input
+            v-model="form.password"
+            type="password"
+            class="input input-bordered w-full"
+          />
+        </div>
+
+        <div>
+          <p class="text-gray-400 text-sm">Barangay</p>
+          <input v-model="form.barangay" class="input input-bordered w-full" />
+        </div>
+
+        <div>
+          <p class="text-gray-400 text-sm">City</p>
+          <input v-model="form.city" class="input input-bordered w-full" />
+        </div>
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="border-t dark:border-gray-700 p-5 flex justify-end gap-3">
+        <button class="btn btn-outline" @click="resetForm" :disabled="loading">
+          Clear
+        </button>
+
+        <button class="btn btn-primary" :disabled="loading" @click="createToda">
+          <span
+            v-if="loading"
+            class="loading loading-spinner loading-sm"
+          ></span>
+          {{ loading ? "Creating..." : "Create TODA" }}
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
+import { reactive, ref, watch, onUnmounted } from "vue";
+
 const props = defineProps({
   show: Boolean,
 });
@@ -62,6 +89,22 @@ const form = reactive({
   city: "",
 });
 
+/* LOCK SCROLL */
+watch(
+  () => props.show,
+  (visible) => {
+    document.body.style.overflow = visible ? "hidden" : "";
+    document.documentElement.style.overflow = visible ? "hidden" : "";
+  },
+  { immediate: true },
+);
+
+onUnmounted(() => {
+  document.body.style.overflow = "";
+  document.documentElement.style.overflow = "";
+});
+
+/* CREATE TODA */
 const createToda = async () => {
   try {
     loading.value = true;
@@ -72,11 +115,27 @@ const createToda = async () => {
     });
 
     emit("created");
-    emit("close");
+    closeModal();
   } catch (err) {
     alert(err.statusMessage || "Failed to create TODA");
   } finally {
     loading.value = false;
   }
+};
+
+/* RESET */
+const resetForm = () => {
+  Object.assign(form, {
+    name: "",
+    password: "",
+    barangay: "",
+    city: "",
+  });
+};
+
+/* CLOSE */
+const closeModal = () => {
+  resetForm();
+  emit("close");
 };
 </script>
