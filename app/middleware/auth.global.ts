@@ -36,12 +36,22 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   }
 
   // Protection for super-admin specific routes
-  if (to.path.startsWith('/super-admin') && user.value?.role !== 'super_admin') {
-    return navigateTo('/');
+  if (to.path.startsWith('/super-admin')) {
+    if (user.value && user.value.role !== 'super_admin') {
+      return navigateTo('/');
+    }
+    if (!user.value && !hint.value) {
+      return navigateTo('/login');
+    }
   }
 
   // Protection for admin specific routes
-  if (to.path.startsWith('/admin') && !['admin', 'super_admin'].includes(user.value?.role || '')) {
-    return navigateTo('/');
+  if (to.path.startsWith('/admin')) {
+    if (user.value && !['admin', 'super_admin'].includes(user.value.role)) {
+      return navigateTo('/');
+    }
+    if (!user.value && !hint.value) {
+      return navigateTo('/login');
+    }
   }
 });
