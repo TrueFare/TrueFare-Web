@@ -139,9 +139,13 @@ watch(search, () => {
 watch(() => props.show, (val) => {
   if (val) {
     fetchDrivers()
-    document.body.style.overflow = "hidden"
+    if (typeof document !== "undefined") {
+      document.body.style.overflow = "hidden"
+    }
   } else {
-    document.body.style.overflow = ""
+    if (typeof document !== "undefined") {
+      document.body.style.overflow = ""
+    }
   }
 })
 
@@ -153,6 +157,8 @@ const clearSearch = () => {
 
 // cleanup
 onUnmounted(() => {
-  document.body.style.overflow = ""
+  if (typeof document !== "undefined") {
+    document.body.style.overflow = ""
+  }
 })
 </script>

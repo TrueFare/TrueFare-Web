@@ -149,15 +149,19 @@ const showPassword = ref(false);
 watch(
   () => props.show,
   (visible) => {
-    document.body.style.overflow = visible ? "hidden" : "";
-    document.documentElement.style.overflow = visible ? "hidden" : "";
+    if (typeof document !== "undefined") {
+      document.body.style.overflow = visible ? "hidden" : "";
+      document.documentElement.style.overflow = visible ? "hidden" : "";
+    }
   },
   { immediate: true },
 );
 
 onUnmounted(() => {
-  document.body.style.overflow = "";
-  document.documentElement.style.overflow = "";
+  if (typeof document !== "undefined") {
+    document.body.style.overflow = "";
+    document.documentElement.style.overflow = "";
+  }
 });
 
 /* =============================
