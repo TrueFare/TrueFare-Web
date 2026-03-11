@@ -270,6 +270,10 @@ const activeTab = ref("dashboard");
 // Loading state for counts
 const loadingCounts = ref(true);
 
+onMounted(() => {
+  activeTab.value = "dashboard";
+});
+
 // Dashboard counts
 const totalCounts = ref({
   todas: 0,
