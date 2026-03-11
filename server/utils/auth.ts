@@ -7,6 +7,7 @@ export interface SessionData {
 
 export const AUTH_COOKIE_NAME = 'auth_session';
 export const AUTH_HINT_COOKIE_NAME = 'auth_session_hint';
+export const AUTH_ROLE_COOKIE_NAME = 'auth_role_hint';
 
 export const getSession = (event: H3Event): SessionData | null => {
   const sessionCookie = getCookie(event, AUTH_COOKIE_NAME);
@@ -30,8 +31,15 @@ export const setSession = (event: H3Event, session: SessionData) => {
     sameSite: 'lax'
   });
 
-  // Set the hint cookie (accessible by client-side JS/SSR logic)
+  // Set the hint cookies (accessible by client-side JS/SSR logic)
   setCookie(event, AUTH_HINT_COOKIE_NAME, session.id, {
+    secure: isProd,
+    maxAge: 60 * 60 * 24 * 7,
+    path: '/',
+    sameSite: 'lax'
+  });
+
+  setCookie(event, AUTH_ROLE_COOKIE_NAME, session.role, {
     secure: isProd,
     maxAge: 60 * 60 * 24 * 7,
     path: '/',
@@ -42,6 +50,7 @@ export const setSession = (event: H3Event, session: SessionData) => {
 export const clearSession = (event: H3Event) => {
   deleteCookie(event, AUTH_COOKIE_NAME, { path: '/' });
   deleteCookie(event, AUTH_HINT_COOKIE_NAME, { path: '/' });
+  deleteCookie(event, AUTH_ROLE_COOKIE_NAME, { path: '/' });
 };
 
 export const requireSession = (event: H3Event) => {
