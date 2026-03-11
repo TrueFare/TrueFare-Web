@@ -21,7 +21,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   // Redirection for already logged-in users trying to access login
   if (user.value && to.path === '/login') {
     if (user.value.role === 'super_admin') {
-      return navigateTo('/super-admin/dashboard');
+      return navigateTo('/super-admin');
     } else if (user.value.role === 'admin') {
       return navigateTo('/admin');
     }

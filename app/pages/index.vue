@@ -20,7 +20,7 @@
       </p>
       
       <div class="flex gap-4">
-        <NuxtLink v-if="user.role === 'super_admin'" to="/super-admin/dashboard" class="px-6 py-2 bg-gray-900 text-white dark:bg-white dark:text-gray-900 rounded-lg font-medium hover:opacity-90 transition">
+        <NuxtLink v-if="user.role === 'super_admin'" to="/super-admin" class="px-6 py-2 bg-gray-900 text-white dark:bg-white dark:text-gray-900 rounded-lg font-medium hover:opacity-90 transition">
           Super Admin Dashboard
         </NuxtLink>
         <NuxtLink v-else-if="user.role === 'admin'" to="/admin" class="px-6 py-2 bg-gray-900 text-white dark:bg-white dark:text-gray-900 rounded-lg font-medium hover:opacity-90 transition">

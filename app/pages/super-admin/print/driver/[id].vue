@@ -100,7 +100,7 @@ const goBack = () => {
   if (window.history.length > 1) {
     router.back();
   } else {
-    router.push('/super-admin/dashboard');
+    router.push('/super-admin');
   }
 };
 </script>

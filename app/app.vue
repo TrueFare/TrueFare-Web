@@ -17,9 +17,9 @@ const isAuthPage = computed(() => ['/login', '/'].includes(route.path));
     <div class="drawer-content flex flex-col min-h-screen">
       <Navbar v-if="!isPrintPage && !isAuthPage" />
 
-      <main class="flex-1">
+      <div class="flex-1">
         <NuxtPage />
-      </main>
+      </div>
 
       <Footer v-if="!isPrintPage && !isAuthPage" />
     </div>

@@ -36,7 +36,7 @@ export const useAuth = () => {
       
       // Redirect based on role
       if (user.value.role === 'super_admin') {
-        navigateTo('/super-admin/dashboard');
+        navigateTo('/super-admin');
       } else if (user.value.role === 'admin') {
         navigateTo('/admin');
       } else {

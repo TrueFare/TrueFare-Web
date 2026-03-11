@@ -18,7 +18,7 @@
 
       <li v-if="user?.role === 'super_admin'">
         <NuxtLink
-          to="/super-admin/dashboard"
+          to="/super-admin"
           class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition"
         >
           <i class="fa-solid fa-gauge w-5 text-purple-600"></i>
