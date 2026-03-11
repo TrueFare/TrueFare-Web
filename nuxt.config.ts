@@ -2,7 +2,19 @@
 import tailwindcss from "@tailwindcss/vite";
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
-  devtools: { enabled: true },
+  devtools: {
+    enabled: true,
+  },
+  hooks: {
+    'vite:extendConfig'(config, { isClient }) {
+      if (isClient) {
+        config.define = {
+          ...config.define,
+          '__VUE_PROD_DEVTOOLS__': true,
+        }
+      }
+    },
+  },
   css: ["~/assets/css/main.css"],
   vite: {
     plugins: [tailwindcss()],
