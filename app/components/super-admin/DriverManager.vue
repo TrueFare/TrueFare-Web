@@ -2,10 +2,21 @@
   <div class="space-y-4">
     <h2 class="text-xl font-bold mb-4">Tricycles</h2>
 
-    <button class="btn btn-primary" @click="showAddTricycle = true">
-      <i class="fa-solid fa-plus mr-2"></i>
-      Add Driver
-    </button>
+    <div class="flex flex-wrap items-center gap-3 mb-4">
+      <button class="btn btn-primary" @click="showAddTricycle = true">
+        <i class="fa-solid fa-plus mr-2"></i>
+        Add Driver
+      </button>
+
+      <button
+        class="btn btn-outline btn-secondary"
+        :disabled="!tricycles.length"
+        @click="exportToCsv('Tricycle_Drivers', tricycles)"
+      >
+        <i class="fa-solid fa-file-csv mr-2"></i>
+        Export to CSV
+      </button>
+    </div>
 
     <TricycleSearch @search="handleSearchDriver" />
 
@@ -35,6 +46,7 @@ import Pagination from "~/components/Pagination.vue";
 import TricycleSearch from "~/components/search/TricycleSearch.vue";
 import AddTricycle from "~/components/create/AddTricycle.vue";
 
+const { exportToCsv } = useCsvExport();
 const emits = defineEmits(['refresh-counts']);
 
 const tricycles = ref([]);

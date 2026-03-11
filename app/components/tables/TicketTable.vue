@@ -272,6 +272,10 @@ const updateStatus = async (newStatus) => {
   }
 };
 
+defineExpose({
+  items
+});
+
 const statusText = (s) => {
   if (s === null || s === undefined) return 'Unknown';
   if (s === 0) return 'Pending';

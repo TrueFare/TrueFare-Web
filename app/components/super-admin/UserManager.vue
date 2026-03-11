@@ -2,10 +2,21 @@
   <div class="space-y-4">
     <h2 class="text-xl font-bold mb-4">Users</h2>
 
-    <button class="btn btn-primary" @click="showAddAdmin = true">
-      <i class="fa-solid fa-plus mr-2"></i>
-      Add Admin
-    </button>
+    <div class="flex flex-wrap items-center gap-3 mb-4">
+      <button class="btn btn-primary" @click="showAddAdmin = true">
+        <i class="fa-solid fa-plus mr-2"></i>
+        Add Admin
+      </button>
+
+      <button
+        class="btn btn-outline btn-secondary"
+        :disabled="!users.length"
+        @click="exportToCsv('Users_List', users)"
+      >
+        <i class="fa-solid fa-file-csv mr-2"></i>
+        Export to CSV
+      </button>
+    </div>
 
     <UserSearch @search="handleSearchUser" />
 
@@ -31,6 +42,7 @@ import Pagination from "~/components/Pagination.vue";
 import UserSearch from "~/components/search/UserSearch.vue";
 import AddAdmin from "~/components/create/AddAdmin.vue";
 
+const { exportToCsv } = useCsvExport();
 const emits = defineEmits(['refresh-counts']);
 
 const users = ref([]);

@@ -8,7 +8,17 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <!-- Historical Fares Table -->
       <div class="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl shadow p-6 overflow-x-auto">
-        <h3 class="text-lg font-semibold mb-4 text-gray-700 dark:text-gray-300">Fare History</h3>
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300">Fare History</h3>
+          <button
+            class="btn btn-sm btn-outline btn-secondary"
+            :disabled="!historicalFares.length"
+            @click="exportToCsv('Fare_History', historicalFares)"
+          >
+            <i class="fa-solid fa-file-csv mr-2"></i>
+            Export to CSV
+          </button>
+        </div>
         <table class="w-full text-sm text-left">
           <thead class="bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-200">
             <tr>
@@ -59,6 +69,7 @@
 import { ref, onMounted } from "vue";
 import ChartFarePriceTrend from "~/components/charts/ChartFarePriceTrend.vue";
 
+const { exportToCsv } = useCsvExport();
 const historicalFares = ref([]);
 const chartRef = ref(null);
 const loading = ref(false);

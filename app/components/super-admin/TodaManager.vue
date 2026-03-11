@@ -2,10 +2,21 @@
   <div class="space-y-4">
     <h2 class="text-xl font-bold mb-4">TODA Associations</h2>
 
-    <button class="btn btn-primary" @click="showAddToda = true">
-      <i class="fa-solid fa-plus mr-2"></i>
-      Add TODA
-    </button>
+    <div class="flex flex-wrap items-center gap-3 mb-4">
+      <button class="btn btn-primary" @click="showAddToda = true">
+        <i class="fa-solid fa-plus mr-2"></i>
+        Add TODA
+      </button>
+
+      <button
+        class="btn btn-outline btn-secondary"
+        :disabled="!todas.length"
+        @click="exportToCsv('TODA_Associations', todas)"
+      >
+        <i class="fa-solid fa-file-csv mr-2"></i>
+        Export to CSV
+      </button>
+    </div>
 
     <TodaSearch @search="handleSearchToda" />
 
@@ -78,6 +89,7 @@ import TodaDriverView from "~/components/profile/TodaDriverView.vue";
 import AddToda from "~/components/create/AddToda.vue";
 import TodaProfileCard from "~/components/profile/TodaProfileCard.vue";
 
+const { exportToCsv } = useCsvExport();
 const emits = defineEmits(['refresh-counts']);
 
 const todas = ref([]);
