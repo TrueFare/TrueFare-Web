@@ -18,10 +18,15 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
   // Redirection for unauthenticated users
   // If we have no user AND no hint, we are definitely logged out.
-  // If we have no user but HAVE a hint, the server-side fetch might have failed.
-  // In that case, we should NOT redirect to login yet on the server to avoid the flash.
   if (!user.value && !hint.value && !isPublicRoute) {
     return navigateTo('/login');
+  }
+
+  // If we are on the server and have a hint but no user yet, 
+  // we let the request continue to the protected page to avoid the flash.
+  // The client will complete the auth fetch and redirect if necessary.
+  if (import.meta.server && !user.value && hint.value) {
+    return;
   }
 
   // Redirection for already logged-in users trying to access login

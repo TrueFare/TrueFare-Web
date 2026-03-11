@@ -1,5 +1,6 @@
 export default defineEventHandler(async (event) => {
-  const db = event.context.cloudflare.env.truefare_db;
+  const db = useDb(event);
+  requireRole(event, ['admin', 'super_admin']);
 
   try {
     const result = await db
@@ -8,9 +9,6 @@ export default defineEventHandler(async (event) => {
 
     return result;
   } catch (error: any) {
-    throw createError({
-      statusCode: 500,
-      statusMessage: error.message || 'Failed to fetch fares'
-    });
+    return handleApiError(error, 'Failed to fetch fares');
   }
 });

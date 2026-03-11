@@ -23,9 +23,14 @@ export const useAuth = () => {
       const data = await $fetch<User>('/api/auth/me', { headers });
       user.value = data;
       if (data) sessionHint.value = data.id;
-    } catch (e) {
+    } catch (e: any) {
       user.value = null;
-      sessionHint.value = null;
+      // If it's a 401, we definitely don't have a session
+      if (e.statusCode === 401) {
+        sessionHint.value = null;
+      }
+      // If it's another error (500, fetch failure on server), 
+      // we keep the hint to avoid premature redirect on SSR
     } finally {
       loading.value = false;
     }

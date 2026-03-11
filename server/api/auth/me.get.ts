@@ -1,25 +1,8 @@
 export default defineEventHandler(async (event) => {
-  const db = event.context.cloudflare.env.truefare_db;
-  const sessionCookie = getCookie(event, 'auth_session');
+  const db = useDb(event);
+  const session = requireSession(event);
 
-  if (!sessionCookie) {
-    throw createError({
-      statusCode: 401,
-      statusMessage: "Not authenticated",
-    });
-  }
-
-  let sessionData: any;
-  try {
-    sessionData = JSON.parse(sessionCookie);
-  } catch (e) {
-    throw createError({
-      statusCode: 401,
-      statusMessage: "Invalid session",
-    });
-  }
-
-  const { id, role } = sessionData;
+  const { id, role } = session;
 
   try {
     let user;
@@ -41,19 +24,12 @@ export default defineEventHandler(async (event) => {
     }
 
     if (!user) {
-      deleteCookie(event, 'auth_session');
-      throw createError({
-        statusCode: 401,
-        statusMessage: "User not found",
-      });
+      clearSession(event);
+      throw createApiError(401, "User not found");
     }
 
     return user;
   } catch (error: any) {
-    if (error.statusCode) throw error;
-    throw createError({
-      statusCode: 500,
-      statusMessage: error.message || "Failed to fetch session",
-    });
+    return handleApiError(error, "Failed to fetch session");
   }
 });

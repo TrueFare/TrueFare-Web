@@ -1,12 +1,9 @@
 export default defineEventHandler(async (event) => {
-  const db = event.context.cloudflare.env.truefare_db;
+  const db = useDb(event);
   const body = await readBody(event);
 
   if (!body.email || !body.password) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: "Email and password are required",
-    });
+    throw createApiError(400, "Email and password are required");
   }
 
   const { email, password } = body;
@@ -21,16 +18,7 @@ export default defineEventHandler(async (event) => {
       .first();
 
     if (superAdmin) {
-      setCookie(event, 'auth_session', JSON.stringify({ id: superAdmin.id, role: 'super_admin' }), {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 60 * 60 * 24 * 7, // 1 week
-        path: '/'
-      });
-      setCookie(event, 'auth_session_hint', superAdmin.id, {
-        maxAge: 60 * 60 * 24 * 7,
-        path: '/'
-      });
+      setSession(event, { id: superAdmin.id, role: 'super_admin' });
       return superAdmin;
     }
 
@@ -43,16 +31,7 @@ export default defineEventHandler(async (event) => {
       .first();
 
     if (admin) {
-      setCookie(event, 'auth_session', JSON.stringify({ id: admin.id, role: 'admin' }), {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 60 * 60 * 24 * 7,
-        path: '/'
-      });
-      setCookie(event, 'auth_session_hint', admin.id, {
-        maxAge: 60 * 60 * 24 * 7,
-        path: '/'
-      });
+      setSession(event, { id: admin.id, role: 'admin' });
       return admin;
     }
 
@@ -65,28 +44,12 @@ export default defineEventHandler(async (event) => {
       .first();
 
     if (user) {
-      setCookie(event, 'auth_session', JSON.stringify({ id: user.id, role: 'user' }), {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 60 * 60 * 24 * 7,
-        path: '/'
-      });
-      setCookie(event, 'auth_session_hint', user.id, {
-        maxAge: 60 * 60 * 24 * 7,
-        path: '/'
-      });
+      setSession(event, { id: user.id, role: 'user' });
       return user;
     }
 
-    throw createError({
-      statusCode: 401,
-      statusMessage: "Invalid email or password",
-    });
+    throw createApiError(401, "Invalid email or password");
   } catch (error: any) {
-    if (error.statusCode) throw error;
-    throw createError({
-      statusCode: 500,
-      statusMessage: error.message || "Failed to authenticate",
-    });
+    return handleApiError(error, "Failed to authenticate");
   }
 });

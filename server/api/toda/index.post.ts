@@ -1,21 +1,18 @@
+import { z } from 'zod';
+
+const TodaSchema = z.object({
+  name: z.string().min(1),
+  password: z.string().min(6),
+  barangay: z.string().min(1),
+  city: z.string().min(1),
+  date_updated: z.string().optional(),
+});
+
 export default defineEventHandler(async (event) => {
-  const db = event.context.cloudflare.env.truefare_db;
-  const body = await readBody(event);
-
-  const requiredFields = ["name", "password", "barangay", "city"];
-  const missingFields = requiredFields.filter(
-    (field) =>
-      body[field] === undefined || body[field] === null || body[field] === "",
-  );
-
-  if (missingFields.length > 0) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: `Missing required fields: ${missingFields.join(", ")}`,
-    });
-  }
-
-  const { name, password, barangay, city, date_updated } = body;
+  const db = useDb(event);
+  requireRole(event, ['super_admin']);
+  
+  const body = await validateBody(event, TodaSchema);
 
   try {
     const date_created = new Date().toISOString();
@@ -27,7 +24,7 @@ export default defineEventHandler(async (event) => {
     VALUES (?, ?, ?, ?, ?, ?)
   `,
       )
-      .bind(name, password, barangay, city, date_created, date_updated || null)
+      .bind(body.name, body.password, body.barangay, body.city, date_created, body.date_updated || null)
       .run();
 
     setResponseStatus(event, 201);
@@ -36,17 +33,14 @@ export default defineEventHandler(async (event) => {
       message: "TODA created successfully",
       data: {
         id: result.meta.last_row_id,
-        name,
-        barangay,
-        city,
+        name: body.name,
+        barangay: body.barangay,
+        city: body.city,
         date_created,
-        date_updated,
+        date_updated: body.date_updated,
       },
     };
   } catch (error: any) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: error.message || "Failed to create TODA",
-    });
+    return handleApiError(error, "Failed to create TODA");
   }
 });

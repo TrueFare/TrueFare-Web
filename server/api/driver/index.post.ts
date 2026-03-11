@@ -1,28 +1,22 @@
+import { z } from 'zod';
+
+const DriverSchema = z.object({
+  first_name: z.string().min(1),
+  last_name: z.string().min(1),
+  contact_number: z.string().min(1),
+  email: z.string().email().optional().or(z.literal('')),
+  plate_number: z.string().min(1),
+  franchise_number: z.coerce.number(),
+  is_registered: z.boolean().default(false),
+  profile_pic: z.string().optional().nullable(),
+  toda_id: z.coerce.number(),
+});
+
 export default defineEventHandler(async (event) => {
-  const db = event.context.cloudflare.env.truefare_db;
-  const body = await readBody(event);
-
-  const requiredFields = ['first_name', 'last_name', 'contact_number', 'plate_number', 'franchise_number', 'is_registered', 'toda_id'];
-  const missingFields = requiredFields.filter(field => body[field] === undefined || body[field] === null || body[field] === '');
-
-  if (missingFields.length > 0) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: `Missing required fields: ${missingFields.join(', ')}`
-    });
-  }
-
-  const {
-    first_name,
-    last_name,
-    contact_number,
-    email,
-    plate_number,
-    franchise_number,
-    is_registered,
-    profile_pic,
-    toda_id
-  } = body;
+  const db = useDb(event);
+  requireRole(event, ['admin', 'super_admin']);
+  
+  const body = await validateBody(event, DriverSchema);
 
   try {
     const result = await db
@@ -30,15 +24,15 @@ export default defineEventHandler(async (event) => {
         `INSERT INTO driver (first_name, last_name, contact_number, email, plate_number, franchise_number, is_registered, profile_pic, toda_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
       )
       .bind(
-        first_name,
-        last_name,
-        contact_number,
-        email || null,
-        plate_number,
-        franchise_number,
-        is_registered ? 1 : 0,
-        profile_pic || null,
-        toda_id
+        body.first_name,
+        body.last_name,
+        body.contact_number,
+        body.email || null,
+        body.plate_number,
+        body.franchise_number,
+        body.is_registered ? 1 : 0,
+        body.profile_pic || null,
+        body.toda_id
       )
       .run();
 
@@ -48,21 +42,11 @@ export default defineEventHandler(async (event) => {
       message: 'Driver created successfully',
       data: {
         id: result.meta.last_row_id,
-        first_name,
-        last_name,
-        contact_number,
-        email: email || null,
-        plate_number,
-        franchise_number,
-        is_registered: !!is_registered,
-        profile_pic: profile_pic || null,
-        toda_id
+        ...body,
+        is_registered: !!body.is_registered,
       }
     };
   } catch (error: any) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: error.message || 'Failed to create driver'
-    });
+    return handleApiError(error, 'Failed to create driver');
   }
 });

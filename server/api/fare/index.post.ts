@@ -1,26 +1,21 @@
+import { z } from 'zod';
+
+const FareSchema = z.object({
+  base_km: z.coerce.number().positive(),
+  base_fare: z.coerce.number().positive(),
+  fare_per_km: z.coerce.number().nonnegative(),
+});
+
 export default defineEventHandler(async (event) => {
-  const db = event.context.cloudflare.env.truefare_db;
-  const body = await readBody(event);
-
-  const required = ['base_km', 'base_fare', 'fare_per_km'];
-  const missing = required.filter((k) => body[k] === undefined || body[k] === null || body[k] === '');
-  if (missing.length > 0) {
-    throw createError({ statusCode: 400, statusMessage: `Missing required fields: ${missing.join(', ')}` });
-  }
-
-  // coerce numeric values
-  const base_km = Number(body.base_km);
-  const base_fare = Number(body.base_fare);
-  const fare_per_km = Number(body.fare_per_km);
-
-  if (Number.isNaN(base_km) || Number.isNaN(base_fare) || Number.isNaN(fare_per_km)) {
-    throw createError({ statusCode: 400, statusMessage: 'base_km, base_fare and fare_per_km must be numbers' });
-  }
+  const db = useDb(event);
+  requireRole(event, ['super_admin']);
+  
+  const body = await validateBody(event, FareSchema);
 
   try {
     const result = await db
       .prepare('INSERT INTO fare (base_km, base_fare, fare_per_km) VALUES (?, ?, ?)')
-      .bind(base_km, base_fare, fare_per_km)
+      .bind(body.base_km, body.base_fare, body.fare_per_km)
       .run();
 
     setResponseStatus(event, 201);
@@ -29,12 +24,10 @@ export default defineEventHandler(async (event) => {
       message: 'Fare created',
       data: {
         id: result.meta.last_row_id,
-        base_km,
-        base_fare,
-        fare_per_km
+        ...body
       }
     };
   } catch (error: any) {
-    throw createError({ statusCode: 500, statusMessage: error.message || 'Failed to create fare' });
+    return handleApiError(error, 'Failed to create fare');
   }
 });

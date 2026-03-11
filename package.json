@@ -21,7 +21,8 @@
 		"tailwindcss-motion": "^1.1.1",
 		"uqr": "^0.1.2",
 		"vue": "^3.5.28",
-		"vue-router": "^4.6.4"
+		"vue-router": "^4.6.4",
+		"zod": "^4.3.6"
 	},
 	"devDependencies": {
 		"@types/node": "^25.2.3",
