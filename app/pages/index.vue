@@ -1,5 +1,5 @@
 <template>
-  <div class="index-landing min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col items-center justify-center gap-8">
+  <div key="landing-page-root" class="index-landing min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col items-center justify-center gap-8">
     <div class="text-center">
       <h1 class="text-6xl font-extrabold tracking-tight bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400 bg-clip-text text-transparent">
         TrueFare

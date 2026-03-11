@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 space-y-8">
+  <div key="super-admin-dashboard-root" class="p-6 space-y-8">
     <!-- Top Tabs -->
     <ClientOnly>
       <div class="tabs tabs-boxed mb-6">
