@@ -102,9 +102,6 @@
 
           <!-- Two Charts Side-by-Side -->
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <ChartFareTrend />
-            <ChartTopToda />
-
             <div
               class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 flex items-center justify-center text-gray-400"
             >
