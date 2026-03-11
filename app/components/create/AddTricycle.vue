@@ -16,88 +16,98 @@
 
       <!-- HEADER -->
       <div
-        class="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white flex items-center gap-5"
+        class="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white flex items-center gap-6"
       >
-        <div
-          class="w-24 h-24 rounded-full overflow-hidden border-4 border-white relative shrink-0"
-        >
-          <img
-            v-if="previewImage"
-            :src="previewImage"
-            class="w-full h-full object-cover"
-          />
+        <div class="relative group">
+          <div class="w-24 h-24 rounded-full overflow-hidden border-4 border-white/30 shadow-xl bg-white/10 backdrop-blur-sm flex items-center justify-center shrink-0">
+            <img
+              v-if="previewImage"
+              :src="previewImage"
+              class="w-full h-full object-cover"
+            />
+            <Icon v-else name="mdi:account-plus" class="text-5xl text-white/50" />
+          </div>
 
-          <input
-            type="file"
-            accept="image/*"
-            class="absolute inset-0 opacity-0 cursor-pointer"
-            @change="handleImageUpload"
-          />
+          <label class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition rounded-full cursor-pointer">
+            <Icon name="mdi:camera" class="text-2xl text-white" />
+            <input
+              type="file"
+              accept="image/*"
+              class="hidden"
+              @change="handleImageUpload"
+            />
+          </label>
         </div>
 
         <div>
-          <h2 class="text-2xl font-bold">Add New Driver</h2>
-          <p class="text-sm opacity-90">Register a new tricycle driver</p>
+          <h2 class="text-2xl font-black uppercase tracking-tight">Add New Driver</h2>
+          <p class="text-xs font-bold uppercase tracking-widest opacity-80 mt-1">Register a tricycle driver</p>
         </div>
       </div>
 
       <!-- BODY -->
-      <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <p class="text-gray-400 text-sm">First Name</p>
+      <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="form-control">
+          <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">First Name</span></label>
           <input
             v-model="newDriver.first_name"
-            class="input input-bordered w-full"
+            class="input input-bordered w-full focus:input-primary"
+            placeholder="Enter first name"
           />
         </div>
 
-        <div>
-          <p class="text-gray-400 text-sm">Last Name</p>
+        <div class="form-control">
+          <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">Last Name</span></label>
           <input
             v-model="newDriver.last_name"
-            class="input input-bordered w-full"
+            class="input input-bordered w-full focus:input-primary"
+            placeholder="Enter last name"
           />
         </div>
 
-        <div>
-          <p class="text-gray-400 text-sm">Contact Number</p>
+        <div class="form-control">
+          <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">Contact Number</span></label>
           <input
             v-model="newDriver.contact_number"
-            class="input input-bordered w-full"
+            class="input input-bordered w-full focus:input-primary"
+            placeholder="09..."
           />
         </div>
 
-        <div>
-          <p class="text-gray-400 text-sm">Email</p>
+        <div class="form-control">
+          <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">Email Address</span></label>
           <input
             v-model="newDriver.email"
-            class="input input-bordered w-full"
+            class="input input-bordered w-full focus:input-primary"
+            placeholder="email@example.com"
           />
         </div>
 
-        <div>
-          <p class="text-gray-400 text-sm">Plate Number</p>
+        <div class="form-control">
+          <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">Plate Number</span></label>
           <input
             v-model="newDriver.plate_number"
-            class="input input-bordered w-full"
+            class="input input-bordered w-full focus:input-primary"
+            placeholder="Enter plate number"
           />
         </div>
 
-        <div>
-          <p class="text-gray-400 text-sm">Franchise Number</p>
+        <div class="form-control">
+          <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">Franchise Number</span></label>
           <input
             v-model="newDriver.franchise_number"
-            class="input input-bordered w-full"
+            class="input input-bordered w-full focus:input-primary"
+            placeholder="Enter franchise number"
           />
         </div>
 
         <!-- REGISTRATION STATUS -->
-        <div>
-          <p class="text-gray-400 text-sm">Registration Status</p>
+        <div class="form-control">
+          <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">Registration Status</span></label>
 
           <select
             v-model="newDriver.is_registered"
-            class="select select-bordered w-full"
+            class="select select-bordered w-full focus:select-primary"
           >
             <option :value="false">Unregistered</option>
             <option :value="true">Registered</option>
@@ -105,12 +115,12 @@
         </div>
 
         <!-- TODA DROPDOWN -->
-        <div class="md:col-span-2">
-          <p class="text-gray-400 text-sm">TODA</p>
+        <div class="form-control">
+          <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">Assign TODA</span></label>
 
           <select
             v-model="newDriver.toda_id"
-            class="select select-bordered w-full"
+            class="select select-bordered w-full focus:select-primary"
           >
             <option disabled value="">Select TODA</option>
 
@@ -122,18 +132,19 @@
       </div>
 
       <!-- ACTIONS -->
-      <div class="border-t dark:border-gray-700 p-5 flex justify-end gap-3">
-        <button class="btn btn-outline" @click="resetForm" :disabled="saving">
+      <div class="border-t border-base-content/5 p-5 flex justify-end gap-3 bg-base-200/30">
+        <button class="btn btn-outline border-2 px-8" @click="resetForm" :disabled="saving">
           Clear
         </button>
 
         <button
-          class="btn btn-primary"
+          class="btn btn-primary px-8 gap-2"
           :disabled="saving"
           @click="createDriver"
         >
           <span v-if="saving" class="loading loading-spinner loading-sm"></span>
-          {{ saving ? "Creating..." : "Create Driver" }}
+          <Icon v-else name="mdi:plus-circle" class="text-lg" />
+          Create Driver
         </button>
       </div>
     </div>

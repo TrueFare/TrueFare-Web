@@ -6,7 +6,7 @@
         class="btn btn-outline btn-secondary"
         @click="exportToCsv('Reports_Log', ticketTableRef?.items || [])"
       >
-        <i class="fa-solid fa-file-csv mr-2"></i>
+        <Icon name="mdi:file-export" class="text-xl" />
         Export to CSV
       </button>
     </div>

@@ -21,7 +21,7 @@
           to="/super-admin"
           class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition"
         >
-          <i class="fa-solid fa-gauge w-5 text-purple-600"></i>
+          <Icon name="mdi:view-dashboard" class="text-xl text-purple-600" />
           <span class="font-medium">Dashboard</span>
         </NuxtLink>
       </li>
@@ -31,7 +31,7 @@
           to="/admin"
           class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition"
         >
-          <i class="fa-solid fa-gauge w-5 text-blue-600"></i>
+          <Icon name="mdi:view-dashboard" class="text-xl text-blue-600" />
           <span class="font-medium">Admin Panel</span>
         </NuxtLink>
       </li>
@@ -41,7 +41,7 @@
           to="/"
           class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition"
         >
-          <i class="fa-solid fa-house w-5 text-green-600"></i>
+          <Icon name="mdi:home" class="text-xl text-green-600" />
           <span class="font-medium">Home</span>
         </NuxtLink>
       </li>
@@ -53,7 +53,7 @@
           @click="handleLogout"
           class="flex items-center gap-3 p-3 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 transition w-full"
         >
-          <i class="fa-solid fa-right-from-bracket w-5"></i>
+          <Icon name="mdi:logout" class="text-xl" />
           <span class="font-bold">Logout</span>
         </button>
       </li>

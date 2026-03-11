@@ -15,7 +15,7 @@
             :disabled="!historicalFares.length"
             @click="exportToCsv('Fare_History', historicalFares)"
           >
-            <i class="fa-solid fa-file-csv mr-2"></i>
+            <Icon name="mdi:file-export" class="mr-2" />
             Export to CSV
           </button>
         </div>

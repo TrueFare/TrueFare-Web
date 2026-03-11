@@ -3,50 +3,55 @@
     v-if="show"
     class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
   >
-    <div class="bg-white dark:bg-gray-900 rounded-2xl w-full max-w-2xl p-6 shadow-xl relative">
+    <div class="card bg-base-100 rounded-3xl w-full max-w-2xl shadow-2xl relative overflow-hidden border border-base-content/10">
 
-      <!-- Close -->
-      <button
-        @click="$emit('close')"
-        class="absolute right-4 top-4 text-gray-500 hover:text-red-500"
-      >
-        <i class="fa-solid fa-xmark"></i>
-      </button>
+      <!-- Header -->
+      <div class="bg-gradient-to-r from-purple-600 to-indigo-600 p-6 text-white flex justify-between items-center">
+        <h2 class="text-xl font-black flex items-center gap-2 uppercase tracking-tight">
+          <Icon name="mdi:account-tie" class="text-2xl" />
+          TODA Admins
+        </h2>
 
-      <!-- Title -->
-      <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-        <i class="fa-solid fa-user-shield text-purple-500"></i>
-        TODA Admins
-      </h2>
-
-      <!-- Loading -->
-      <div v-if="loading" class="text-center text-gray-500 py-6">
-        Loading admins...
-      </div>
-
-      <!-- Empty -->
-      <div v-else-if="admins.length === 0" class="text-center text-gray-400 py-6">
-        No admins found for this TODA
-      </div>
-
-      <!-- Admin List -->
-      <div v-else class="space-y-4">
-        <div
-          v-for="admin in admins"
-          :key="admin.id"
-          class="flex items-center justify-between bg-gray-50 dark:bg-gray-800 p-4 rounded-xl"
+        <button
+          @click="$emit('close')"
+          class="btn btn-sm btn-circle btn-ghost text-white hover:bg-white/20"
         >
-          <div>
-            <p class="font-semibold text-gray-900 dark:text-white">
-              {{ admin.first_name }} {{ admin.last_name }}
-            </p>
-            <p class="text-sm text-gray-500">
-              {{ admin.email }}
-            </p>
-          </div>
+          <Icon name="mdi:close" class="text-xl" />
+        </button>
+      </div>
 
-          <div class="text-xs text-gray-400">
-            {{ formatDate(admin.date_created) }}
+      <div class="p-6">
+        <!-- Loading -->
+        <div v-if="loading" class="flex flex-col items-center justify-center py-12 gap-3 text-base-content/40">
+          <Icon name="mdi:loading" class="text-4xl animate-spin" />
+          <p class="text-xs font-bold uppercase tracking-widest">Loading admins...</p>
+        </div>
+
+        <!-- Empty -->
+        <div v-else-if="admins.length === 0" class="flex flex-col items-center justify-center py-12 gap-3 text-base-content/30">
+          <Icon name="mdi:account-off" class="text-5xl" />
+          <p class="text-sm font-bold">No admins found for this TODA</p>
+        </div>
+
+        <!-- Admin List -->
+        <div v-else class="space-y-3">
+          <div
+            v-for="admin in admins"
+            :key="admin.id"
+            class="flex items-center justify-between bg-base-200/50 p-4 rounded-2xl border border-base-content/5 hover:bg-base-200 transition"
+          >
+            <div>
+              <p class="font-bold text-base-content">
+                {{ admin.first_name }} {{ admin.last_name }}
+              </p>
+              <p class="text-xs text-base-content/50 font-medium">
+                {{ admin.email }}
+              </p>
+            </div>
+
+            <div class="text-[10px] font-black uppercase tracking-widest text-base-content/30">
+              {{ formatDate(admin.date_created) }}
+            </div>
           </div>
         </div>
       </div>

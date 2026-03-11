@@ -7,14 +7,14 @@
         @click="handlePrint"
         title="Print ID Card"
       >
-        <i class="fa-solid fa-print text-xl"></i>
+        <Icon name="mdi:printer" class="text-2xl" />
       </button>
       <button 
         class="btn btn-circle btn-lg btn-ghost bg-white shadow-2xl hover:scale-110 transition-transform" 
         @click="goBack"
         title="Go Back"
       >
-        <i class="fa-solid fa-arrow-left text-xl"></i>
+        <Icon name="mdi:arrow-left" class="text-2xl" />
       </button>
     </div>
 

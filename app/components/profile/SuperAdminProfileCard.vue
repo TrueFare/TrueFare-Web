@@ -13,42 +13,54 @@
         ✕
       </button>
 
-      <div class="bg-gradient-to-r from-red-600 to-pink-600 p-6 text-white">
-        <h2 class="text-2xl font-bold">
-          {{ editableSuper.first_name }} {{ editableSuper.last_name }}
-        </h2>
-        <p class="text-sm opacity-80">Super Admin</p>
+      <!-- HEADER -->
+      <div class="bg-gradient-to-r from-red-600 to-pink-600 p-6 text-white flex items-center gap-6">
+        <div class="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-md border border-white/30 shrink-0">
+          <Icon name="mdi:shield-account" class="text-4xl text-white" />
+        </div>
+        <div>
+          <h2 class="text-2xl font-black uppercase tracking-tight">
+            {{ editableSuper.first_name }} {{ editableSuper.last_name }}
+          </h2>
+          <p class="text-xs font-bold uppercase tracking-widest opacity-80 mt-1 text-red-100">Super Administrator</p>
+        </div>
       </div>
 
-      <div class="p-6 space-y-4">
-        <div>
-          <p class="text-gray-400 text-sm">First Name</p>
+      <div class="p-6 space-y-6">
+        <div class="form-control">
+          <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">First Name</span></label>
           <input
             v-model="editableSuper.first_name"
-            class="input input-bordered w-full"
+            class="input input-bordered w-full focus:input-error"
           />
         </div>
 
-        <div>
-          <p class="text-gray-400 text-sm">Last Name</p>
+        <div class="form-control">
+          <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">Last Name</span></label>
           <input
             v-model="editableSuper.last_name"
-            class="input input-bordered w-full"
+            class="input input-bordered w-full focus:input-error"
           />
         </div>
 
-        <div>
-          <p class="text-gray-400 text-sm">Email</p>
+        <div class="form-control">
+          <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">Email</span></label>
           <input
             v-model="editableSuper.email"
-            class="input input-bordered w-full"
+            class="input input-bordered w-full focus:input-error"
           />
         </div>
       </div>
 
-      <div class="border-t dark:border-gray-700 p-5 flex justify-end gap-3">
-        <button class="btn btn-error" @click="deleteSuper">Delete</button>
-        <button class="btn btn-primary" @click="saveSuper">Save</button>
+      <div class="border-t border-base-content/5 p-5 flex justify-end gap-3 bg-base-200/30">
+        <button class="btn btn-error btn-outline border-2 gap-2" @click="deleteSuper">
+          <Icon name="mdi:trash-can-outline" class="text-lg" />
+          Delete
+        </button>
+        <button class="btn btn-primary px-8 gap-2" @click="saveSuper">
+          <Icon name="mdi:content-save" class="text-lg" />
+          Save Changes
+        </button>
       </div>
     </div>
   </div>

@@ -15,45 +15,50 @@
 
       <!-- HEADER -->
       <div
-        class="bg-gradient-to-r from-purple-600 to-indigo-600 p-6 text-white"
+        class="bg-gradient-to-r from-purple-600 to-indigo-600 p-6 text-white flex items-center gap-6"
       >
-        <h2 class="text-2xl font-bold">
-          {{ editableAdmin.first_name }} {{ editableAdmin.last_name }}
-        </h2>
-        <p class="text-sm opacity-80">TODA Admin</p>
+        <div class="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-md border border-white/30 shrink-0">
+          <Icon name="mdi:account-tie" class="text-4xl text-white" />
+        </div>
+        <div>
+          <h2 class="text-2xl font-black uppercase tracking-tight">
+            {{ editableAdmin.first_name }} {{ editableAdmin.last_name }}
+          </h2>
+          <p class="text-xs font-bold uppercase tracking-widest opacity-80 mt-1">TODA Administrator</p>
+        </div>
       </div>
 
       <!-- BODY -->
-      <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <p class="text-gray-400 text-sm">First Name</p>
+      <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="form-control">
+          <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">First Name</span></label>
           <input
             v-model="editableAdmin.first_name"
-            class="input input-bordered w-full"
+            class="input input-bordered w-full focus:input-primary"
           />
         </div>
 
-        <div>
-          <p class="text-gray-400 text-sm">Last Name</p>
+        <div class="form-control">
+          <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">Last Name</span></label>
           <input
             v-model="editableAdmin.last_name"
-            class="input input-bordered w-full"
+            class="input input-bordered w-full focus:input-primary"
           />
         </div>
 
-        <div>
-          <p class="text-gray-400 text-sm">Email</p>
+        <div class="form-control">
+          <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">Email</span></label>
           <input
             v-model="editableAdmin.email"
-            class="input input-bordered w-full"
+            class="input input-bordered w-full focus:input-primary"
           />
         </div>
 
-        <div>
-          <p class="text-gray-400 text-sm">TODA</p>
+        <div class="form-control">
+          <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">TODA Association</span></label>
           <select
             v-model="editableAdmin.toda_id"
-            class="select select-bordered w-full"
+            class="select select-bordered w-full focus:select-primary"
           >
             <option value="" disabled>Select a TODA</option>
             <option v-for="toda in todas" :key="toda.id" :value="toda.id">
@@ -62,25 +67,31 @@
           </select>
         </div>
 
-        <div>
-          <p class="text-gray-400 text-sm">Date Created</p>
-          <p class="font-semibold">
+        <div class="bg-base-200/50 p-4 rounded-2xl border border-base-content/5">
+          <p class="text-[10px] text-base-content/40 uppercase font-black mb-1 tracking-widest">Date Created</p>
+          <p class="font-bold text-sm">
             {{ editableAdmin.date_created || "N/A" }}
           </p>
         </div>
 
-        <div>
-          <p class="text-gray-400 text-sm">Last Updated</p>
-          <p class="font-semibold">
+        <div class="bg-base-200/50 p-4 rounded-2xl border border-base-content/5">
+          <p class="text-[10px] text-base-content/40 uppercase font-black mb-1 tracking-widest">Last Updated</p>
+          <p class="font-bold text-sm">
             {{ editableAdmin.date_updated || "N/A" }}
           </p>
         </div>
       </div>
 
       <!-- ACTIONS -->
-      <div class="border-t dark:border-gray-700 p-5 flex justify-end gap-3">
-        <button class="btn btn-error" @click="deleteAdmin">Delete</button>
-        <button class="btn btn-primary" @click="saveAdmin">Save</button>
+      <div class="border-t border-base-content/5 p-5 flex justify-end gap-3 bg-base-200/30">
+        <button class="btn btn-error btn-outline border-2 gap-2" @click="deleteAdmin">
+          <Icon name="mdi:trash-can-outline" class="text-lg" />
+          Delete
+        </button>
+        <button class="btn btn-primary px-8 gap-2" @click="saveAdmin">
+          <Icon name="mdi:content-save" class="text-lg" />
+          Save Changes
+        </button>
       </div>
     </div>
   </div>

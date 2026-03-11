@@ -1,113 +1,103 @@
 <template>
   <div
-    class="bg-white dark:bg-gray-800 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 p-6 space-y-4 border border-gray-100 dark:border-gray-700"
+    class="card bg-base-100 shadow-md hover:shadow-xl transition-all duration-300 border border-base-200"
   >
-    <!-- Header -->
-    <div class="flex items-start justify-between">
-      <div>
-        <h3
-          class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2"
+    <div class="card-body p-6 space-y-4">
+      <!-- Header -->
+      <div class="flex items-start justify-between">
+        <div class="flex-1">
+          <div class="flex items-center gap-2 mb-1">
+            <div class="w-8 h-8 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+              <Icon name="mdi:office-building" class="text-lg text-purple-600" />
+            </div>
+            <h3 class="card-title text-lg font-bold line-clamp-1">
+              {{ name }}
+            </h3>
+            <button
+              @click="$emit('edit', id)"
+              class="btn btn-ghost btn-xs btn-circle text-base-content/40 hover:text-blue-500"
+              title="Edit TODA"
+            >
+              <Icon name="mdi:pencil" />
+            </button>
+          </div>
+          <p class="text-xs text-base-content/60 flex items-center gap-1">
+            <Icon name="mdi:map-marker" />
+            {{ barangay }}, {{ city }}
+          </p>
+        </div>
+
+        <!-- TODA ADMIN COUNT -->
+        <button
+          @click="viewAdmins"
+          class="badge badge-lg gap-2 bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300 border-none hover:bg-purple-200 dark:hover:bg-purple-800 transition py-4 px-3"
+          title="View TODA Admins"
         >
-          <i class="fa-solid fa-building text-purple-500"></i>
-          {{ name }}
-          <button
-            @click="$emit('edit', id)"
-            class="ml-1 p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-blue-100 dark:hover:bg-blue-900 text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition"
-            title="Edit TODA"
-          >
-            <i class="fa-solid fa-pen text-xs"></i>
-          </button>
-        </h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400">
-          {{ barangay }}, {{ city }}
-        </p>
+          <Icon name="mdi:account-tie" class="text-base" />
+          <span class="font-bold">{{ adminCount }}</span>
+        </button>
       </div>
 
-      <!-- TODA ADMIN COUNT -->
-      <button
-        @click="viewAdmins"
-        class="flex items-center gap-2 bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300 px-3 py-1.5 rounded-full hover:bg-purple-200 dark:hover:bg-purple-800 transition"
-        title="View TODA Admins"
-      >
-        <i class="fa-solid fa-user-shield text-sm"></i>
-        <span class="text-sm font-semibold">{{ adminCount }}</span>
-      </button>
-    </div>
-
-    <!-- Drivers Count -->
-    <div
-      @click="viewDrivers"
-      class="flex items-center justify-between bg-blue-50 dark:bg-blue-900/30 p-3 rounded-xl cursor-pointer hover:scale-[1.02] transition"
-      title="View TODA Drivers"
-    >
+      <!-- Drivers Count -->
       <div
-        class="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-medium"
+        @click="viewDrivers"
+        class="flex items-center justify-between bg-blue-50 dark:bg-blue-900/20 p-3 rounded-xl cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900/30 transition group"
+        title="View TODA Drivers"
       >
-        <i class="fa-solid fa-users"></i>
-        Drivers
-      </div>
-      <div class="text-lg font-bold text-blue-700 dark:text-blue-300">
-        {{ driverCount }}
-      </div>
-    </div>
-
-    <!-- Trip Stats -->
-    <div class="grid grid-cols-2 gap-3 text-sm">
-      <!-- Daily -->
-      <div
-        class="flex items-center justify-between bg-green-50 dark:bg-green-900/30 p-3 rounded-xl"
-      >
-        <div class="flex items-center gap-2 text-green-600 dark:text-green-400">
-          <i class="fa-solid fa-calendar-day"></i>
-          Today
+        <div class="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-bold text-sm">
+          <Icon name="mdi:motorbike" class="text-lg" />
+          Drivers
         </div>
-        <span class="font-semibold">{{ dailyTrips }}</span>
-      </div>
-
-      <!-- Weekly -->
-      <div
-        class="flex items-center justify-between bg-yellow-50 dark:bg-yellow-900/30 p-3 rounded-xl"
-      >
-        <div
-          class="flex items-center gap-2 text-yellow-600 dark:text-yellow-400"
-        >
-          <i class="fa-solid fa-calendar-week"></i>
-          Week
+        <div class="flex items-center gap-2 text-lg font-black text-blue-700 dark:text-blue-300">
+          {{ driverCount }}
+          <Icon name="mdi:chevron-right" class="text-base-content/20 group-hover:text-blue-600 transition" />
         </div>
-        <span class="font-semibold">{{ weeklyTrips }}</span>
       </div>
 
-      <!-- Monthly -->
-      <div
-        class="flex items-center justify-between bg-purple-50 dark:bg-purple-900/30 p-3 rounded-xl"
-      >
-        <div
-          class="flex items-center gap-2 text-purple-600 dark:text-purple-400"
-        >
-          <i class="fa-solid fa-calendar-alt"></i>
-          Month
+      <!-- Trip Stats -->
+      <div class="grid grid-cols-2 gap-3 text-xs">
+        <!-- Daily -->
+        <div class="flex items-center justify-between bg-base-200/50 p-2.5 rounded-lg border border-base-content/5">
+          <div class="flex items-center gap-1 text-base-content/50 font-medium">
+            <Icon name="mdi:calendar-today" />
+            Today
+          </div>
+          <span class="font-bold">{{ dailyTrips }}</span>
         </div>
-        <span class="font-semibold">{{ monthlyTrips }}</span>
-      </div>
 
-      <!-- All Time -->
-      <div
-        class="flex items-center justify-between bg-gray-100 dark:bg-gray-700 p-3 rounded-xl"
-      >
-        <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-          <i class="fa-solid fa-chart-line"></i>
-          All Time
+        <!-- Weekly -->
+        <div class="flex items-center justify-between bg-base-200/50 p-2.5 rounded-lg border border-base-content/5">
+          <div class="flex items-center gap-1 text-base-content/50 font-medium">
+            <Icon name="mdi:calendar-week" />
+            Week
+          </div>
+          <span class="font-bold">{{ weeklyTrips }}</span>
         </div>
-        <span class="font-semibold">{{ allTimeTrips }}</span>
-      </div>
-    </div>
 
-    <!-- Footer -->
-    <div
-      class="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-2"
-    >
-      <i class="fa-solid fa-clock"></i>
-      Created: {{ formatDate(date_created) }}
+        <!-- Monthly -->
+        <div class="flex items-center justify-between bg-base-200/50 p-2.5 rounded-lg border border-base-content/5">
+          <div class="flex items-center gap-1 text-base-content/50 font-medium">
+            <Icon name="mdi:calendar-month" />
+            Month
+          </div>
+          <span class="font-bold">{{ monthlyTrips }}</span>
+        </div>
+
+        <!-- All Time -->
+        <div class="flex items-center justify-between bg-primary/10 text-primary p-2.5 rounded-lg border border-primary/10">
+          <div class="flex items-center gap-1 font-bold">
+            <Icon name="mdi:chart-line-variant" />
+            All Time
+          </div>
+          <span class="font-black">{{ allTimeTrips }}</span>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="flex items-center gap-2 text-[10px] text-base-content/30 font-bold uppercase tracking-widest pt-2 border-t border-base-content/5">
+        <Icon name="mdi:clock-outline" />
+        <span>Created: {{ formatDate(date_created) }}</span>
+      </div>
     </div>
   </div>
 </template>

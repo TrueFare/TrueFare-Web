@@ -4,7 +4,7 @@
 
     <div class="flex flex-wrap items-center gap-3 mb-4">
       <button class="btn btn-primary" @click="showAddTricycle = true">
-        <i class="fa-solid fa-plus mr-2"></i>
+        <Icon name="mdi:plus" class="text-xl" />
         Add Driver
       </button>
 
@@ -13,7 +13,7 @@
         :disabled="!tricycles.length"
         @click="exportToCsv('Tricycle_Drivers', tricycles)"
       >
-        <i class="fa-solid fa-file-csv mr-2"></i>
+        <Icon name="mdi:file-export" class="text-xl" />
         Export to CSV
       </button>
     </div>

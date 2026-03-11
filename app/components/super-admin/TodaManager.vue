@@ -4,7 +4,7 @@
 
     <div class="flex flex-wrap items-center gap-3 mb-4">
       <button class="btn btn-primary" @click="showAddToda = true">
-        <i class="fa-solid fa-plus mr-2"></i>
+        <Icon name="mdi:plus" class="text-xl" />
         Add TODA
       </button>
 
@@ -13,7 +13,7 @@
         :disabled="!todas.length"
         @click="exportToCsv('TODA_Associations', todas)"
       >
-        <i class="fa-solid fa-file-csv mr-2"></i>
+        <Icon name="mdi:file-export" class="text-xl" />
         Export to CSV
       </button>
     </div>
@@ -24,7 +24,7 @@
       v-if="todas.length === 0"
       class="flex flex-col items-center justify-center py-20 text-gray-400"
     >
-      <i class="fa-solid fa-building-circle-xmark text-5xl mb-4"></i>
+      <Icon name="mdi:office-building-off" class="text-5xl mb-4" />
       <p class="text-lg font-semibold">No TODAs available</p>
       <p class="text-sm">Create or register a TODA to get started.</p>
     </div>

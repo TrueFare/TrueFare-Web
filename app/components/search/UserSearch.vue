@@ -1,18 +1,23 @@
 <template>
-  <div class="flex items-center gap-2 mb-4">
-    <input
-      v-model="query"
-      @input="onSearch"
-      type="text"
-      placeholder="Search User by name..."
-      class="w-full sm:w-1/3 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
+  <div class="flex items-center gap-2 mb-6">
+    <div class="relative flex-1 sm:max-w-md">
+      <Icon name="mdi:magnify" class="absolute left-4 top-1/2 -translate-y-1/2 text-base-content/40 text-xl" />
+      <input
+        v-model="query"
+        @input="onSearch"
+        type="text"
+        placeholder="Search user by name or email..."
+        class="input input-bordered w-full pl-12 rounded-2xl focus:input-primary"
+      />
+    </div>
 
     <button
+      v-if="query"
       @click="clearSearch"
-      class="px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-600 transition"
+      class="btn btn-ghost btn-circle"
+      title="Clear search"
     >
-      Clear
+      <Icon name="mdi:close-circle" class="text-2xl text-base-content/30" />
     </button>
   </div>
 </template>

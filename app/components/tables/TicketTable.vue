@@ -12,57 +12,57 @@
       <div v-else>
         <!-- DESKTOP TABLE -->
         <div
-          class="hidden sm:block bg-white dark:bg-gray-900 rounded-2xl shadow border border-gray-200 dark:border-gray-800 overflow-x-auto"
+          class="hidden sm:block bg-base-100 rounded-2xl shadow border border-base-200 overflow-x-auto"
         >
-          <table class="w-full text-sm text-left">
-            <thead class="bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 sticky top-0 z-10">
-              <tr>
-                <th class="px-6 py-4 font-semibold">Report ID</th>
-                <th class="px-6 py-4 font-semibold">Reporter</th>
-                <th class="px-6 py-4 font-semibold">Driver</th>
-                <th class="px-6 py-4 font-semibold">Trip ID</th>
-                <th class="px-6 py-4 font-semibold">Details</th>
-                <th class="px-6 py-4 font-semibold">Status</th>
-                <th class="px-6 py-4 font-semibold text-center">Action</th>
+          <table class="table table-zebra w-full">
+            <thead class="bg-base-200 text-base-content/70">
+              <tr class="border-none uppercase text-[10px] tracking-widest font-black">
+                <th class="px-6 py-4">Report ID</th>
+                <th class="px-6 py-4">Reporter</th>
+                <th class="px-6 py-4">Driver</th>
+                <th class="px-6 py-4">Trip ID</th>
+                <th class="px-6 py-4">Details</th>
+                <th class="px-6 py-4">Status</th>
+                <th class="px-6 py-4 text-center">Action</th>
               </tr>
             </thead>
             <tbody>
               <tr
-                v-for="(r, index) in items"
+                v-for="r in items"
                 :key="r.id"
-                class="border-t dark:border-gray-800 transition duration-150 hover:bg-gray-50 dark:hover:bg-gray-800"
-                :class="index % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50 dark:bg-gray-800'"
+                class="transition duration-150 hover:bg-base-200/50 border-base-200"
               >
-                <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
+                <td class="px-6 py-4 font-black text-primary">
                   #{{ r.id }}
                 </td>
                 <td class="px-6 py-4">
                   <div class="flex flex-col">
-                    <span class="font-semibold text-gray-800 dark:text-gray-200">{{ r.user_name || ('User ' + r.user_id) }}</span>
-                    <span class="text-xs text-gray-500">{{ formatDate(r.date_created) }}</span>
+                    <span class="font-bold text-base-content">{{ r.user_name || ('User ' + r.user_id) }}</span>
+                    <span class="text-[10px] uppercase font-bold text-base-content/30">{{ formatDate(r.date_created) }}</span>
                   </div>
                 </td>
-                <td class="px-6 py-4">
+                <td class="px-6 py-4 font-medium">
                   {{ r.driver_name || ('Driver ' + r.driver_id) }}
                 </td>
-                <td class="px-6 py-4 text-blue-600 dark:text-blue-400 font-medium">
-                  {{ r.trip_id }}
+                <td class="px-6 py-4 text-info font-black">
+                  #{{ r.trip_id }}
                 </td>
                 <td class="px-6 py-4 max-w-xs">
-                  <p class="truncate text-gray-600 dark:text-gray-400 text-xs" :title="r.report_details">
-                    {{ r.report_details }}
+                  <p class="truncate text-base-content/60 text-xs italic" :title="r.report_details">
+                    "{{ r.report_details }}"
                   </p>
                 </td>
                 <td class="px-6 py-4">
-                  <span
-                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                    :class="r.status === 0 ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'"
+                  <div
+                    class="badge badge-sm gap-1 font-bold uppercase text-[9px] tracking-widest py-3 px-2"
+                    :class="r.status === 0 ? 'badge-warning' : 'badge-success'"
                   >
+                    <Icon :name="r.status === 0 ? 'mdi:clock-outline' : 'mdi:check-circle'" />
                     {{ statusText(r.status) }}
-                  </span>
+                  </div>
                 </td>
                 <td class="px-6 py-4 text-center">
-                  <button class="text-blue-600 hover:text-blue-900 font-medium" @click="openReport(r)">View</button>
+                  <button class="btn btn-ghost btn-xs text-primary font-black uppercase tracking-widest" @click="openReport(r)">View</button>
                 </td>
               </tr>
             </tbody>
@@ -74,36 +74,36 @@
           <div
             v-for="r in items"
             :key="r.id"
-            class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 space-y-4 border border-gray-100 dark:border-gray-700"
+            class="card bg-base-100 shadow-md p-6 space-y-4 border border-base-200"
           >
             <!-- Header -->
             <div class="flex items-center justify-between">
               <div>
-                <h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                  <i class="fa-solid fa-triangle-exclamation text-yellow-500"></i>
+                <h3 class="text-lg font-bold flex items-center gap-2">
+                  <Icon name="mdi:alert" class="text-warning text-xl" />
                   Report #{{ r.id }}
                 </h3>
-                <p class="text-sm text-gray-500 dark:text-gray-400">{{ r.user_name || ('User ' + r.user_id) }}</p>
+                <p class="text-sm text-base-content/60">{{ r.user_name || ('User ' + r.user_id) }}</p>
               </div>
               <div class="text-right">
-                <div class="text-xs text-gray-400">{{ formatDate(r.date_created) }}</div>
+                <div class="text-[10px] font-bold uppercase tracking-wider text-base-content/30">{{ formatDate(r.date_created) }}</div>
               </div>
             </div>
 
             <!-- Stats Grid -->
             <div class="grid grid-cols-2 gap-3 text-sm">
-              <div class="flex flex-col bg-blue-50 dark:bg-blue-900/30 p-3 rounded-xl">
-                <span class="text-xs text-blue-600 dark:text-blue-400 font-medium mb-1">Reporter</span>
-                <span class="font-semibold truncate">{{ r.user_name || ('User ' + r.user_id) }}</span>
+              <div class="flex flex-col bg-info/10 p-3 rounded-xl border border-info/10">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-info/60 mb-1">Reporter</span>
+                <span class="font-bold truncate">{{ r.user_name || ('User ' + r.user_id) }}</span>
               </div>
-              <div class="flex flex-col bg-green-50 dark:bg-green-900/30 p-3 rounded-xl">
-                <span class="text-xs text-green-600 dark:text-green-400 font-medium mb-1">Driver</span>
-                <span class="font-semibold truncate">{{ r.driver_name || ('Driver ' + r.driver_id) }}</span>
+              <div class="flex flex-col bg-success/10 p-3 rounded-xl border border-success/10">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-success/60 mb-1">Driver</span>
+                <span class="font-bold truncate">{{ r.driver_name || ('Driver ' + r.driver_id) }}</span>
               </div>
             </div>
 
             <!-- Details -->
-            <div class="text-sm text-gray-700 dark:text-gray-300 line-clamp-2 italic">
+            <div class="text-sm text-base-content/70 line-clamp-2 italic bg-base-200/50 p-3 rounded-xl border border-base-content/5">
               "{{ r.report_details }}"
             </div>
 
@@ -120,55 +120,56 @@
       v-if="showModal"
       class="fixed inset-0 min-h-dvh bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
     >
-      <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90dvh] overflow-hidden flex flex-col relative">
+      <div class="card bg-base-100 shadow-2xl w-full max-w-2xl max-h-[90dvh] overflow-hidden flex flex-col relative border border-base-content/10">
         <!-- CLOSE -->
         <button
-          class="absolute right-4 top-4 btn btn-sm btn-circle z-10"
+          class="absolute right-4 top-4 btn btn-sm btn-circle btn-ghost z-10"
           @click="closeModal"
         >
           ✕
         </button>
 
         <!-- HEADER -->
-        <div class="bg-gradient-to-r from-yellow-500 to-orange-600 p-6 text-white shrink-0">
-          <h2 class="text-2xl font-bold flex items-center gap-2">
-            <i class="fa-solid fa-triangle-exclamation"></i>
+        <div class="bg-gradient-to-r from-warning to-orange-600 p-6 text-white shrink-0">
+          <h2 class="text-2xl font-black flex items-center gap-2 uppercase tracking-tight">
+            <Icon name="mdi:alert-decagram" class="text-3xl" />
             Report #{{ selectedReport?.id }}
           </h2>
-          <p class="opacity-90">Submitted on {{ formatDate(selectedReport?.date_created) }}</p>
+          <p class="text-xs font-bold uppercase tracking-widest opacity-80 mt-1">Submitted on {{ formatDate(selectedReport?.date_created) }}</p>
         </div>
 
         <!-- BODY -->
         <div class="p-6 overflow-y-auto space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-2xl border border-gray-100 dark:border-gray-700">
-              <p class="text-xs text-gray-500 uppercase font-bold mb-1">Reporter</p>
-              <p class="font-semibold text-gray-900 dark:text-white">{{ selectedReport?.user_name || ('User ' + selectedReport?.user_id) }}</p>
+            <div class="bg-base-200/50 p-4 rounded-2xl border border-base-content/5">
+              <p class="text-[10px] text-base-content/40 uppercase font-black mb-1 tracking-widest">Reporter</p>
+              <p class="font-bold text-base-content">{{ selectedReport?.user_name || ('User ' + selectedReport?.user_id) }}</p>
             </div>
-            <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-2xl border border-gray-100 dark:border-gray-700">
-              <p class="text-xs text-gray-500 uppercase font-bold mb-1">Driver Involved</p>
-              <p class="font-semibold text-gray-900 dark:text-white">{{ selectedReport?.driver_name || ('Driver ' + selectedReport?.driver_id) }}</p>
+            <div class="bg-base-200/50 p-4 rounded-2xl border border-base-content/5">
+              <p class="text-[10px] text-base-content/40 uppercase font-black mb-1 tracking-widest">Driver Involved</p>
+              <p class="font-bold text-base-content">{{ selectedReport?.driver_name || ('Driver ' + selectedReport?.driver_id) }}</p>
             </div>
-            <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-2xl border border-gray-100 dark:border-gray-700">
-              <p class="text-xs text-gray-500 uppercase font-bold mb-1">Trip ID</p>
-              <p class="font-semibold text-blue-600">#{{ selectedReport?.trip_id }}</p>
+            <div class="bg-base-200/50 p-4 rounded-2xl border border-base-content/5">
+              <p class="text-[10px] text-base-content/40 uppercase font-black mb-1 tracking-widest">Trip ID</p>
+              <p class="font-bold text-primary">#{{ selectedReport?.trip_id }}</p>
             </div>
           </div>
 
           <div>
-            <p class="text-xs text-gray-500 uppercase font-bold mb-2">Report Details</p>
-            <div class="bg-gray-50 dark:bg-gray-800 p-5 rounded-2xl border border-gray-100 dark:border-gray-700 text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed">
-              {{ selectedReport?.report_details }}
+            <p class="text-[10px] text-base-content/40 uppercase font-black mb-2 tracking-widest">Report Details</p>
+            <div class="bg-base-200/50 p-5 rounded-2xl border border-base-content/5 text-base-content leading-relaxed italic">
+              "{{ selectedReport?.report_details }}"
             </div>
           </div>
 
           <div class="flex items-center gap-4">
             <div class="flex-1">
-              <p class="text-xs text-gray-500 uppercase font-bold mb-2">Current Status</p>
+              <p class="text-[10px] text-base-content/40 uppercase font-black mb-2 tracking-widest">Current Status</p>
               <div 
-                class="badge badge-lg gap-2 p-4 font-bold"
+                class="badge badge-lg gap-2 py-4 px-4 font-black uppercase text-[10px] tracking-widest"
                 :class="selectedReport?.status === 0 ? 'badge-warning' : 'badge-success'"
               >
+                <Icon :name="selectedReport?.status === 0 ? 'mdi:clock-outline' : 'mdi:check-circle'" />
                 {{ statusText(selectedReport?.status) }}
               </div>
             </div>

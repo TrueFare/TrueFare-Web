@@ -7,28 +7,28 @@
       <DashboardCard
         title="TODA Associations"
         :value="loading ? '...' : totalCounts.todas"
-        icon="fa-solid fa-building"
+        icon="mdi:office-building"
         bgColor="bg-purple-700 text-white"
         textColor="text-purple-400"
       />
       <DashboardCard
         title="Total Tricycles"
         :value="loading ? '...' : totalCounts.drivers"
-        icon="fa-solid fa-bicycle"
+        icon="mdi:motorbike"
         bgColor="bg-blue-700 text-white"
         textColor="text-blue-400"
       />
       <DashboardCard
         title="Total Trips"
         :value="loading ? '...' : totalCounts.trips"
-        icon="fa-solid fa-chart-line"
+        icon="mdi:chart-line"
         bgColor="bg-green-700 text-white"
         textColor="text-green-400"
       />
       <DashboardCard
         title="Total Reports"
         value="1"
-        icon="fa-solid fa-triangle-exclamation"
+        icon="mdi:alert-circle"
         bgColor="bg-yellow-700 text-white"
         textColor="text-yellow-400"
         subText="1 pending"
@@ -36,14 +36,14 @@
       <DashboardCard
         title="TODA Admins"
         value="1"
-        icon="fa-solid fa-user-group"
+        icon="mdi:account-group"
         bgColor="bg-purple-900 text-white"
         textColor="text-purple-400"
       />
       <DashboardCard
         title="Users"
         :value="loading ? '...' : totalCounts.users"
-        icon="fa-solid fa-user"
+        icon="mdi:account"
         bgColor="bg-orange-900 text-white"
         textColor="text-orange-400"
       />

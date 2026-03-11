@@ -3,7 +3,7 @@
     <div class="flex-1 flex items-center gap-2">
       <!-- Hamburger (Font Awesome) -->
       <label for="sidebar-toggle" class="btn btn-ghost btn-circle text-lg lg:hidden">
-        <i class="fa-solid fa-bars text-sm"></i>
+        <Icon name="mdi:menu" class="text-xl" />
       </label>
 
       <NuxtLink to="/" class="btn btn-ghost text-xl font-extrabold tracking-tight">TrueFare</NuxtLink>
@@ -18,13 +18,13 @@
       <div class="dropdown dropdown-end">
         <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
           <div class="w-10 rounded-full bg-blue-100 flex items-center justify-center">
-            <i class="fa-solid fa-user text-blue-600"></i>
+            <Icon name="mdi:account" class="text-blue-600 text-xl" />
           </div>
         </div>
         <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
           <li>
             <a @click="handleLogout" class="text-red-500">
-              <i class="fa-solid fa-right-from-bracket mr-2"></i>
+              <Icon name="mdi:logout" class="mr-2 text-lg" />
               Logout
             </a>
           </li>

@@ -2,15 +2,15 @@
   <div class="card bg-base-200 shadow-md p-4 w-full sm:w-56">
     <div class="flex items-center gap-4">
       <div
-        class="icon w-10 h-10 flex items-center justify-center rounded-lg"
+        class="w-12 h-12 flex items-center justify-center rounded-xl shadow-inner"
         :class="bgColor"
       >
-        <i :class="icon" class="text-xl"></i>
+        <Icon :name="icon" class="text-2xl" />
       </div>
       <div>
-        <p class="text-sm text-base-content/70">{{ title }}</p>
-        <p class="text-2xl font-bold" :class="textColor">{{ value }}</p>
-        <p v-if="subText" class="text-xs text-base-content/50">{{ subText }}</p>
+        <p class="text-xs font-semibold uppercase tracking-wider text-base-content/60">{{ title }}</p>
+        <p class="text-2xl font-black" :class="textColor">{{ value }}</p>
+        <p v-if="subText" class="text-[10px] font-bold text-base-content/40 mt-0.5">{{ subText }}</p>
       </div>
     </div>
   </div>

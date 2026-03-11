@@ -10,7 +10,7 @@
     </div>
 
     <div v-if="loading" class="flex flex-col items-center gap-4">
-      <i class="fa-solid fa-spinner fa-spin text-3xl text-gray-400"></i>
+      <Icon name="mdi:loading" class="text-3xl text-gray-400 animate-spin" />
       <span class="text-gray-500">Verifying session...</span>
     </div>
 

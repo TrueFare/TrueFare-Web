@@ -17,177 +17,164 @@
 
       <!-- ================= HEADER ================= -->
       <div
-        class="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left"
+        class="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left"
       >
         <!-- IMAGE -->
-        <div
-          class="w-24 h-24 rounded-full overflow-hidden border-4 border-white relative shrink-0"
-        >
-          <img
-            v-if="previewImage"
-            :src="previewImage"
-            class="w-full h-full object-cover"
-          />
+        <div class="relative group">
+          <div class="w-24 h-24 rounded-full overflow-hidden border-4 border-white/30 shadow-xl bg-white/10 backdrop-blur-sm flex items-center justify-center shrink-0">
+            <img
+              v-if="previewImage"
+              :src="previewImage"
+              class="w-full h-full object-cover"
+            />
+            <Icon v-else name="mdi:account" class="text-5xl text-white/50" />
+          </div>
 
-          <input
-            type="file"
-            accept="image/*"
-            class="absolute inset-0 opacity-0 cursor-pointer"
-            @change="handleImageUpload"
-          />
+          <label class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition rounded-full cursor-pointer">
+            <Icon name="mdi:camera" class="text-2xl text-white" />
+            <input
+              type="file"
+              accept="image/*"
+              class="hidden"
+              @change="handleImageUpload"
+            />
+          </label>
         </div>
 
-        <div>
-          <h2 class="text-2xl font-bold">
-            {{ editableDriver.first_name }}
-            {{ editableDriver.last_name }}
+        <div class="flex-1">
+          <h2 class="text-2xl font-black uppercase tracking-tight leading-tight">
+            {{ editableDriver.first_name }} {{ editableDriver.last_name }}
           </h2>
-
-          <p>Plate: {{ editableDriver.plate_number }}</p>
-
-          <!-- STATUS CAPSULE -->
-          <span
-            class="inline-flex w-fit self-start text-xs font-semibold rounded-full px-3 py-1 mt-2"
-            :class="
-              editableDriver.is_registered
-                ? 'bg-green-100 text-green-700'
-                : 'bg-red-100 text-red-700'
-            "
-          >
-            {{ editableDriver.is_registered ? "Registered" : "Unregistered" }}
-          </span>
+          <div class="flex flex-wrap justify-center sm:justify-start gap-3 mt-2">
+            <span class="badge badge-lg bg-white/20 border-none text-white font-bold gap-1 text-[10px] tracking-widest px-3">
+              <Icon name="mdi:car-plate" /> {{ editableDriver.plate_number }}
+            </span>
+            <span 
+              class="badge badge-lg font-bold gap-1 text-[10px] tracking-widest px-3 border-none"
+              :class="editableDriver.is_registered ? 'bg-success text-success-content' : 'bg-warning text-warning-content'"
+            >
+              <Icon :name="editableDriver.is_registered ? 'mdi:check-decagram' : 'mdi:alert-circle'" />
+              {{ editableDriver.is_registered ? 'Registered' : 'Pending' }}
+            </span>
+          </div>
         </div>
       </div>
 
       <!-- ================= BODY ================= -->
-      <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="md:col-span-2 flex flex-col items-center justify-center p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700 mb-4">
-          <p class="text-sm font-bold text-gray-500 uppercase mb-2">Tricycle QR Code</p>
-          <img 
-            v-if="editableDriver.id"
-            :src="`/api/driver/qr/${editableDriver.id}`" 
-            class="w-48 h-48 bg-white p-2 rounded-lg shadow-sm"
-            alt="Tricycle QR Code"
-          />
-          <p class="text-xs text-gray-400 mt-2">ID: {{ editableDriver.id }} | Plate: {{ editableDriver.plate_number }}</p>
-          <a 
-            v-if="editableDriver.id"
-            :href="`/api/driver/qr/${editableDriver.id}`" 
-            download="qr-code.svg"
-            class="btn btn-xs btn-outline mt-3"
-          >
-            <i class="fa-solid fa-download"></i>
-            Download QR
-          </a>
+      <div class="p-6">
+        <!-- QR SECTION -->
+        <div class="bg-base-200/50 rounded-3xl p-6 border border-base-content/5 mb-8">
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+            <div class="text-center sm:text-left">
+              <h3 class="text-lg font-black uppercase tracking-tight flex items-center justify-center sm:justify-start gap-2">
+                <Icon name="mdi:qrcode-scan" class="text-primary" />
+                Driver QR Code
+              </h3>
+              <p class="text-[10px] font-bold text-base-content/40 uppercase tracking-widest mt-1">Unique Identification for Trips</p>
+            </div>
+            <a 
+              v-if="editableDriver.id"
+              :href="`/api/driver/qr/${editableDriver.id}`" 
+              download="qr-code.svg"
+              class="btn btn-sm btn-primary btn-outline border-2 gap-2"
+            >
+              <Icon name="mdi:download" />
+              Download QR
+            </a>
+          </div>
+          <div class="flex flex-col items-center justify-center p-8 bg-white rounded-2xl shadow-inner border border-base-content/5">
+            <img 
+              v-if="editableDriver.id"
+              :src="`/api/driver/qr/${editableDriver.id}`" 
+              class="w-48 h-48"
+              alt="Tricycle QR Code"
+            />
+            <div class="mt-4 text-center">
+              <p class="text-[10px] font-black uppercase tracking-widest text-gray-400">Scan to initiate trip</p>
+              <p class="font-bold text-gray-900 mt-1">ID: {{ editableDriver.id }}</p>
+            </div>
+          </div>
         </div>
 
-        <div>
-          <p class="text-gray-400 text-sm">First Name</p>
-          <input
-            v-model="editableDriver.first_name"
-            class="input input-bordered w-full"
-          />
-        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="form-control">
+            <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">First Name</span></label>
+            <input v-model="editableDriver.first_name" class="input input-bordered w-full focus:input-primary" />
+          </div>
 
-        <div>
-          <p class="text-gray-400 text-sm">Last Name</p>
-          <input
-            v-model="editableDriver.last_name"
-            class="input input-bordered w-full"
-          />
-        </div>
+          <div class="form-control">
+            <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">Last Name</span></label>
+            <input v-model="editableDriver.last_name" class="input input-bordered w-full focus:input-primary" />
+          </div>
 
-        <div>
-          <p class="text-gray-400 text-sm">Contact</p>
-          <input
-            v-model="editableDriver.contact_number"
-            class="input input-bordered w-full"
-          />
-        </div>
+          <div class="form-control">
+            <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">Contact</span></label>
+            <input v-model="editableDriver.contact_number" class="input input-bordered w-full focus:input-primary" />
+          </div>
 
-        <div>
-          <p class="text-gray-400 text-sm">Email</p>
-          <input
-            v-model="editableDriver.email"
-            class="input input-bordered w-full"
-          />
-        </div>
+          <div class="form-control">
+            <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">Email</span></label>
+            <input v-model="editableDriver.email" class="input input-bordered w-full focus:input-primary" />
+          </div>
 
-        <div>
-          <p class="text-gray-400 text-sm">Plate Number</p>
-          <input
-            v-model="editableDriver.plate_number"
-            class="input input-bordered w-full"
-          />
-        </div>
+          <div class="form-control">
+            <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">Plate Number</span></label>
+            <input v-model="editableDriver.plate_number" class="input input-bordered w-full focus:input-primary" />
+          </div>
 
-        <div>
-          <p class="text-gray-400 text-sm">Franchise</p>
-          <input
-            v-model="editableDriver.franchise_number"
-            class="input input-bordered w-full"
-          />
-        </div>
+          <div class="form-control">
+            <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">Franchise</span></label>
+            <input v-model="editableDriver.franchise_number" class="input input-bordered w-full focus:input-primary" />
+          </div>
 
-        <div>
-          <p class="text-gray-400 text-sm">Status</p>
-          <select
-            v-model="editableDriver.is_registered"
-            class="select select-bordered w-full"
-          >
-            <option :value="true">Registered</option>
-            <option :value="false">Unregistered</option>
-          </select>
-        </div>
+          <div class="form-control">
+            <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">Status</span></label>
+            <select v-model="editableDriver.is_registered" class="select select-bordered w-full focus:select-primary">
+              <option :value="true">Registered</option>
+              <option :value="false">Unregistered</option>
+            </select>
+          </div>
 
-        <div>
-          <p class="text-gray-400 text-sm">Date Created</p>
-          <p class="font-semibold">
-            {{ editableDriver.date_created }}
-          </p>
-        </div>
-
-        <div v-if="editableDriver.date_updated">
-          <p class="text-gray-400 text-sm">Last Updated</p>
-          <p class="font-semibold">
-            {{ editableDriver.date_updated }}
-          </p>
+          <div class="bg-base-200/50 p-4 rounded-2xl border border-base-content/5">
+            <p class="text-[10px] text-base-content/40 uppercase font-black mb-1 tracking-widest">Date Created</p>
+            <p class="font-bold text-sm">{{ editableDriver.date_created }}</p>
+          </div>
         </div>
       </div>
 
       <!-- ================= ACTIONS ================= -->
-      <div class="border-t dark:border-gray-700 p-5 flex justify-end gap-3 flex-wrap">
+      <div class="border-t border-base-content/5 p-5 flex flex-wrap justify-between items-center gap-3 bg-base-200/30">
         <a 
           v-if="editableDriver.id"
           :href="`/super-admin/print/driver/${editableDriver.id}`" 
           target="_blank"
-          class="btn btn-outline btn-info flex items-center gap-2"
+          class="btn btn-ghost btn-outline border-2 gap-2"
         >
-          <i class="fa-solid fa-print"></i>
+          <Icon name="mdi:printer" class="text-lg" />
           <span>Print ID Profile</span>
         </a>
 
-        <button 
-          class="btn btn-error"
-          :disabled="deleting || saving"
-          @click="deleteDriver"
-        >
-          <span v-if="deleting" class="loading loading-spinner loading-sm"></span>
-          <i v-else class="fa-solid fa-trash"></i>
-          {{ deleting ? "Deleting..." : "Delete" }}
-        </button>
+        <div class="flex gap-3">
+          <button
+            class="btn btn-error btn-outline border-2 gap-2"
+            :disabled="deleting || saving"
+            @click="deleteDriver"
+          >
+            <span v-if="deleting" class="loading loading-spinner loading-sm"></span>
+            <Icon v-else name="mdi:trash-can-outline" class="text-lg" />
+            Delete
+          </button>
 
-        <button
-          class="btn btn-primary flex items-center gap-2"
-          :disabled="saving || deleting"
-          @click="saveDriver"
-        >
-          <span v-if="saving" class="loading loading-spinner loading-sm"></span>
-
-          <span>
-            {{ saving ? "Saving..." : "💾 Save" }}
-          </span>
-        </button>
+          <button
+            class="btn btn-primary px-8 gap-2"
+            :disabled="saving || deleting"
+            @click="saveDriver"
+          >
+            <span v-if="saving" class="loading loading-spinner loading-sm"></span>
+            <Icon v-else name="mdi:content-save" class="text-lg" />
+            Save Changes
+          </button>
+        </div>
       </div>
     </div>
   </div>

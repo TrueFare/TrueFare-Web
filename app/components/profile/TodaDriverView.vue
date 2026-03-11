@@ -4,40 +4,41 @@
     class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
   >
     <div
-      class="bg-white dark:bg-gray-900 rounded-2xl w-full max-w-3xl shadow-xl relative flex flex-col max-h-[80vh]"
+      class="card bg-base-100 rounded-3xl w-full max-w-3xl shadow-2xl relative flex flex-col max-h-[80vh] overflow-hidden border border-base-content/10"
     >
       <!-- Header -->
-      <div class="flex items-center justify-between p-6 border-b">
-        <h2 class="text-xl font-bold flex items-center gap-2">
-          <i class="fa-solid fa-bicycle text-blue-500"></i>
+      <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white flex items-center justify-between">
+        <h2 class="text-xl font-black flex items-center gap-2 uppercase tracking-tight">
+          <Icon name="mdi:motorbike" class="text-2xl" />
           TODA Drivers
         </h2>
 
         <button
           @click="$emit('close')"
-          class="text-gray-500 hover:text-red-500"
+          class="btn btn-sm btn-circle btn-ghost text-white hover:bg-white/20"
         >
-          <i class="fa-solid fa-xmark"></i>
+          <Icon name="mdi:close" class="text-xl" />
         </button>
       </div>
 
       <!-- Search -->
-      <div class="p-6 border-b">
+      <div class="p-6 border-b border-base-200 bg-base-200/30">
         <div class="relative">
+          <Icon name="mdi:magnify" class="absolute left-4 top-1/2 -translate-y-1/2 text-base-content/40 text-xl" />
           <input
             v-model="search"
             type="text"
-            placeholder="Search drivers..."
-            class="w-full border rounded-xl px-4 py-2 pr-10 focus:outline-none focus:ring focus:ring-blue-200"
+            placeholder="Search drivers by name or plate..."
+            class="input input-bordered w-full pl-12 pr-12 rounded-2xl focus:input-primary"
           />
 
           <!-- Clear button -->
           <button
             v-if="search"
             @click="clearSearch"
-            class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600"
+            class="absolute right-3 top-1/2 -translate-y-1/2 btn btn-ghost btn-xs btn-circle"
           >
-            <i class="fa-solid fa-xmark"></i>
+            <Icon name="mdi:close-circle" class="text-lg text-base-content/40" />
           </button>
         </div>
       </div>
@@ -46,13 +47,15 @@
       <div class="p-6 flex-1 overflow-y-auto">
 
         <!-- Loading -->
-        <div v-if="loading" class="text-center py-8 text-gray-400">
-          Loading drivers...
+        <div v-if="loading" class="flex flex-col items-center justify-center py-12 gap-3 text-base-content/40">
+          <Icon name="mdi:loading" class="text-4xl animate-spin" />
+          <p class="text-xs font-bold uppercase tracking-widest">Loading drivers...</p>
         </div>
 
         <!-- Empty -->
-        <div v-else-if="drivers.length === 0" class="text-center py-8 text-gray-400">
-          No drivers found
+        <div v-else-if="drivers.length === 0" class="flex flex-col items-center justify-center py-12 gap-3 text-base-content/30">
+          <Icon name="mdi:account-search-outline" class="text-5xl" />
+          <p class="text-sm font-bold">No drivers found</p>
         </div>
 
         <!-- Drivers -->
@@ -60,28 +63,37 @@
           <div
             v-for="driver in drivers"
             :key="driver.id"
-            class="flex items-center justify-between bg-gray-50 dark:bg-gray-800 p-4 rounded-xl"
+            class="flex items-center justify-between bg-base-200/50 p-4 rounded-2xl border border-base-content/5 hover:bg-base-200 transition"
           >
-            <div>
-              <p class="font-semibold">
-                {{ driver.first_name }} {{ driver.last_name }}
-              </p>
-              <p class="text-sm text-gray-500">
-                Plate: {{ driver.plate_number }}
-              </p>
-              <p class="text-sm text-gray-500">
-                Contact: {{ driver.contact_number }}
-              </p>
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center text-blue-600 font-black text-lg">
+                {{ driver.first_name[0] }}{{ driver.last_name[0] }}
+              </div>
+              <div>
+                <p class="font-bold text-base-content">
+                  {{ driver.first_name }} {{ driver.last_name }}
+                </p>
+                <div class="flex flex-wrap gap-x-4 gap-y-1 mt-1">
+                  <p class="text-[10px] font-bold uppercase tracking-wider text-base-content/50 flex items-center gap-1">
+                    <Icon name="mdi:car-plate" />
+                    {{ driver.plate_number }}
+                  </p>
+                  <p class="text-[10px] font-bold uppercase tracking-wider text-base-content/50 flex items-center gap-1">
+                    <Icon name="mdi:phone" />
+                    {{ driver.contact_number }}
+                  </p>
+                </div>
+              </div>
             </div>
 
-            <span
-              class="text-xs px-2 py-1 rounded-full"
+            <div
+              class="badge badge-sm font-bold uppercase text-[9px] tracking-widest py-3 px-2"
               :class="driver.is_registered
-                ? 'bg-green-100 text-green-700'
-                : 'bg-gray-200 text-gray-600'"
+                ? 'badge-success'
+                : 'badge-ghost opacity-50'"
             >
               {{ driver.is_registered ? "Registered" : "Unregistered" }}
-            </span>
+            </div>
           </div>
         </div>
 

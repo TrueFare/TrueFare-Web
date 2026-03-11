@@ -16,52 +16,58 @@
 
       <!-- HEADER -->
       <div
-        class="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white flex items-center gap-5"
+        class="bg-gradient-to-r from-purple-600 to-indigo-600 p-6 text-white flex items-center gap-6"
       >
+        <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-md border border-white/30 shrink-0">
+          <Icon name="mdi:account-plus" class="text-3xl text-white" />
+        </div>
         <div>
-          <h2 class="text-2xl font-bold">Add New Admin</h2>
-          <p class="text-sm opacity-90">Register a new admin account</p>
+          <h2 class="text-2xl font-black uppercase tracking-tight">Add New Admin</h2>
+          <p class="text-xs font-bold uppercase tracking-widest opacity-80 mt-1">Register a TODA administrator</p>
         </div>
       </div>
 
       <!-- BODY -->
-      <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <p class="text-gray-400 text-sm">First Name</p>
+      <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="form-control">
+          <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">First Name</span></label>
           <input
             v-model="form.first_name"
-            class="input input-bordered w-full"
+            class="input input-bordered w-full focus:input-primary"
+            placeholder="Enter first name"
           />
         </div>
 
-        <div>
-          <p class="text-gray-400 text-sm">Last Name</p>
-          <input v-model="form.last_name" class="input input-bordered w-full" />
+        <div class="form-control">
+          <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">Last Name</span></label>
+          <input v-model="form.last_name" class="input input-bordered w-full focus:input-primary" placeholder="Enter last name" />
         </div>
 
-        <div>
-          <p class="text-gray-400 text-sm">Email</p>
+        <div class="form-control">
+          <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">Email Address</span></label>
           <input
             v-model="form.email"
             type="email"
-            class="input input-bordered w-full"
+            class="input input-bordered w-full focus:input-primary"
+            placeholder="email@example.com"
           />
         </div>
 
-        <div>
-          <p class="text-gray-400 text-sm">Password</p>
+        <div class="form-control">
+          <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">Account Password</span></label>
           <input
             v-model="form.password"
             type="password"
-            class="input input-bordered w-full"
+            class="input input-bordered w-full focus:input-primary"
+            placeholder="Set password"
           />
         </div>
 
-        <div class="md:col-span-2">
-          <p class="text-gray-400 text-sm">TODA</p>
+        <div class="form-control md:col-span-2">
+          <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">Assign to TODA</span></label>
 
-          <select v-model="form.toda_id" class="select select-bordered w-full">
-            <option disabled value="">Select TODA</option>
+          <select v-model="form.toda_id" class="select select-bordered w-full focus:select-primary">
+            <option disabled value="">Select association</option>
 
             <option v-for="toda in todas" :key="toda.id" :value="toda.id">
               {{ toda.name }}
@@ -71,13 +77,13 @@
       </div>
 
       <!-- ACTIONS -->
-      <div class="border-t dark:border-gray-700 p-5 flex justify-end gap-3">
-        <button class="btn btn-outline" @click="resetForm" :disabled="loading">
+      <div class="border-t border-base-content/5 p-5 flex justify-end gap-3 bg-base-200/30">
+        <button class="btn btn-outline border-2 px-8" @click="resetForm" :disabled="loading">
           Clear
         </button>
 
         <button
-          class="btn btn-primary"
+          class="btn btn-primary px-8 gap-2"
           :disabled="loading"
           @click="createAdmin"
         >
@@ -85,7 +91,8 @@
             v-if="loading"
             class="loading loading-spinner loading-sm"
           ></span>
-          {{ loading ? "Creating..." : "Create Admin" }}
+          <Icon v-else name="mdi:plus-circle" class="text-lg" />
+          Create Admin
         </button>
       </div>
     </div>

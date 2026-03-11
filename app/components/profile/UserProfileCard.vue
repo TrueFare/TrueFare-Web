@@ -19,69 +19,72 @@
       <div
         class="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left"
       >
+        <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-md border border-white/30">
+          <Icon name="mdi:account" class="text-4xl text-white" />
+        </div>
         <div>
-          <h2 class="text-2xl font-bold">
+          <h2 class="text-2xl font-black uppercase tracking-tight">
             {{ editableUser.first_name }}
             {{ editableUser.last_name }}
           </h2>
 
-          <h3><strong>Edit User</strong></h3>
+          <h3 class="text-xs font-bold uppercase tracking-widest opacity-80 mt-1">Edit User Profile</h3>
         </div>
       </div>
 
       <!-- ================= BODY ================= -->
-      <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <p class="text-gray-400 text-sm">First Name</p>
+      <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="form-control">
+          <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">First Name</span></label>
           <input
             v-model="editableUser.first_name"
-            class="input input-bordered w-full"
+            class="input input-bordered w-full focus:input-primary"
           />
         </div>
 
-        <div>
-          <p class="text-gray-400 text-sm">Last Name</p>
+        <div class="form-control">
+          <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">Last Name</span></label>
           <input
             v-model="editableUser.last_name"
-            class="input input-bordered w-full"
+            class="input input-bordered w-full focus:input-primary"
           />
         </div>
 
-        <div>
-          <p class="text-gray-400 text-sm">Contact</p>
+        <div class="form-control">
+          <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">Contact</span></label>
           <input
             v-model="editableUser.contact_number"
-            class="input input-bordered w-full"
+            class="input input-bordered w-full focus:input-primary"
           />
         </div>
 
-        <div>
-          <p class="text-gray-400 text-sm">Email</p>
+        <div class="form-control">
+          <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">Email</span></label>
           <input
             v-model="editableUser.email"
-            class="input input-bordered w-full"
+            class="input input-bordered w-full focus:input-primary"
           />
         </div>
 
-        <div>
-          <p class="text-gray-400 text-sm">Date Created</p>
-          <p class="font-semibold">
+        <div class="bg-base-200/50 p-4 rounded-2xl border border-base-content/5">
+          <p class="text-[10px] text-base-content/40 uppercase font-black mb-1 tracking-widest">Date Created</p>
+          <p class="font-bold text-sm">
             {{ editableUser.date_created }}
           </p>
         </div>
 
-        <div v-if="editableUser.date_updated">
-          <p class="text-gray-400 text-sm">Last Updated</p>
-          <p class="font-semibold">
+        <div v-if="editableUser.date_updated" class="bg-base-200/50 p-4 rounded-2xl border border-base-content/5">
+          <p class="text-[10px] text-base-content/40 uppercase font-black mb-1 tracking-widest">Last Updated</p>
+          <p class="font-bold text-sm">
             {{ editableUser.date_updated }}
           </p>
         </div>
       </div>
 
       <!-- ================= ACTIONS ================= -->
-      <div class="border-t dark:border-gray-700 p-5 flex justify-end gap-3">
+      <div class="border-t border-base-content/5 p-5 flex justify-end gap-3 bg-base-200/30">
         <button
-          class="btn btn-error"
+          class="btn btn-error btn-outline border-2"
           :disabled="deleting || saving"
           @click="deleteUser"
         >
@@ -89,19 +92,20 @@
             v-if="deleting"
             class="loading loading-spinner loading-sm"
           ></span>
-          <i v-else class="fa-solid fa-trash"></i>
+          <Icon v-else name="mdi:trash-can-outline" class="text-lg" />
           {{ deleting ? "Deleting..." : "Delete" }}
         </button>
 
         <button
-          class="btn btn-primary flex items-center gap-2"
+          class="btn btn-primary px-8"
           :disabled="saving"
           @click="saveUser"
         >
           <span v-if="saving" class="loading loading-spinner loading-sm"></span>
 
-          <span>
-            {{ saving ? "Saving..." : "💾 Save" }}
+          <span class="flex items-center gap-2">
+            <Icon v-if="!saving" name="mdi:content-save" class="text-lg" />
+            {{ saving ? "Saving..." : "Save Changes" }}
           </span>
         </button>
       </div>

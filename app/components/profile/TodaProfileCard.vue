@@ -17,78 +17,83 @@
 
       <!-- ================= HEADER ================= -->
       <div
-        class="bg-gradient-to-r from-purple-600 to-indigo-600 p-6 text-white"
+        class="bg-gradient-to-r from-purple-600 to-indigo-600 p-6 text-white flex items-center gap-6"
       >
-        <h2 class="text-2xl font-bold flex items-center gap-3">
-          <i class="fa-solid fa-building"></i>
-          TODA Profile
-        </h2>
-        <p class="text-purple-100 mt-1">Edit TODA details below</p>
+        <div class="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-md border border-white/30 shrink-0">
+          <Icon name="mdi:office-building" class="text-4xl text-white" />
+        </div>
+        <div>
+          <h2 class="text-2xl font-black uppercase tracking-tight">
+            TODA Profile
+          </h2>
+          <p class="text-xs font-bold uppercase tracking-widest opacity-80 mt-1">Manage transport association details</p>
+        </div>
       </div>
 
       <!-- ================= BODY ================= -->
-      <div class="p-6 space-y-4">
-        <div>
-          <p class="text-gray-400 text-sm">TODA Name</p>
-          <input
-            v-model="editableToda.name"
-            class="input input-bordered w-full"
-            placeholder="Enter TODA name"
-          />
-        </div>
-
-        <div>
-          <p class="text-gray-400 text-sm">Password</p>
-          <div class="relative">
+      <div class="p-6 space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="form-control">
+            <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">TODA Name</span></label>
             <input
-              v-model="editableToda.password"
-              :type="showPassword ? 'text' : 'password'"
-              class="input input-bordered w-full pr-10"
-              placeholder="Enter password"
+              v-model="editableToda.name"
+              class="input input-bordered w-full focus:input-primary"
+              placeholder="Enter TODA name"
             />
-            <button
-              type="button"
-              @click="showPassword = !showPassword"
-              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-            >
-              <i
-                :class="
-                  showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'
-                "
-              ></i>
-            </button>
+          </div>
+
+          <div class="form-control">
+            <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">Password</span></label>
+            <div class="relative">
+              <input
+                v-model="editableToda.password"
+                :type="showPassword ? 'text' : 'password'"
+                class="input input-bordered w-full pr-12 focus:input-primary"
+                placeholder="Enter password"
+              />
+              <button
+                type="button"
+                @click="showPassword = !showPassword"
+                class="absolute right-3 top-1/2 -translate-y-1/2 btn btn-ghost btn-xs btn-circle"
+              >
+                <Icon
+                  :name="showPassword ? 'mdi:eye-off' : 'mdi:eye'"
+                  class="text-base text-base-content/40"
+                />
+              </button>
+            </div>
+          </div>
+
+          <div class="form-control">
+            <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">Barangay</span></label>
+            <input
+              v-model="editableToda.barangay"
+              class="input input-bordered w-full focus:input-primary"
+              placeholder="Enter barangay"
+            />
+          </div>
+
+          <div class="form-control">
+            <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">City</span></label>
+            <input
+              v-model="editableToda.city"
+              class="input input-bordered w-full focus:input-primary"
+              placeholder="Enter city"
+            />
           </div>
         </div>
 
-        <div>
-          <p class="text-gray-400 text-sm">Barangay</p>
-          <input
-            v-model="editableToda.barangay"
-            class="input input-bordered w-full"
-            placeholder="Enter barangay"
-          />
-        </div>
-
-        <div>
-          <p class="text-gray-400 text-sm">City</p>
-          <input
-            v-model="editableToda.city"
-            class="input input-bordered w-full"
-            placeholder="Enter city"
-          />
-        </div>
-
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <p class="text-gray-400 text-sm">Date Created</p>
-            <p class="font-semibold">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-base-200/50 p-4 rounded-2xl border border-base-content/5">
+            <p class="text-[10px] text-base-content/40 uppercase font-black mb-1 tracking-widest">Date Created</p>
+            <p class="font-bold text-sm">
               {{ editableToda.date_created || "-" }}
             </p>
           </div>
 
-          <div v-if="editableToda.date_updated">
-            <p class="text-gray-400 text-sm">Last Updated</p>
-            <p class="font-semibold">
+          <div v-if="editableToda.date_updated" class="bg-base-200/50 p-4 rounded-2xl border border-base-content/5">
+            <p class="text-[10px] text-base-content/40 uppercase font-black mb-1 tracking-widest">Last Updated</p>
+            <p class="font-bold text-sm">
               {{ editableToda.date_updated }}
             </p>
           </div>
@@ -97,10 +102,10 @@
 
       <!-- ================= ACTIONS ================= -->
       <div
-        class="border-t dark:border-gray-700 p-5 flex justify-end gap-3 flex-wrap"
+        class="border-t border-base-content/5 p-5 flex justify-end gap-3 flex-wrap bg-base-200/30"
       >
         <button
-          class="btn btn-error"
+          class="btn btn-error btn-outline border-2 gap-2"
           :disabled="deleting || saving"
           @click="deleteToda"
         >
@@ -108,19 +113,20 @@
             v-if="deleting"
             class="loading loading-spinner loading-sm"
           ></span>
-          <i v-else class="fa-solid fa-trash"></i>
+          <Icon v-else name="mdi:trash-can-outline" class="text-lg" />
           {{ deleting ? "Deleting..." : "Delete" }}
         </button>
 
         <button
-          class="btn btn-primary flex items-center gap-2"
+          class="btn btn-primary px-8 gap-2"
           :disabled="saving || deleting"
           @click="saveToda"
         >
           <span v-if="saving" class="loading loading-spinner loading-sm"></span>
 
-          <span>
-            {{ saving ? "Saving..." : "💾 Save" }}
+          <span class="flex items-center gap-2">
+            <Icon v-if="!saving" name="mdi:content-save" class="text-lg" />
+            {{ saving ? "Saving..." : "Save Changes" }}
           </span>
         </button>
       </div>
