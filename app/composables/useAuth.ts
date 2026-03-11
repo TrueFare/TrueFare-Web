@@ -10,16 +10,22 @@ export interface User {
 export const useAuth = () => {
   const user = useState<User | null>('user', () => null);
   const loading = useState<boolean>('auth-loading', () => false);
+  const sessionHint = useCookie('auth_session_hint');
 
   const fetchUser = async () => {
+    // If no session hint, we can skip fetching on server to avoid unnecessary work
+    // but only if we are absolutely sure the cookie is the source of truth.
+    // For now, let's keep the fetch but make it safer.
+    
     loading.value = true;
     try {
-      // Use useRequestHeaders to pass cookies on server-side
       const headers = useRequestHeaders(['cookie']);
       const data = await $fetch<User>('/api/auth/me', { headers });
       user.value = data;
+      if (data) sessionHint.value = data.id;
     } catch (e) {
       user.value = null;
+      sessionHint.value = null;
     } finally {
       loading.value = false;
     }
@@ -33,6 +39,7 @@ export const useAuth = () => {
         body: credentials
       });
       user.value = response;
+      if (response) sessionHint.value = response.id;
       
       // Redirect based on role
       if (user.value.role === 'super_admin') {
@@ -54,6 +61,7 @@ export const useAuth = () => {
     try {
       await $fetch('/api/auth/logout', { method: 'POST' });
       user.value = null;
+      sessionHint.value = null;
       navigateTo('/login');
     } catch (e) {
       console.error('Logout failed', e);
@@ -67,6 +75,7 @@ export const useAuth = () => {
     loading,
     fetchUser,
     login,
-    logout
+    logout,
+    hasSessionHint: computed(() => !!sessionHint.value)
   };
 };

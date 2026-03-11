@@ -27,6 +27,10 @@ export default defineEventHandler(async (event) => {
         maxAge: 60 * 60 * 24 * 7, // 1 week
         path: '/'
       });
+      setCookie(event, 'auth_session_hint', superAdmin.id, {
+        maxAge: 60 * 60 * 24 * 7,
+        path: '/'
+      });
       return superAdmin;
     }
 
@@ -45,6 +49,10 @@ export default defineEventHandler(async (event) => {
         maxAge: 60 * 60 * 24 * 7,
         path: '/'
       });
+      setCookie(event, 'auth_session_hint', admin.id, {
+        maxAge: 60 * 60 * 24 * 7,
+        path: '/'
+      });
       return admin;
     }
 
@@ -60,6 +68,10 @@ export default defineEventHandler(async (event) => {
       setCookie(event, 'auth_session', JSON.stringify({ id: user.id, role: 'user' }), {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
+        maxAge: 60 * 60 * 24 * 7,
+        path: '/'
+      });
+      setCookie(event, 'auth_session_hint', user.id, {
         maxAge: 60 * 60 * 24 * 7,
         path: '/'
       });
