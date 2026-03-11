@@ -1,43 +1,45 @@
 <template>
   <div class="p-6 space-y-8">
     <!-- Top Tabs / Navbar -->
-    <div class="tabs tabs-boxed mb-6">
-      <button
-        class="tab"
-        :class="{ 'tab-active': activeTab === 'dashboard' }"
-        @click="activeTab = 'dashboard'"
-      >
-        Dashboard
-      </button>
-      <button
-        class="tab"
-        :class="{ 'tab-active': activeTab === 'todas' }"
-        @click="activeTab = 'todas'"
-      >
-        TODAs
-      </button>
-      <button
-        class="tab"
-        :class="{ 'tab-active': activeTab === 'tricycles' }"
-        @click="activeTab = 'tricycles'"
-      >
-        Tricycles
-      </button>
-      <button
-        class="tab"
-        :class="{ 'tab-active': activeTab === 'reports' }"
-        @click="activeTab = 'reports'"
-      >
-        Reports
-      </button>
-      <button
-        class="tab"
-        :class="{ 'tab-active': activeTab === 'users' }"
-        @click="activeTab = 'users'"
-      >
-        Users
-      </button>
-    </div>
+    <ClientOnly>
+      <div class="tabs tabs-boxed mb-6">
+        <button
+          class="tab"
+          :class="{ 'tab-active': activeTab === 'dashboard' }"
+          @click="activeTab = 'dashboard'"
+        >
+          Dashboard
+        </button>
+        <button
+          class="tab"
+          :class="{ 'tab-active': activeTab === 'todas' }"
+          @click="activeTab = 'todas'"
+        >
+          TODAs
+        </button>
+        <button
+          class="tab"
+          :class="{ 'tab-active': activeTab === 'tricycles' }"
+          @click="activeTab = 'tricycles'"
+        >
+          Tricycles
+        </button>
+        <button
+          class="tab"
+          :class="{ 'tab-active': activeTab === 'reports' }"
+          @click="activeTab = 'reports'"
+        >
+          Reports
+        </button>
+        <button
+          class="tab"
+          :class="{ 'tab-active': activeTab === 'users' }"
+          @click="activeTab = 'users'"
+        >
+          Users
+        </button>
+      </div>
+    </ClientOnly>
 
     <!-- ========================= -->
     <!-- TAB CONTENT -->
