@@ -42,7 +42,10 @@
                   </div>
                 </td>
                 <td class="px-6 py-4 font-medium">
-                  {{ r.driver_name || ('Driver ' + r.driver_id) }}
+                   <div class="flex flex-col">
+                    <span class="font-bold text-base-content">{{ r.driver_name || ('Driver ' + r.driver_id) }}</span>
+                    <span class="text-[10px] uppercase font-bold text-primary">{{ r.plate_number }}</span>
+                  </div>
                 </td>
                 <td class="px-6 py-4 text-info font-black">
                   #{{ r.trip_id }}
@@ -147,7 +150,10 @@
             </div>
             <div class="bg-base-200/50 p-4 rounded-2xl border border-base-content/5">
               <p class="text-[10px] text-base-content/40 uppercase font-black mb-1 tracking-widest">Driver Involved</p>
-              <p class="font-bold text-base-content">{{ selectedReport?.driver_name || ('Driver ' + selectedReport?.driver_id) }}</p>
+              <p class="font-bold text-base-content">
+                {{ selectedReport?.driver_name || ('Driver ' + selectedReport?.driver_id) }}
+                <span class="block text-[10px] text-primary">{{ selectedReport?.plate_number }}</span>
+              </p>
             </div>
             <div class="bg-base-200/50 p-4 rounded-2xl border border-base-content/5">
               <p class="text-[10px] text-base-content/40 uppercase font-black mb-1 tracking-widest">Trip ID</p>
@@ -195,16 +201,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, onUnmounted } from 'vue';
+import { ref, watch, onUnmounted } from 'vue';
 
-defineProps({
-  autoFetch: { type: Boolean, default: true },
+const props = defineProps({
+  items: { type: Array, required: true },
+  pending: { type: Boolean, default: false }
 });
 
-const items = ref([]);
-const pending = ref(false);
-const updating = ref(false);
+const emit = defineEmits(['refresh']);
 
+const updating = ref(false);
 const showModal = ref(false);
 const selectedReport = ref(null);
 
@@ -235,19 +241,6 @@ const closeModal = () => {
   selectedReport.value = null;
 };
 
-const fetchReports = async () => {
-  pending.value = true;
-  try {
-    const resp = await $fetch('/api/report');
-    items.value = resp.results || resp || [];
-  } catch (e) {
-    console.error('Failed to fetch reports', e);
-    items.value = [];
-  } finally {
-    pending.value = false;
-  }
-};
-
 const updateStatus = async (newStatus) => {
   if (!selectedReport.value) return;
   updating.value = true;
@@ -261,10 +254,7 @@ const updateStatus = async (newStatus) => {
     });
     // Update local state
     selectedReport.value.status = newStatus;
-    const index = items.value.findIndex(i => i.id === selectedReport.value.id);
-    if (index !== -1) {
-      items.value[index].status = newStatus;
-    }
+    emit('refresh');
   } catch (e) {
     console.error('Failed to update report status', e);
     alert('Failed to update status');
@@ -272,10 +262,6 @@ const updateStatus = async (newStatus) => {
     updating.value = false;
   }
 };
-
-defineExpose({
-  items
-});
 
 const statusText = (s) => {
   if (s === null || s === undefined) return 'Unknown';
@@ -292,8 +278,4 @@ const formatDate = (d) => {
     return d;
   }
 };
-
-onMounted(() => {
-  fetchReports();
-});
 </script>
