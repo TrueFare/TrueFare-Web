@@ -1,4 +1,4 @@
 export default defineEventHandler((event) => {
-  clearSession(event);
+  clearAuthSession(event);
   return { success: true };
 });

@@ -20,35 +20,41 @@
 
     <TodaSearch @search="handleSearchToda" />
 
-    <div
-      v-if="todas.length === 0"
-      class="flex flex-col items-center justify-center py-20 text-gray-400"
-    >
-      <Icon name="mdi:office-building-off" class="text-5xl mb-4" />
-      <p class="text-lg font-semibold">No TODAs available</p>
-      <p class="text-sm">Create or register a TODA to get started.</p>
+    <div v-if="loading" class="flex items-center justify-center p-20">
+      <span class="loading loading-spinner loading-lg text-primary"></span>
     </div>
 
-    <div
-      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
-    >
-      <TodaCard
-        v-for="toda in paginatedTodas"
-        :key="toda.id"
-        :id="toda.id"
-        :name="toda.name"
-        :barangay="toda.barangay"
-        :city="toda.city"
-        :date_created="toda.date_created"
-        :date_update="toda.date_updated"
-        @view-admins="openAdminView"
-        @view-drivers="openDriverView"
-        @edit="openEditToda"
-      />
+    <div v-else>
+      <div
+        v-if="todas.length === 0"
+        class="flex flex-col items-center justify-center py-20 text-gray-400"
+      >
+        <Icon name="mdi:office-building-off" class="text-5xl mb-4" />
+        <p class="text-lg font-semibold">No TODAs available</p>
+        <p class="text-sm">Create or register a TODA to get started.</p>
+      </div>
+
+      <div
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+      >
+        <TodaCard
+          v-for="toda in todas"
+          :key="toda.id"
+          :id="toda.id"
+          :name="toda.name"
+          :barangay="toda.barangay"
+          :city="toda.city"
+          :date_created="toda.date_created"
+          :date_update="toda.date_updated"
+          @view-admins="openAdminView"
+          @view-drivers="openDriverView"
+          @edit="openEditToda"
+        />
+      </div>
     </div>
     <Pagination
       v-model:page="todaPage"
-      :total-items="todas.length"
+      :total-items="totalTodas"
       :per-page="perTodaPage"
     />
 
@@ -80,7 +86,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, watch, onMounted } from "vue";
 import TodaCard from "~/components/cards/TodaCard.vue";
 import Pagination from "~/components/Pagination.vue";
 import TodaSearch from "~/components/search/TodaSearch.vue";
@@ -93,24 +99,36 @@ const { exportToCsv } = useCsvExport();
 const emits = defineEmits(['refresh-counts']);
 
 const todas = ref([]);
+const totalTodas = ref(0);
+const todaPage = ref(1);
+const perTodaPage = 8;
+const loading = ref(false);
+
 const fetchTodas = async () => {
+  loading.value = true;
   try {
-    const response = await $fetch("/api/toda");
+    const response = await $fetch("/api/toda", {
+      params: {
+        page: todaPage.value,
+        limit: perTodaPage
+      }
+    });
     todas.value = response.results || [];
+    totalTodas.value = response.total || 0;
   } catch (error) {
     console.error("Failed to fetch todas:", error);
+  } finally {
+    loading.value = false;
   }
 };
 
-const todaPage = ref(1);
-const perTodaPage = 8;
-const paginatedTodas = computed(() => {
-  const start = (todaPage.value - 1) * perTodaPage;
-  return todas.value.slice(start, start + perTodaPage);
+watch(todaPage, () => {
+  fetchTodas();
 });
 
 const handleSearchToda = async (query) => {
   if (!query) {
+    todaPage.value = 1;
     fetchTodas();
     return;
   }
@@ -119,6 +137,7 @@ const handleSearchToda = async (query) => {
       params: { search: query },
     });
     todas.value = response.results || response;
+    totalTodas.value = todas.value.length;
     todaPage.value = 1;
   } catch (error) {
     console.error("Failed to search toda:", error);

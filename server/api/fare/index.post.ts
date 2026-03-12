@@ -8,7 +8,7 @@ const FareSchema = z.object({
 
 export default defineEventHandler(async (event) => {
   const db = useDb(event);
-  requireRole(event, ['super_admin']);
+  requireAuthRole(event, ['super_admin']);
   
   const body = await validateBody(event, FareSchema);
 

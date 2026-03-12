@@ -1,6 +1,6 @@
 export default defineEventHandler(async (event) => {
   const db = useDb(event);
-  const session = requireSession(event);
+  const session = requireAuthSession(event);
 
   const { id, role } = session;
 
@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
     }
 
     if (!user) {
-      clearSession(event);
+      clearAuthSession(event);
       throw createApiError(401, "User not found");
     }
 

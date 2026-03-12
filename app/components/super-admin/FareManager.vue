@@ -7,8 +7,8 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <!-- Historical Fares Table -->
-      <div class="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl shadow p-6 overflow-x-auto">
-        <div class="flex justify-between items-center mb-4">
+      <div class="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl shadow p-6 flex flex-col h-[500px]">
+        <div class="flex justify-between items-center mb-4 shrink-0">
           <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300">Fare History</h3>
           <button
             class="btn btn-sm btn-outline btn-secondary"
@@ -19,24 +19,42 @@
             Export to CSV
           </button>
         </div>
-        <table class="w-full text-sm text-left">
-          <thead class="bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-200">
-            <tr>
-              <th class="px-4 py-3">Base Km</th>
-              <th class="px-4 py-3">Base Fare (₱)</th>
-              <th class="px-4 py-3">Fare / km (₱)</th>
-              <th class="px-4 py-3">Effective Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="fare in historicalFares" :key="fare.id" class="border-t dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
-              <td class="px-4 py-3">{{ fare.base_km }} km</td>
-              <td class="px-4 py-3">₱{{ fare.base_fare }}</td>
-              <td class="px-4 py-3">₱{{ fare.fare_per_km }}</td>
-              <td class="px-4 py-3 text-gray-500 text-xs">{{ formatDate(fare.date_created) }}</td>
-            </tr>
-          </tbody>
-        </table>
+
+        <div v-if="historyLoading" class="flex-1 flex items-center justify-center">
+          <span class="loading loading-spinner loading-lg text-primary"></span>
+        </div>
+
+        <div v-else class="flex-1 overflow-auto">
+          <table class="w-full text-sm text-left border-separate border-spacing-0">
+            <thead class="bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-200 sticky top-0 z-10">
+              <tr>
+                <th class="px-4 py-3 border-b dark:border-gray-600">Base Km</th>
+                <th class="px-4 py-3 border-b dark:border-gray-600">Base Fare (₱)</th>
+                <th class="px-4 py-3 border-b dark:border-gray-600">Fare / km (₱)</th>
+                <th class="px-4 py-3 border-b dark:border-gray-600">Effective Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="fare in historicalFares" :key="fare.id" class="border-t dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                <td class="px-4 py-3 border-b dark:border-gray-700">{{ fare.base_km }} km</td>
+                <td class="px-4 py-3 border-b dark:border-gray-700">₱{{ fare.base_fare }}</td>
+                <td class="px-4 py-3 border-b dark:border-gray-700">₱{{ fare.fare_per_km }}</td>
+                <td class="px-4 py-3 border-b dark:border-gray-700 text-gray-500 text-xs">{{ formatDate(fare.date_created) }}</td>
+              </tr>
+              <tr v-if="historicalFares.length === 0">
+                <td colspan="4" class="px-4 py-8 text-center text-gray-400 italic">No fare history found.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="shrink-0 pt-4">
+          <Pagination
+            v-model:page="farePage"
+            :total-items="totalFares"
+            :per-page="perFarePage"
+          />
+        </div>
       </div>
 
       <!-- Add New Fare Form -->
@@ -66,13 +84,19 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, watch, onMounted } from "vue";
 import ChartFarePriceTrend from "~/components/charts/ChartFarePriceTrend.vue";
+import Pagination from "~/components/Pagination.vue";
 
 const { exportToCsv } = useCsvExport();
 const historicalFares = ref([]);
+const totalFares = ref(0);
+const farePage = ref(1);
+const perFarePage = 10; // Increased limit for scrollable table
+
 const chartRef = ref(null);
 const loading = ref(false);
+const historyLoading = ref(false);
 
 const form = ref({
   base_km: 1.0,
@@ -81,13 +105,20 @@ const form = ref({
 });
 
 const fetchFares = async () => {
+  historyLoading.value = true;
   try {
-    const res = await $fetch("/api/fare");
-    // Sort by date_created descending for the table
-    historicalFares.value = (res.results || []).sort((a, b) => new Date(b.date_created) - new Date(a.date_created));
+    const res = await $fetch("/api/fare", {
+      params: {
+        page: farePage.value,
+        limit: perFarePage
+      }
+    });
+    // API already returns sorted by date_created DESC in the updated version
+    historicalFares.value = res.results || [];
+    totalFares.value = res.total || 0;
     
-    // Default form values based on latest if exists
-    if (historicalFares.value.length > 0) {
+    // Default form values based on latest if exists (only on first page load or first item)
+    if (historicalFares.value.length > 0 && farePage.value === 1) {
       const latest = historicalFares.value[0];
       form.value.base_km = latest.base_km;
       form.value.base_fare = latest.base_fare;
@@ -95,8 +126,14 @@ const fetchFares = async () => {
     }
   } catch (e) {
     console.error("Failed to fetch fares", e);
+  } finally {
+    historyLoading.value = false;
   }
 };
+
+watch(farePage, () => {
+  fetchFares();
+});
 
 const submitFare = async () => {
   if (loading.value) return;
@@ -110,6 +147,7 @@ const submitFare = async () => {
       body: form.value
     });
     alert("Fare structure updated successfully!");
+    farePage.value = 1;
     await fetchFares();
     if (chartRef.value) chartRef.value.refresh();
   } catch (err) {

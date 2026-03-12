@@ -5,33 +5,33 @@
   >
     <!-- Previous -->
     <button
-      class="px-3 py-1 rounded bg-gray-200 dark:bg-gray-700"
-      :disabled="currentPage === 1"
-      @click="$emit('update:page', currentPage - 1)"
+      class="btn btn-sm"
+      :disabled="page === 1"
+      @click="$emit('update:page', page - 1)"
     >
       Prev
     </button>
 
     <!-- Page Numbers -->
     <button
-      v-for="page in totalPages"
-      :key="page"
-      class="px-3 py-1 rounded"
+      v-for="p in totalPages"
+      :key="p"
+      class="btn btn-sm"
       :class="
-        page === currentPage
-          ? 'bg-blue-600 text-white'
-          : 'bg-gray-200 dark:bg-gray-700'
+        p === page
+          ? 'btn-primary'
+          : 'btn-ghost'
       "
-      @click="$emit('update:page', page)"
+      @click="$emit('update:page', p)"
     >
-      {{ page }}
+      {{ p }}
     </button>
 
     <!-- Next -->
     <button
-      class="px-3 py-1 rounded bg-gray-200 dark:bg-gray-700"
-      :disabled="currentPage === totalPages"
-      @click="$emit('update:page', currentPage + 1)"
+      class="btn btn-sm"
+      :disabled="page === totalPages"
+      @click="$emit('update:page', page + 1)"
     >
       Next
     </button>
@@ -39,14 +39,24 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
+
 const props = defineProps({
-  currentPage: Number,
-  totalItems: Number,
+  page: {
+    type: Number,
+    default: 1,
+  },
+  totalItems: {
+    type: Number,
+    default: 0,
+  },
   perPage: {
     type: Number,
     default: 10,
   },
 });
+
+defineEmits(['update:page']);
 
 const totalPages = computed(() => Math.ceil(props.totalItems / props.perPage));
 </script>

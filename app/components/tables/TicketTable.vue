@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div v-if="pending" class="flex items-center justify-center p-8">
-      <span class="loading loading-spinner text-primary"></span>
+    <div v-if="loading" class="flex items-center justify-center p-12">
+      <span class="loading loading-spinner loading-lg text-primary"></span>
     </div>
 
     <div v-else>
@@ -112,6 +112,13 @@
             </div>
           </div>
         </div>
+
+        <Pagination
+          v-model:page="reportPage"
+          :total-items="totalReports"
+          :per-page="perReportPage"
+          class="mt-6"
+        />
       </div>
     </div>
 
@@ -196,14 +203,19 @@
 
 <script setup>
 import { ref, onMounted, watch, onUnmounted } from 'vue';
+import Pagination from '~/components/Pagination.vue';
 
 defineProps({
   autoFetch: { type: Boolean, default: true },
 });
 
 const items = ref([]);
-const pending = ref(false);
+const loading = ref(false);
 const updating = ref(false);
+
+const totalReports = ref(0);
+const reportPage = ref(1);
+const perReportPage = 10;
 
 const showModal = ref(false);
 const selectedReport = ref(null);
@@ -236,17 +248,27 @@ const closeModal = () => {
 };
 
 const fetchReports = async () => {
-  pending.value = true;
+  loading.value = true;
   try {
-    const resp = await $fetch('/api/report');
-    items.value = resp.results || resp || [];
+    const resp = await $fetch('/api/report', {
+      params: {
+        page: reportPage.value,
+        limit: perReportPage
+      }
+    });
+    items.value = resp.results || [];
+    totalReports.value = resp.total || 0;
   } catch (e) {
     console.error('Failed to fetch reports', e);
     items.value = [];
   } finally {
-    pending.value = false;
+    loading.value = false;
   }
 };
+
+watch(reportPage, () => {
+  fetchReports();
+});
 
 const updateStatus = async (newStatus) => {
   if (!selectedReport.value) return;

@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
       .first();
 
     if (superAdmin) {
-      setSession(event, { id: superAdmin.id, role: 'super_admin' });
+      setAuthSession(event, { id: superAdmin.id, role: 'super_admin' });
       return superAdmin;
     }
 
@@ -31,7 +31,7 @@ export default defineEventHandler(async (event) => {
       .first();
 
     if (admin) {
-      setSession(event, { id: admin.id, role: 'admin' });
+      setAuthSession(event, { id: admin.id, role: 'admin' });
       return admin;
     }
 
@@ -44,7 +44,7 @@ export default defineEventHandler(async (event) => {
       .first();
 
     if (user) {
-      setSession(event, { id: user.id, role: 'user' });
+      setAuthSession(event, { id: user.id, role: 'user' });
       return user;
     }
 
