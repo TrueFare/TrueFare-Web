@@ -6,7 +6,9 @@
     <table class="table table-zebra w-full">
       <!-- TABLE HEADER -->
       <thead class="bg-base-200 text-base-content/70">
-        <tr class="border-none uppercase text-[10px] tracking-widest font-black">
+        <tr
+          class="border-none uppercase text-[10px] tracking-widest font-black"
+        >
           <th class="px-6 py-4">User Name</th>
           <th class="px-6 py-4">Contact No.</th>
           <th class="px-6 py-4">Date Created</th>
@@ -16,7 +18,10 @@
 
       <tbody>
         <tr v-if="users.length === 0">
-          <td colspan="4" class="text-center py-12 text-base-content/30 italic font-medium">
+          <td
+            colspan="4"
+            class="text-center py-12 text-base-content/30 italic font-medium"
+          >
             No users available.
           </td>
         </tr>
@@ -29,13 +34,19 @@
         >
           <td class="px-6 py-4">
             <div class="flex items-center gap-3">
-              <div class="w-10 h-10 bg-base-200 rounded-full flex items-center justify-center font-black text-sm text-base-content/40 border border-base-content/5">
+              <div
+                class="w-10 h-10 bg-base-200 rounded-full flex items-center justify-center font-black text-sm text-base-content/40 border border-base-content/5"
+              >
                 {{ user.first_name[0] }}{{ user.last_name[0] }}
               </div>
               <div class="flex flex-col">
-                <span class="font-bold text-base-content">{{ user.first_name }} {{ user.last_name }}</span>
+                <span class="font-bold text-base-content"
+                  >{{ user.first_name }} {{ user.last_name }}</span
+                >
                 <div class="flex items-center gap-2">
-                  <span class="text-[10px] font-medium text-primary">{{ user.email || "No Email" }}</span>
+                  <span class="text-[10px] font-medium text-primary">{{
+                    user.email || "No Email"
+                  }}</span>
                   <div
                     class="badge badge-xs font-bold uppercase text-[7px] tracking-widest py-2"
                     :class="roleClassBadge(user.role)"
@@ -46,8 +57,14 @@
               </div>
             </div>
           </td>
-          <td class="px-6 py-4 text-sm font-medium text-base-content/70">{{ user.contact_number || '-' }}</td>
-          <td class="px-6 py-4 text-xs font-bold uppercase text-base-content/30 tracking-tight">{{ user.date_created }}</td>
+          <td class="px-6 py-4 text-sm font-medium text-base-content/70">
+            {{ user.contact_number || "-" }}
+          </td>
+          <td
+            class="px-6 py-4 text-xs font-bold uppercase text-base-content/30 tracking-tight"
+          >
+            {{ user.date_created }}
+          </td>
           <td class="px-6 py-4 text-center">
             <button
               class="btn btn-ghost btn-xs text-primary font-black uppercase tracking-widest"
@@ -71,7 +88,9 @@
     >
       <div class="flex items-center justify-between mb-4">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-base-200 rounded-full flex items-center justify-center font-black text-sm text-base-content/40 border border-base-content/5">
+          <div
+            class="w-10 h-10 bg-base-200 rounded-full flex items-center justify-center font-black text-sm text-base-content/40 border border-base-content/5"
+          >
             {{ user.first_name[0] }}{{ user.last_name[0] }}
           </div>
           <div>
@@ -93,20 +112,33 @@
 
       <div class="grid grid-cols-2 gap-4 border-t border-base-content/5 pt-4">
         <div>
-          <p class="text-[9px] font-black uppercase tracking-widest text-base-content/40 mb-0.5">Contact</p>
-          <p class="font-bold text-sm">{{ user.contact_number || '-' }}</p>
+          <p
+            class="text-[9px] font-black uppercase tracking-widest text-base-content/40 mb-0.5"
+          >
+            Contact
+          </p>
+          <p class="font-bold text-sm">{{ user.contact_number || "-" }}</p>
         </div>
         <div>
-          <p class="text-[9px] font-black uppercase tracking-widest text-base-content/40 mb-0.5">Joined</p>
+          <p
+            class="text-[9px] font-black uppercase tracking-widest text-base-content/40 mb-0.5"
+          >
+            Joined
+          </p>
           <p class="font-bold text-[10px]">{{ user.date_created }}</p>
         </div>
       </div>
     </div>
 
     <!-- EMPTY STATE -->
-    <div v-if="users.length === 0" class="flex flex-col items-center justify-center py-12 gap-3 text-base-content/30">
+    <div
+      v-if="users.length === 0"
+      class="flex flex-col items-center justify-center py-12 gap-3 text-base-content/30"
+    >
       <Icon name="mdi:account-off" class="text-5xl" />
-      <p class="text-sm font-bold uppercase tracking-widest">No users available.</p>
+      <p class="text-sm font-bold uppercase tracking-widest">
+        No users available.
+      </p>
     </div>
   </div>
 
@@ -175,7 +207,7 @@ const roleClassBadge = (role) => {
     case "super_admin":
       return "badge-error text-white";
     case "admin":
-      return "badge-secondary";
+      return "bg-purple-500 text-white border-purple-500";
     default:
       return "badge-primary badge-outline";
   }

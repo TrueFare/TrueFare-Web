@@ -50,6 +50,21 @@
             class="input input-bordered w-full focus:input-error"
           />
         </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div class="form-control">
+            <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">Date Created</span></label>
+            <div class="bg-base-200/50 p-3 rounded-xl text-sm font-bold opacity-70">
+              {{ new Date(editableSuper.date_created).toLocaleDateString() }}
+            </div>
+          </div>
+          <div class="form-control">
+            <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">Date Updated</span></label>
+            <div class="bg-base-200/50 p-3 rounded-xl text-sm font-bold opacity-70">
+              {{ editableSuper.date_updated ? new Date(editableSuper.date_updated).toLocaleDateString() : 'Never' }}
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="border-t border-base-content/5 p-5 flex justify-end gap-3 bg-base-200/30">
@@ -92,6 +107,7 @@ const saveSuper = async () => {
     body: editableSuper,
   });
   emit("updated");
+  emit("close");
   alert("Super Admin updated!");
 };
 
