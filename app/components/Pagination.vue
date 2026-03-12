@@ -59,4 +59,49 @@ const props = defineProps({
 defineEmits(['update:page']);
 
 const totalPages = computed(() => Math.ceil(props.totalItems / props.perPage));
+
+const visiblePages = computed(() => {
+  const current = props.page;
+  const last = totalPages.value;
+  const delta = 1; // Number of pages to show before and after current
+  const range = [];
+  const rangeWithDots = [];
+  let l;
+
+  for (let i = 1; i <= last; i++) {
+    if (i === 1 || i === last || (i >= current - delta && i <= current + delta)) {
+      range.push(i);
+    }
+  }
+
+  for (let i of range) {
+    if (l) {
+      if (i - l === 2) {
+        rangeWithDots.push(l + 1);
+      } else if (i - l !== 1) {
+        rangeWithDots.push('...');
+      }
+    }
+    rangeWithDots.push(i);
+    l = i;
+  }
+
+  return rangeWithDots;
+});
+
+const changePage = (p) => {
+  if (p >= 1 && p <= totalPages.value) {
+    emit("update:page", p);
+    // Smooth scroll to top when changing page
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+};
 </script>
+
+<style scoped>
+.join-item:focus {
+  outline: none;
+}
+</style>

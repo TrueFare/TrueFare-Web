@@ -78,7 +78,9 @@
         >
           <div class="flex items-center justify-between mb-4">
             <div class="flex items-center gap-3">
-              <div class="w-10 h-10 bg-base-200 rounded-full flex items-center justify-center font-black text-sm text-base-content/40 border border-base-content/5">
+              <div
+                class="w-10 h-10 bg-base-200 rounded-full flex items-center justify-center font-black text-sm text-base-content/40 border border-base-content/5"
+              >
                 {{ user.first_name[0] }}{{ user.last_name[0] }}
               </div>
               <div>
@@ -187,7 +189,7 @@ const roleClassBadge = (role) => {
     case "super_admin":
       return "badge-error text-white";
     case "admin":
-      return "badge-secondary";
+      return "bg-purple-500 text-white border-purple-500";
     default:
       return "badge-primary badge-outline";
   }

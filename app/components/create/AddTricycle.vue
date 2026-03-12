@@ -121,6 +121,7 @@
           <select
             v-model="newDriver.toda_id"
             class="select select-bordered w-full focus:select-primary"
+            :disabled="!!todaId"
           >
             <option disabled value="">Select TODA</option>
 
@@ -156,9 +157,13 @@ import { reactive, ref, watch, onMounted, onUnmounted } from "vue";
 
 const props = defineProps({
   show: Boolean,
+  todaId: {
+    type: [String, Number],
+    default: "",
+  },
 });
 
-const emit = defineEmits(["close", "updated"]);
+const emit = defineEmits(["close", "updated", "created"]);
 
 const saving = ref(false);
 const previewImage = ref(null);
@@ -173,16 +178,30 @@ const newDriver = reactive({
   email: "",
   plate_number: "",
   franchise_number: "",
-  toda_id: "",
+  toda_id: props.todaId || "",
   profile_pic: null,
   is_registered: false,
 });
+
+/* WATCH FOR PROPS.TODA_ID CHANGES */
+watch(
+  () => props.todaId,
+  (newId) => {
+    if (newId) {
+      newDriver.toda_id = newId;
+    }
+  },
+);
 
 /* LOAD TODAS */
 onMounted(async () => {
   try {
     const res = await $fetch("/api/toda");
     todas.value = res.results || [];
+    
+    if (props.todaId) {
+      newDriver.toda_id = props.todaId;
+    }
   } catch (err) {
     console.error("Failed loading TODAs", err);
   }
@@ -236,7 +255,7 @@ const createDriver = async () => {
 
     alert("Driver created successfully!");
 
-    emit("updated");
+    emit("created");
     closeModal();
   } catch (err) {
     console.error(err);
