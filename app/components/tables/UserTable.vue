@@ -121,32 +121,34 @@
   </div>
 
   <!-- USER PROFILE MODAL -->
-  <!-- USER -->
-  <UserProfileCard
-    v-if="selectedUser?.role === 'user'"
-    :show="showProfile"
-    :user="selectedUser"
-    @close="closeProfile"
-    @updated="refreshUsers"
-  />
+  <ClientOnly>
+    <!-- USER -->
+    <UserProfileCard
+      v-if="selectedUser?.role === 'user'"
+      :show="showProfile"
+      :user="selectedUser"
+      @close="closeProfile"
+      @updated="refreshUsers"
+    />
 
-  <!-- ADMIN -->
-  <AdminProfileCard
-    v-if="selectedUser?.role === 'admin'"
-    :show="showProfile"
-    :admin="selectedUser"
-    @close="closeProfile"
-    @updated="refreshUsers"
-  />
+    <!-- ADMIN -->
+    <AdminProfileCard
+      v-if="selectedUser?.role === 'admin'"
+      :show="showProfile"
+      :admin="selectedUser"
+      @close="closeProfile"
+      @updated="refreshUsers"
+    />
 
-  <!-- SUPER ADMIN -->
-  <SuperAdminProfileCard
-    v-if="selectedUser?.role === 'super_admin'"
-    :show="showProfile"
-    :superAdmin="selectedUser"
-    @close="closeProfile"
-    @updated="refreshUsers"
-  />
+    <!-- SUPER ADMIN -->
+    <SuperAdminProfileCard
+      v-if="selectedUser?.role === 'super_admin'"
+      :show="showProfile"
+      :superAdmin="selectedUser"
+      @close="closeProfile"
+      @updated="refreshUsers"
+    />
+  </ClientOnly>
 </template>
 
 <script setup>

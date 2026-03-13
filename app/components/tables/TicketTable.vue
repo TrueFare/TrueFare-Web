@@ -119,84 +119,86 @@
     </div>
 
     <!-- REPORT MODAL -->
-    <div
-      v-if="showModal"
-      class="fixed inset-0 min-h-dvh bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-    >
-      <div class="card bg-base-100 shadow-2xl w-full max-w-2xl max-h-[90dvh] overflow-hidden flex flex-col relative border border-base-content/10">
-        <!-- CLOSE -->
-        <button
-          class="absolute right-4 top-4 btn btn-sm btn-circle btn-ghost z-10"
-          @click="closeModal"
-        >
-          ✕
-        </button>
+    <ClientOnly>
+      <div
+        v-if="showModal"
+        class="fixed inset-0 min-h-dvh bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+      >
+        <div class="card bg-base-100 shadow-2xl w-full max-w-2xl max-h-[90dvh] overflow-hidden flex flex-col relative border border-base-200">
+          <!-- CLOSE -->
+          <button
+            class="absolute right-4 top-4 btn btn-sm btn-circle btn-ghost z-10"
+            @click="closeModal"
+          >
+            ✕
+          </button>
 
-        <!-- HEADER -->
-        <div class="bg-gradient-to-r from-warning to-orange-600 p-6 text-white shrink-0">
-          <h2 class="text-2xl font-black flex items-center gap-2 uppercase tracking-tight">
-            <Icon name="mdi:alert-decagram" class="text-3xl" />
-            Report #{{ selectedReport?.id }}
-          </h2>
-          <p class="text-xs font-bold uppercase tracking-widest opacity-80 mt-1">Submitted on {{ formatDate(selectedReport?.date_created) }}</p>
-        </div>
-
-        <!-- BODY -->
-        <div class="p-6 overflow-y-auto space-y-6">
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="bg-base-200/50 p-4 rounded-2xl border border-base-content/5">
-              <p class="text-[10px] text-base-content/40 uppercase font-black mb-1 tracking-widest">Reporter</p>
-              <p class="font-bold text-base-content">{{ selectedReport?.user_name || ('User ' + selectedReport?.user_id) }}</p>
-            </div>
-            <div class="bg-base-200/50 p-4 rounded-2xl border border-base-content/5">
-              <p class="text-[10px] text-base-content/40 uppercase font-black mb-1 tracking-widest">Driver Involved</p>
-              <p class="font-bold text-base-content">
-                {{ selectedReport?.driver_name || ('Driver ' + selectedReport?.driver_id) }}
-                <span class="block text-[10px] text-primary">{{ selectedReport?.plate_number }}</span>
-              </p>
-            </div>
-            <div class="bg-base-200/50 p-4 rounded-2xl border border-base-content/5">
-              <p class="text-[10px] text-base-content/40 uppercase font-black mb-1 tracking-widest">Trip ID</p>
-              <p class="font-bold text-primary">#{{ selectedReport?.trip_id }}</p>
-            </div>
+          <!-- HEADER -->
+          <div class="bg-gradient-to-r from-warning to-orange-600 p-6 text-white shrink-0">
+            <h2 class="text-2xl font-black flex items-center gap-2 uppercase tracking-tight">
+              <Icon name="mdi:alert-decagram" class="text-3xl" />
+              Report #{{ selectedReport?.id }}
+            </h2>
+            <p class="text-xs font-bold uppercase tracking-widest opacity-80 mt-1">Submitted on {{ formatDate(selectedReport?.date_created) }}</p>
           </div>
 
-          <div>
-            <p class="text-[10px] text-base-content/40 uppercase font-black mb-2 tracking-widest">Report Details</p>
-            <div class="bg-base-200/50 p-5 rounded-2xl border border-base-content/5 text-base-content leading-relaxed italic">
-              "{{ selectedReport?.report_details }}"
+          <!-- BODY -->
+          <div class="p-6 overflow-y-auto space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="bg-base-200/50 p-4 rounded-2xl border border-base-content/5">
+                <p class="text-[10px] text-base-content/40 uppercase font-black mb-1 tracking-widest">Reporter</p>
+                <p class="font-bold text-base-content">{{ selectedReport?.user_name || ('User ' + selectedReport?.user_id) }}</p>
+              </div>
+              <div class="bg-base-200/50 p-4 rounded-2xl border border-base-content/5">
+                <p class="text-[10px] text-base-content/40 uppercase font-black mb-1 tracking-widest">Driver Involved</p>
+                <p class="font-bold text-base-content">
+                  {{ selectedReport?.driver_name || ('Driver ' + selectedReport?.driver_id) }}
+                  <span class="block text-[10px] text-primary">{{ selectedReport?.plate_number }}</span>
+                </p>
+              </div>
+              <div class="bg-base-200/50 p-4 rounded-2xl border border-base-content/5">
+                <p class="text-[10px] text-base-content/40 uppercase font-black mb-1 tracking-widest">Trip ID</p>
+                <p class="font-bold text-primary">#{{ selectedReport?.trip_id }}</p>
+              </div>
             </div>
-          </div>
 
-          <div class="flex items-center gap-4">
-            <div class="flex-1">
-              <p class="text-[10px] text-base-content/40 uppercase font-black mb-2 tracking-widest">Current Status</p>
-              <div 
-                class="badge badge-lg gap-2 py-4 px-4 font-black uppercase text-[10px] tracking-widest"
-                :class="selectedReport?.status === 0 ? 'badge-warning' : 'badge-success'"
-              >
-                <Icon :name="selectedReport?.status === 0 ? 'mdi:clock-outline' : 'mdi:check-circle'" />
-                {{ statusText(selectedReport?.status) }}
+            <div>
+              <p class="text-[10px] text-base-content/40 uppercase font-black mb-2 tracking-widest">Report Details</p>
+              <div class="bg-base-200/50 p-5 rounded-2xl border border-base-content/5 text-base-content leading-relaxed italic">
+                "{{ selectedReport?.report_details }}"
+              </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+              <div class="flex-1">
+                <p class="text-[10px] text-base-content/40 uppercase font-black mb-2 tracking-widest">Current Status</p>
+                <div 
+                  class="badge badge-lg gap-2 py-4 px-4 font-black uppercase text-[10px] tracking-widest"
+                  :class="selectedReport?.status === 0 ? 'badge-warning' : 'badge-success'"
+                >
+                  <Icon :name="selectedReport?.status === 0 ? 'mdi:clock-outline' : 'mdi:check-circle'" />
+                  {{ statusText(selectedReport?.status) }}
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- ACTIONS -->
-        <div class="border-t dark:border-gray-700 p-5 flex justify-end gap-3 shrink-0">
-          <button 
-            v-if="selectedReport?.status === 0"
-            class="btn btn-success text-white"
-            :disabled="updating"
-            @click="updateStatus(1)"
-          >
-            <span v-if="updating" class="loading loading-spinner loading-sm"></span>
-            Mark as Resolved
-          </button>
-          <button class="btn btn-ghost" @click="closeModal">Close</button>
+          <!-- ACTIONS -->
+          <div class="border-t dark:border-gray-700 p-5 flex justify-end gap-3 shrink-0">
+            <button 
+              v-if="selectedReport?.status === 0"
+              class="btn btn-success text-white"
+              :disabled="updating"
+              @click="updateStatus(1)"
+            >
+              <span v-if="updating" class="loading loading-spinner loading-sm"></span>
+              Mark as Resolved
+            </button>
+            <button class="btn btn-ghost" @click="closeModal">Close</button>
+          </div>
         </div>
       </div>
-    </div>
+    </ClientOnly>
   </div>
 </template>
 
@@ -273,7 +275,15 @@ const statusText = (s) => {
 const formatDate = (d) => {
   if (!d) return '';
   try {
-    return new Date(d).toLocaleString();
+    return new Date(d).toLocaleString('en-PH', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true
+    });
   } catch (e) {
     return d;
   }

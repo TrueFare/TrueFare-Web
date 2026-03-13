@@ -117,15 +117,17 @@
         </div>
       </div>
     </div>
-  </div>
 
     <!-- DRIVER PROFILE MODAL -->
-  <TricycleProfileCard
-    :show="showProfile"
-    :driver="selectedDriver"
-    @close="closeProfile"
-    @updated="refreshDrivers"
-  />
+    <ClientOnly>
+      <TricycleProfileCard
+        :show="showProfile"
+        :driver="selectedDriver"
+        @close="closeProfile"
+        @updated="refreshDrivers"
+      />
+    </ClientOnly>
+  </div>
 </template>
 
 <script setup>
