@@ -41,9 +41,11 @@ export default defineEventHandler(async (event) => {
       results: results.results,
       total: totalCount,
       page,
-      limit
+      limit,
     };
   } catch (error: any) {
     return handleApiError(error, "Failed to fetch drivers");
   }
 });
+
+//test
