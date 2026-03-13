@@ -4,7 +4,7 @@
     <div
       class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4"
     >
-      <h2 class="text-lg font-semibold">Fare Trend</h2>
+      <h2 class="text-lg font-semibold">Number of Trips</h2>
 
       <!-- Toggle Buttons -->
       <div class="flex flex-col sm:flex-row gap-2">
@@ -51,7 +51,7 @@ Chart.register(
   LinearScale,
   CategoryScale,
   Tooltip,
-  Legend
+  Legend,
 );
 
 const chartRef = ref(null);

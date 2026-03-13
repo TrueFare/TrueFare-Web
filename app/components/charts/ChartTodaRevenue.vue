@@ -1,25 +1,40 @@
 <template>
-  <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700">
+  <div
+    class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700"
+  >
     <!-- Header -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+    <div
+      class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4"
+    >
       <div>
-        <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100">Cash Flow</h2>
+        <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100">
+          Revenue
+        </h2>
         <p class="text-sm text-gray-500 dark:text-gray-400">
-          Total Lifetime: 
+          Total Lifetime:
           <span class="font-bold text-purple-600 dark:text-purple-400">
-            ₱{{ totalLifetime.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+            ₱{{
+              totalLifetime.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })
+            }}
           </span>
         </p>
       </div>
 
       <!-- Toggle Buttons (Daisy UI Join) -->
       <div class="join border border-gray-200 dark:border-gray-600">
-        <button 
-          v-for="option in ['monthly', 'yearly']" 
+        <button
+          v-for="option in ['monthly', 'yearly']"
           :key="option"
           @click="selectedRange = option"
           class="btn btn-sm join-item capitalize"
-          :class="selectedRange === option ? 'btn-secondary text-white' : 'btn-ghost bg-transparent'"
+          :class="
+            selectedRange === option
+              ? 'btn-secondary text-white'
+              : 'btn-ghost bg-transparent'
+          "
         >
           {{ option }}
         </button>
@@ -28,7 +43,10 @@
 
     <!-- Chart Container -->
     <div class="w-full h-64 sm:h-72 md:h-80 lg:h-96 relative">
-      <div v-if="loading" class="absolute inset-0 flex items-center justify-center bg-white/50 dark:bg-gray-800/50 z-10">
+      <div
+        v-if="loading"
+        class="absolute inset-0 flex items-center justify-center bg-white/50 dark:bg-gray-800/50 z-10"
+      >
         <span class="loading loading-spinner loading-lg text-secondary"></span>
       </div>
       <canvas ref="chartRef"></canvas>
@@ -54,7 +72,7 @@ Chart.register(
   LinearScale,
   CategoryScale,
   Tooltip,
-  Legend
+  Legend,
 );
 
 const chartRef = ref(null);
@@ -81,7 +99,7 @@ const fetchChartData = async () => {
 
 const renderChart = async () => {
   const { labels, data } = await fetchChartData();
-  
+
   await nextTick();
   if (!chartRef.value) return;
 
@@ -123,28 +141,31 @@ const renderChart = async () => {
         },
         tooltip: {
           callbacks: {
-            label: function(context) {
-              let label = context.dataset.label || '';
+            label: function (context) {
+              let label = context.dataset.label || "";
               if (label) {
-                label += ': ';
+                label += ": ";
               }
               if (context.parsed.y !== null) {
-                label += new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(context.parsed.y);
+                label += new Intl.NumberFormat("en-PH", {
+                  style: "currency",
+                  currency: "PHP",
+                }).format(context.parsed.y);
               }
               return label;
-            }
-          }
-        }
+            },
+          },
+        },
       },
       scales: {
         y: {
           beginAtZero: true,
           ticks: {
-            callback: function(value) {
-              return '₱' + value.toLocaleString();
-            }
-          }
-        }
+            callback: function (value) {
+              return "₱" + value.toLocaleString();
+            },
+          },
+        },
       },
       onClick: (event, elements) => {
         if (elements.length > 0) {
@@ -154,7 +175,7 @@ const renderChart = async () => {
           console.log(`Clicked on ${label}: ₱${value}`);
           // You can add more interaction here, like redirecting to a TODA detail page
         }
-      }
+      },
     },
   });
 };
@@ -164,7 +185,7 @@ onMounted(() => renderChart());
 watch(selectedRange, () => renderChart());
 
 defineExpose({
-  refresh: renderChart
+  refresh: renderChart,
 });
 </script>
 
