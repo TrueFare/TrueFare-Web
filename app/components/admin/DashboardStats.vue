@@ -46,9 +46,9 @@
     <div class="bg-gray-50 dark:bg-gray-900 p-6 rounded-2xl shadow-inner">
       <h2 class="text-xl font-semibold mb-6">Analytics Overview</h2>
 
-      <!-- Revenue Chart -->
+      <!-- Top Performing Drivers Chart -->
       <div class="mb-6">
-        <ChartTodaRevenue />
+        <ChartTopTodaDriver />
       </div>
 
       <!-- Two Charts Side-by-Side -->
@@ -65,7 +65,7 @@ import { ref, onMounted } from "vue";
 import DashboardCard from "~/components/cards/DashboardCard.vue";
 import ChartFareTrend from "~/components/charts/ChartTripNumber.vue";
 import ChartFarePriceTrend from "~/components/charts/ChartFarePriceTrend.vue";
-import ChartTodaRevenue from "~/components/charts/ChartTodaRevenue.vue";
+import ChartTopTodaDriver from "~/components/charts/ChartTopTodaDriver.vue";
 
 const loading = ref(true);
 const totalCounts = ref({
