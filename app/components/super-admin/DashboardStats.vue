@@ -27,15 +27,14 @@
       />
       <DashboardCard
         title="Total Reports"
-        value="1"
+        :value="loading ? '...' : totalCounts.reports"
         icon="mdi:alert-circle"
         bgColor="bg-yellow-700 text-white"
         textColor="text-yellow-400"
-        subText="1 pending"
       />
       <DashboardCard
         title="TODA Admins"
-        value="1"
+        :value="loading ? '...' : totalCounts.admins"
         icon="mdi:account-group"
         bgColor="bg-purple-900 text-white"
         textColor="text-purple-400"
@@ -80,16 +79,20 @@ const totalCounts = ref({
   drivers: 0,
   users: 0,
   trips: 0,
+  admins: 0,
+  reports: 0,
 });
 
 const fetchCounts = async () => {
   loading.value = true;
   try {
-    const [todasRes, driversRes, usersRes, tripsRes] = await Promise.all([
+    const [todasRes, driversRes, usersRes, tripsRes, adminsRes, reportsRes] = await Promise.all([
       $fetch("/api/toda/count"),
       $fetch("/api/driver/count"),
       $fetch("/api/user/count"),
       $fetch("/api/trip/count"),
+      $fetch("/api/toda/count_admin"),
+      $fetch("/api/report/count"),
     ]);
 
     totalCounts.value = {
@@ -97,6 +100,8 @@ const fetchCounts = async () => {
       drivers: driversRes.count || 0,
       users: usersRes.count || 0,
       trips: tripsRes.count || 0,
+      admins: adminsRes.count || 0,
+      reports: reportsRes.count || 0,
     };
   } catch (error) {
     console.error("Failed to fetch dashboard counts:", error);

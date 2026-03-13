@@ -21,13 +21,14 @@
     <TricycleSearch @search="handleSearchDriver" />
 
     <TricycleTable
-      :drivers="paginatedTricycles"
+      :drivers="tricycles"
+      :loading="loading"
       @refresh="fetchTricycles"
     />
 
     <Pagination
       v-model:page="tricyclePage"
-      :total-items="tricycles.length"
+      :total-items="totalTricycles"
       :per-page="perTricyclePage"
     />
 
@@ -40,7 +41,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, watch, onMounted } from "vue";
 import TricycleTable from "~/components/tables/TricycleTable.vue";
 import Pagination from "~/components/Pagination.vue";
 import TricycleSearch from "~/components/search/TricycleSearch.vue";
@@ -50,24 +51,36 @@ const { exportToCsv } = useCsvExport();
 const emits = defineEmits(['refresh-counts']);
 
 const tricycles = ref([]);
+const totalTricycles = ref(0);
+const tricyclePage = ref(1);
+const perTricyclePage = 6;
+const loading = ref(false);
+
 const fetchTricycles = async () => {
+  loading.value = true;
   try {
-    const response = await $fetch("/api/driver");
+    const response = await $fetch("/api/driver", {
+      params: {
+        page: tricyclePage.value,
+        limit: perTricyclePage
+      }
+    });
     tricycles.value = response.results || [];
+    totalTricycles.value = response.total || 0;
   } catch (error) {
     console.error("Failed to fetch drivers:", error);
+  } finally {
+    loading.value = false;
   }
 };
 
-const tricyclePage = ref(1);
-const perTricyclePage = 6;
-const paginatedTricycles = computed(() => {
-  const start = (tricyclePage.value - 1) * perTricyclePage;
-  return tricycles.value.slice(start, start + perTricyclePage);
+watch(tricyclePage, () => {
+  fetchTricycles();
 });
 
 const handleSearchDriver = async (query) => {
   if (!query) {
+    tricyclePage.value = 1;
     fetchTricycles();
     return;
   }
@@ -75,7 +88,10 @@ const handleSearchDriver = async (query) => {
     const response = await $fetch("/api/driver/search", {
       params: { search: query },
     });
+    // Search results are typically not paginated in the same way or use a different endpoint
+    // For simplicity, we'll just show what the search returns
     tricycles.value = response.results || response;
+    totalTricycles.value = tricycles.value.length;
     tricyclePage.value = 1;
   } catch (error) {
     console.error("Failed to search drivers:", error);

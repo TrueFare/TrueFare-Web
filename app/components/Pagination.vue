@@ -1,62 +1,54 @@
 <template>
-  <div v-if="totalPages > 1" class="flex justify-center mt-8">
-    <div class="join shadow-sm border border-base-200 bg-base-100 rounded-xl overflow-hidden">
-      <!-- PREVIOUS -->
-      <button
-        class="join-item btn btn-md btn-ghost hover:bg-base-200 text-base-content/60 disabled:bg-transparent disabled:text-base-content/20"
-        :disabled="page === 1"
-        @click="changePage(page - 1)"
-      >
-        <Icon name="mdi:chevron-left" class="text-xl" />
-      </button>
+  <div
+    v-if="totalPages > 1"
+    class="flex justify-center items-center gap-2 mt-6"
+  >
+    <!-- Previous -->
+    <button
+      class="btn btn-sm"
+      :disabled="page === 1"
+      @click="changePage(page - 1)"
+    >
+      Prev
+    </button>
 
-      <!-- PAGE NUMBERS -->
-      <template v-for="(p, index) in visiblePages" :key="index">
-        <button
-          v-if="p !== '...'"
-          class="join-item btn btn-md min-w-[3rem]"
-          :class="[
-            p === page 
-              ? 'btn-primary no-animation text-white font-black' 
-              : 'btn-ghost hover:bg-base-200 font-bold text-base-content/60'
-          ]"
-          @click="changePage(p)"
-        >
-          {{ p }}
-        </button>
-        <button
-          v-else
-          class="join-item btn btn-md btn-ghost no-animation cursor-default text-base-content/30 font-black"
-        >
-          ...
-        </button>
-      </template>
-
-      <!-- NEXT -->
+    <!-- Page Numbers -->
+    <template v-for="(p, idx) in visiblePages" :key="idx">
       <button
-        class="join-item btn btn-md btn-ghost hover:bg-base-200 text-base-content/60 disabled:bg-transparent disabled:text-base-content/20"
-        :disabled="page === totalPages"
-        @click="changePage(page + 1)"
+        v-if="p !== '...'"
+        class="btn btn-sm"
+        :class="p === page ? 'btn-primary' : 'btn-ghost'"
+        @click="changePage(p)"
       >
-        <Icon name="mdi:chevron-right" class="text-xl" />
+        {{ p }}
       </button>
-    </div>
+      <span v-else class="btn btn-sm btn-ghost no-animation cursor-default opacity-50">
+        {{ p }}
+      </span>
+    </template>
+
+    <!-- Next -->
+    <button
+      class="btn btn-sm"
+      :disabled="page === totalPages"
+      @click="changePage(page + 1)"
+    >
+      Next
+    </button>
   </div>
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed } from 'vue';
 
 const props = defineProps({
   page: {
     type: Number,
-    required: true,
-    default: 1
+    default: 1,
   },
   totalItems: {
     type: Number,
-    required: true,
-    default: 0
+    default: 0,
   },
   perPage: {
     type: Number,
@@ -64,7 +56,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["update:page"]);
+const emit = defineEmits(['update:page']);
 
 const totalPages = computed(() => Math.ceil(props.totalItems / props.perPage));
 
@@ -98,6 +90,7 @@ const visiblePages = computed(() => {
 });
 
 const changePage = (p) => {
+  if (typeof p !== 'number') return;
   if (p >= 1 && p <= totalPages.value) {
     emit("update:page", p);
     // Smooth scroll to top when changing page

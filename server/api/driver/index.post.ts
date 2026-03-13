@@ -14,7 +14,7 @@ const DriverSchema = z.object({
 
 export default defineEventHandler(async (event) => {
   const db = useDb(event);
-  requireRole(event, ['admin', 'super_admin']);
+  requireAuthRole(event, ['admin', 'super_admin']);
   
   const body = await validateBody(event, DriverSchema);
 

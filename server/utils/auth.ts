@@ -9,7 +9,7 @@ export const AUTH_COOKIE_NAME = 'auth_session';
 export const AUTH_HINT_COOKIE_NAME = 'auth_session_hint';
 export const AUTH_ROLE_COOKIE_NAME = 'auth_role_hint';
 
-export const getSession = (event: H3Event): SessionData | null => {
+export const getAuthSession = (event: H3Event): SessionData | null => {
   const sessionCookie = getCookie(event, AUTH_COOKIE_NAME);
   if (!sessionCookie) return null;
 
@@ -20,7 +20,7 @@ export const getSession = (event: H3Event): SessionData | null => {
   }
 };
 
-export const setSession = (event: H3Event, session: SessionData) => {
+export const setAuthSession = (event: H3Event, session: SessionData) => {
   const isProd = process.env.NODE_ENV === 'production';
   
   setCookie(event, AUTH_COOKIE_NAME, JSON.stringify(session), {
@@ -47,14 +47,14 @@ export const setSession = (event: H3Event, session: SessionData) => {
   });
 };
 
-export const clearSession = (event: H3Event) => {
+export const clearAuthSession = (event: H3Event) => {
   deleteCookie(event, AUTH_COOKIE_NAME, { path: '/' });
   deleteCookie(event, AUTH_HINT_COOKIE_NAME, { path: '/' });
   deleteCookie(event, AUTH_ROLE_COOKIE_NAME, { path: '/' });
 };
 
-export const requireSession = (event: H3Event) => {
-  const session = getSession(event);
+export const requireAuthSession = (event: H3Event) => {
+  const session = getAuthSession(event);
   if (!session) {
     throw createError({
       statusCode: 401,
@@ -64,8 +64,8 @@ export const requireSession = (event: H3Event) => {
   return session;
 };
 
-export const requireRole = (event: H3Event, roles: string[]) => {
-  const session = requireSession(event);
+export const requireAuthRole = (event: H3Event, roles: string[]) => {
+  const session = requireAuthSession(event);
   if (!roles.includes(session.role)) {
     throw createError({
       statusCode: 403,

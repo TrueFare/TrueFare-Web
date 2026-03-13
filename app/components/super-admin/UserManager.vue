@@ -20,11 +20,11 @@
 
     <UserSearch @search="handleSearchUser" />
 
-    <UserTable :users="paginatedUsers" @refresh="fetchUsers" />
+    <UserTable :users="users" :loading="loading" @refresh="fetchUsers" />
 
     <Pagination
       v-model:page="userPage"
-      :total-items="users.length"
+      :total-items="totalUsers"
       :per-page="perUserPage"
     />
     <AddAdmin
@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, watch, onMounted } from "vue";
 import UserTable from "~/components/tables/UserTable.vue";
 import Pagination from "~/components/Pagination.vue";
 import UserSearch from "~/components/search/UserSearch.vue";
@@ -46,24 +46,36 @@ const { exportToCsv } = useCsvExport();
 const emits = defineEmits(['refresh-counts']);
 
 const users = ref([]);
+const totalUsers = ref(0);
+const userPage = ref(1);
+const perUserPage = 6;
+const loading = ref(false);
+
 const fetchUsers = async () => {
+  loading.value = true;
   try {
-    const response = await $fetch("/api/account");
+    const response = await $fetch("/api/account", {
+      params: {
+        page: userPage.value,
+        limit: perUserPage
+      }
+    });
     users.value = response.results || [];
+    totalUsers.value = response.total || 0;
   } catch (error) {
     console.error("Failed to fetch users:", error);
+  } finally {
+    loading.value = false;
   }
 };
 
-const userPage = ref(1);
-const perUserPage = 6;
-const paginatedUsers = computed(() => {
-  const start = (userPage.value - 1) * perUserPage;
-  return users.value.slice(start, start + perUserPage);
+watch(userPage, () => {
+  fetchUsers();
 });
 
 const handleSearchUser = async (query) => {
   if (!query) {
+    userPage.value = 1;
     fetchUsers();
     return;
   }
@@ -72,6 +84,7 @@ const handleSearchUser = async (query) => {
       params: { search: query },
     });
     users.value = response.results || response;
+    totalUsers.value = users.value.length;
     userPage.value = 1;
   } catch (error) {
     console.error("Failed to search user:", error);
