@@ -69,7 +69,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import DashboardCard from "~/components/cards/DashboardCard.vue";
-import ChartFareTrend from "~/components/charts/ChartFareTrend.vue";
+import ChartFareTrend from "~/components/charts/ChartTripNumber.vue";
 import ChartFarePriceTrend from "~/components/charts/ChartFarePriceTrend.vue";
 import ChartTodaRevenue from "~/components/charts/ChartTodaRevenue.vue";
 
@@ -86,14 +86,15 @@ const totalCounts = ref({
 const fetchCounts = async () => {
   loading.value = true;
   try {
-    const [todasRes, driversRes, usersRes, tripsRes, adminsRes, reportsRes] = await Promise.all([
-      $fetch("/api/toda/count"),
-      $fetch("/api/driver/count"),
-      $fetch("/api/user/count"),
-      $fetch("/api/trip/count"),
-      $fetch("/api/toda/count_admin"),
-      $fetch("/api/report/count"),
-    ]);
+    const [todasRes, driversRes, usersRes, tripsRes, adminsRes, reportsRes] =
+      await Promise.all([
+        $fetch("/api/toda/count"),
+        $fetch("/api/driver/count"),
+        $fetch("/api/user/count"),
+        $fetch("/api/trip/count"),
+        $fetch("/api/toda/count_admin"),
+        $fetch("/api/report/count"),
+      ]);
 
     totalCounts.value = {
       todas: todasRes.count || 0,
@@ -111,7 +112,7 @@ const fetchCounts = async () => {
 };
 
 defineExpose({
-  refresh: fetchCounts
+  refresh: fetchCounts,
 });
 
 onMounted(() => {

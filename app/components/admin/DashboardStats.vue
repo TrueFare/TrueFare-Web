@@ -46,6 +46,11 @@
     <div class="bg-gray-50 dark:bg-gray-900 p-6 rounded-2xl shadow-inner">
       <h2 class="text-xl font-semibold mb-6">Analytics Overview</h2>
 
+      <!-- Revenue Chart -->
+      <div class="mb-6">
+        <ChartTodaRevenue />
+      </div>
+
       <!-- Two Charts Side-by-Side -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <ChartFareTrend />
@@ -58,8 +63,9 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import DashboardCard from "~/components/cards/DashboardCard.vue";
-import ChartFareTrend from "~/components/charts/ChartFareTrend.vue";
+import ChartFareTrend from "~/components/charts/ChartTripNumber.vue";
 import ChartFarePriceTrend from "~/components/charts/ChartFarePriceTrend.vue";
+import ChartTodaRevenue from "~/components/charts/ChartTodaRevenue.vue";
 
 const loading = ref(true);
 const totalCounts = ref({
