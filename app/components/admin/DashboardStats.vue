@@ -51,6 +51,11 @@
         <ChartTopTodaDriver />
       </div>
 
+      <!-- Fare Comparison -->
+      <div class="mb-6">
+        <FareComparison />
+      </div>
+
       <!-- Two Charts Side-by-Side -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <ChartFareTrend />
@@ -66,6 +71,7 @@ import DashboardCard from "~/components/cards/DashboardCard.vue";
 import ChartFareTrend from "~/components/charts/ChartTripNumber.vue";
 import ChartFarePriceTrend from "~/components/charts/ChartFarePriceTrend.vue";
 import ChartTopTodaDriver from "~/components/charts/ChartTopTodaDriver.vue";
+import FareComparison from "~/components/charts/FareComparison.vue";
 
 const loading = ref(true);
 const totalCounts = ref({
