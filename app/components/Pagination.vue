@@ -7,31 +7,31 @@
     <button
       class="btn btn-sm"
       :disabled="page === 1"
-      @click="$emit('update:page', page - 1)"
+      @click="changePage(page - 1)"
     >
       Prev
     </button>
 
     <!-- Page Numbers -->
-    <button
-      v-for="p in totalPages"
-      :key="p"
-      class="btn btn-sm"
-      :class="
-        p === page
-          ? 'btn-primary'
-          : 'btn-ghost'
-      "
-      @click="$emit('update:page', p)"
-    >
-      {{ p }}
-    </button>
+    <template v-for="(p, idx) in visiblePages" :key="idx">
+      <button
+        v-if="p !== '...'"
+        class="btn btn-sm"
+        :class="p === page ? 'btn-primary' : 'btn-ghost'"
+        @click="changePage(p)"
+      >
+        {{ p }}
+      </button>
+      <span v-else class="btn btn-sm btn-ghost no-animation cursor-default opacity-50">
+        {{ p }}
+      </span>
+    </template>
 
     <!-- Next -->
     <button
       class="btn btn-sm"
       :disabled="page === totalPages"
-      @click="$emit('update:page', page + 1)"
+      @click="changePage(page + 1)"
     >
       Next
     </button>
@@ -56,7 +56,7 @@ const props = defineProps({
   },
 });
 
-defineEmits(['update:page']);
+const emit = defineEmits(['update:page']);
 
 const totalPages = computed(() => Math.ceil(props.totalItems / props.perPage));
 
@@ -90,6 +90,7 @@ const visiblePages = computed(() => {
 });
 
 const changePage = (p) => {
+  if (typeof p !== 'number') return;
   if (p >= 1 && p <= totalPages.value) {
     emit("update:page", p);
     // Smooth scroll to top when changing page

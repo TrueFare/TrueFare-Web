@@ -1,5 +1,4 @@
 <template>
-<template>
   <div>
     <div v-if="loading" class="flex items-center justify-center p-12">
       <span class="loading loading-spinner loading-lg text-primary"></span>
@@ -119,6 +118,7 @@
         </div>
       </div>
     </div>
+  </div>
 
   <!-- USER PROFILE MODAL -->
   <!-- USER -->

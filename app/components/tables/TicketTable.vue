@@ -115,13 +115,6 @@
             </div>
           </div>
         </div>
-
-        <Pagination
-          v-model:page="reportPage"
-          :total-items="totalReports"
-          :per-page="perReportPage"
-          class="mt-6"
-        />
       </div>
     </div>
 
@@ -208,22 +201,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, onUnmounted } from 'vue';
-import Pagination from '~/components/Pagination.vue';
+import { ref, watch, onUnmounted } from 'vue';
 
 const props = defineProps({
   items: { type: Array, required: true },
-  pending: { type: Boolean, default: false }
+  loading: { type: Boolean, default: false }
 });
 
-const items = ref([]);
-const loading = ref(false);
+const emit = defineEmits(["refresh"]);
+
 const updating = ref(false);
-
-const totalReports = ref(0);
-const reportPage = ref(1);
-const perReportPage = 10;
-
 const showModal = ref(false);
 const selectedReport = ref(null);
 
@@ -253,29 +240,6 @@ const closeModal = () => {
   showModal.value = false;
   selectedReport.value = null;
 };
-
-const fetchReports = async () => {
-  loading.value = true;
-  try {
-    const resp = await $fetch('/api/report', {
-      params: {
-        page: reportPage.value,
-        limit: perReportPage
-      }
-    });
-    items.value = resp.results || [];
-    totalReports.value = resp.total || 0;
-  } catch (e) {
-    console.error('Failed to fetch reports', e);
-    items.value = [];
-  } finally {
-    loading.value = false;
-  }
-};
-
-watch(reportPage, () => {
-  fetchReports();
-});
 
 const updateStatus = async (newStatus) => {
   if (!selectedReport.value) return;

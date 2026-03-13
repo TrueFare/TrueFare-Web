@@ -43,7 +43,7 @@
       </button>
     </div>
 
-    <TicketTable :items="items" :pending="pending" @refresh="fetchReports" />
+    <TicketTable :items="items" :loading="pending" @refresh="fetchReports" />
 
     <Pagination
       v-model:page="page"
@@ -74,11 +74,11 @@ const fetchReports = async () => {
       params: {
         search: searchQuery.value,
         page: page.value,
-        per_page: perPage.value,
+        limit: perPage.value,
       },
     });
     items.value = data.results || [];
-    totalItems.value = data.meta?.total || 0;
+    totalItems.value = data.total || 0;
   } catch (e) {
     console.error("Failed to fetch reports", e);
   } finally {
