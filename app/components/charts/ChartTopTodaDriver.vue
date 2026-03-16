@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700"
+    class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 animate-fade-in"
   >
     <!-- Header -->
     <div
@@ -149,7 +149,10 @@ const renderChart = async () => {
   hoverGradient.addColorStop(1, "rgba(168, 85, 247, 0.4)"); // Purple-500
 
   if (chartInstance) {
-    chartInstance.destroy();
+    chartInstance.data.labels = labels;
+    chartInstance.data.datasets[0].data = data;
+    chartInstance.update();
+    return;
   }
 
   chartInstance = new Chart(ctx, {
@@ -174,6 +177,10 @@ const renderChart = async () => {
       indexAxis: "y", // Horizontal bars for names
       responsive: true,
       maintainAspectRatio: false,
+      animation: {
+        duration: 1000,
+        easing: "easeOutQuart",
+      },
       plugins: {
         legend: {
           display: false,
@@ -227,5 +234,20 @@ defineExpose({
 <style scoped>
 canvas {
   cursor: pointer;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
 }
 </style>

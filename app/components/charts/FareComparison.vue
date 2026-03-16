@@ -24,7 +24,7 @@
         <div class="stat">
           <div class="stat-title">Base Fare</div>
           <div class="stat-value text-black dark:text-white">
-            ₱{{ fareData.current.base_fare }}
+            ₱{{ formatPrice(fareData.current.base_fare) }}
           </div>
           <div class="stat-desc flex items-center gap-1 mt-1">
             <template v-if="fareData.previous">
@@ -50,7 +50,7 @@
                   ).toFixed(2)
                 }}
               </span>
-              from ₱{{ fareData.previous.base_fare }}
+              from ₱{{ formatPrice(fareData.previous.base_fare) }}
             </template>
             <span v-else>No previous data</span>
           </div>
@@ -95,7 +95,7 @@
         <div class="stat">
           <div class="stat-title">Fare per KM</div>
           <div class="stat-value text-black dark:text-white">
-            ₱{{ fareData.current.fare_per_km }}
+            ₱{{ formatPrice(fareData.current.fare_per_km) }}
           </div>
           <div class="stat-desc flex items-center gap-1 mt-1">
             <template v-if="fareData.previous">
@@ -122,7 +122,7 @@
                   ).toFixed(2)
                 }}
               </span>
-              from ₱{{ fareData.previous.fare_per_km }}
+              from ₱{{ formatPrice(fareData.previous.fare_per_km) }}
             </template>
             <span v-else>No previous data</span>
           </div>
@@ -144,6 +144,12 @@ const fareData = ref({
   current: null,
   previous: null,
 });
+
+const formatPrice = (price) => {
+  return price !== undefined && price !== null
+    ? Number(price).toFixed(2)
+    : "0.00";
+};
 
 const fetchFareComparison = async () => {
   loading.value = true;
