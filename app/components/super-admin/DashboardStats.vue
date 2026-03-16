@@ -62,9 +62,10 @@
         <ChartTodaRevenue />
       </div>
 
-      <!-- Two Charts Side-by-Side -->
+      <!-- Charts Grid -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <ChartTopTodaDriver />
+        <ChartPeakHours />
         <ChartFarePriceTrend />
         <ChartFareTrend />
       </div>
@@ -79,6 +80,7 @@ import ChartFareTrend from "~/components/charts/ChartTripNumber.vue";
 import ChartFarePriceTrend from "~/components/charts/ChartFarePriceTrend.vue";
 import ChartTodaRevenue from "~/components/charts/ChartTodaRevenue.vue";
 import ChartTopTodaDriver from "~/components/charts/ChartTopTodaDriver.vue";
+import ChartPeakHours from "~/components/charts/ChartPeakHours.vue";
 import FareComparison from "~/components/charts/FareComparison.vue";
 
 const loading = ref(true);

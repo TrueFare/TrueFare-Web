@@ -4,7 +4,7 @@
   >
     <div class="flex justify-between items-center mb-6">
       <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100">
-        Fare Comparison
+        Current Fare
       </h2>
       <div v-if="fareData.current" class="text-xs text-gray-500">
         Updated: {{ new Date(fareData.current.date_created).toLocaleString() }}
@@ -23,7 +23,7 @@
       <div class="stats shadow bg-gray-50 dark:bg-gray-700">
         <div class="stat">
           <div class="stat-title">Base Fare</div>
-          <div class="stat-value text-black dark:text-white">
+          <div class="stat-value text-gray-600 dark:text-white">
             ₱{{ formatPrice(fareData.current.base_fare) }}
           </div>
           <div class="stat-desc flex items-center gap-1 mt-1">
@@ -61,7 +61,7 @@
       <div class="stats shadow bg-gray-50 dark:bg-gray-700">
         <div class="stat">
           <div class="stat-title">Base Distance</div>
-          <div class="stat-value text-black dark:text-white">
+          <div class="stat-value text-gray-600 dark:text-white">
             {{ fareData.current.base_km }} km
           </div>
           <div class="stat-desc flex items-center gap-1 mt-1">
@@ -94,7 +94,7 @@
       <div class="stats shadow bg-gray-50 dark:bg-gray-700">
         <div class="stat">
           <div class="stat-title">Fare per KM</div>
-          <div class="stat-value text-black dark:text-white">
+          <div class="stat-value text-gray-600 dark:text-white">
             ₱{{ formatPrice(fareData.current.fare_per_km) }}
           </div>
           <div class="stat-desc flex items-center gap-1 mt-1">
