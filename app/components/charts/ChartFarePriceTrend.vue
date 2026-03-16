@@ -27,7 +27,7 @@ Chart.register(
   LinearScale,
   CategoryScale,
   Tooltip,
-  Legend
+  Legend,
 );
 
 const chartRef = ref(null);
@@ -37,7 +37,9 @@ const fetchFareHistory = async () => {
   try {
     const res = await $fetch("/api/fare");
     // Sort by date_created ascending
-    const sorted = (res.results || []).sort((a, b) => new Date(a.date_created) - new Date(b.date_created));
+    const sorted = (res.results || []).sort(
+      (a, b) => new Date(a.date_created) - new Date(b.date_created),
+    );
     return sorted;
   } catch (e) {
     console.error("Failed to fetch fare history", e);
@@ -53,9 +55,9 @@ const renderChart = async () => {
   if (data.length === 0) return;
 
   const ctx = chartRef.value.getContext("2d");
-  const labels = data.map(f => new Date(f.date_created).toLocaleDateString());
-  const baseFares = data.map(f => f.base_fare);
-  const farePerKms = data.map(f => f.fare_per_km);
+  const labels = data.map((f) => new Date(f.date_created).toLocaleDateString());
+  const baseFares = data.map((f) => f.base_fare);
+  const farePerKms = data.map((f) => f.fare_per_km);
 
   if (chartInstance) {
     chartInstance.destroy();
@@ -81,7 +83,7 @@ const renderChart = async () => {
           backgroundColor: "#10B981",
           tension: 0.1,
           pointRadius: 4,
-        }
+        },
       ],
     },
     options: {
@@ -90,8 +92,8 @@ const renderChart = async () => {
       scales: {
         y: {
           beginAtZero: false,
-        }
-      }
+        },
+      },
     },
   });
 };
@@ -99,6 +101,6 @@ const renderChart = async () => {
 onMounted(() => renderChart());
 
 defineExpose({
-  refresh: renderChart
+  refresh: renderChart,
 });
 </script>

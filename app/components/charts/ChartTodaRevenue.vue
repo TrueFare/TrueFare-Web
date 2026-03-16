@@ -32,7 +32,7 @@
           class="btn btn-sm join-item capitalize"
           :class="
             selectedRange === option
-              ? 'btn-secondary text-white'
+              ? 'btn-primary text-white'
               : 'btn-ghost bg-transparent'
           "
         >
@@ -173,7 +173,6 @@ const renderChart = async () => {
           const label = labels[index];
           const value = data[index];
           console.log(`Clicked on ${label}: ₱${value}`);
-          // You can add more interaction here, like redirecting to a TODA detail page
         }
       },
     },
@@ -190,8 +189,6 @@ defineExpose({
 </script>
 
 <style scoped>
-/* Add a glow effect on hover using CSS for the container if needed, 
-   but the chart.js hover handles the bars */
 canvas {
   cursor: pointer;
 }

@@ -15,7 +15,7 @@
           :class="[
             'px-3 py-1 rounded-lg text-sm font-medium transition',
             selectedRange === option
-              ? 'bg-blue-600 text-white'
+              ? 'bg-primary text-white'
               : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300',
           ]"
         >
@@ -71,14 +71,16 @@ const renderChart = async () => {
 
   if (!chartRef.value) return;
 
-  const ctx = chartRef.value.getContext("2d");
-
   const { labels, data } = await fetchChartData();
 
   if (chartInstance) {
-    chartInstance.destroy();
+    chartInstance.data.labels = labels;
+    chartInstance.data.datasets[0].data = data;
+    chartInstance.update();
+    return;
   }
 
+  const ctx = chartRef.value.getContext("2d");
   chartInstance = new Chart(ctx, {
     type: "line",
     data: {
@@ -87,6 +89,8 @@ const renderChart = async () => {
         {
           label: "Trips",
           data,
+          borderColor: "#c084fc", // purple-400
+          backgroundColor: "#c084fc",
           tension: 0.4,
           borderWidth: 2,
           fill: false,
@@ -96,6 +100,19 @@ const renderChart = async () => {
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      animations: {
+        tension: {
+          duration: 1000,
+          easing: 'linear',
+        }
+      },
+      transitions: {
+        active: {
+          animation: {
+            duration: 400
+          }
+        }
+      }
     },
   });
 };
