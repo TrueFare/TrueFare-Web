@@ -52,20 +52,21 @@
     <div class="bg-gray-50 dark:bg-gray-900 p-6 rounded-2xl shadow-inner">
       <h2 class="text-xl font-semibold mb-6">Analytics Overview</h2>
 
-      <!-- Revenue Chart -->
-      <div class="mb-6">
-        <ChartTodaRevenue />
-      </div>
-
       <!-- Fare Comparison -->
       <div class="mb-6">
         <FareComparison />
       </div>
 
+      <!-- Revenue Chart -->
+      <div class="mb-6">
+        <ChartTodaRevenue />
+      </div>
+
       <!-- Two Charts Side-by-Side -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <ChartFareTrend />
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <ChartTopTodaDriver />
         <ChartFarePriceTrend />
+        <ChartFareTrend />
       </div>
     </div>
   </div>
@@ -77,6 +78,7 @@ import DashboardCard from "~/components/cards/DashboardCard.vue";
 import ChartFareTrend from "~/components/charts/ChartTripNumber.vue";
 import ChartFarePriceTrend from "~/components/charts/ChartFarePriceTrend.vue";
 import ChartTodaRevenue from "~/components/charts/ChartTodaRevenue.vue";
+import ChartTopTodaDriver from "~/components/charts/ChartTopTodaDriver.vue";
 import FareComparison from "~/components/charts/FareComparison.vue";
 
 const loading = ref(true);
