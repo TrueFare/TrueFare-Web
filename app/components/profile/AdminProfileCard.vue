@@ -98,7 +98,7 @@
 </template>
 
 <script setup>
-import { reactive, ref, watch, onMounted } from "vue";
+import { reactive, ref, watch, onMounted, onUnmounted } from "vue";
 
 const props = defineProps({
   show: Boolean,
@@ -109,6 +109,23 @@ const emit = defineEmits(["close", "updated"]);
 
 const editableAdmin = reactive({});
 const todas = ref([]);
+
+/* =============================
+   LOCK BACKGROUND SCROLL
+============================= */
+watch(() => props.show, (visible) => {
+  if (typeof document !== 'undefined') {
+    document.body.style.overflow = visible ? 'hidden' : '';
+    document.documentElement.style.overflow = visible ? 'hidden' : '';
+  }
+}, { immediate: true });
+
+onUnmounted(() => {
+  if (typeof document !== 'undefined') {
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
+  }
+});
 
 const fetchTodas = async () => {
   try {

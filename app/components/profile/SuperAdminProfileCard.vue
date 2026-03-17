@@ -82,7 +82,7 @@
 </template>
 
 <script setup>
-import { reactive, watch } from "vue";
+import { reactive, watch, onUnmounted } from "vue";
 
 const props = defineProps({
   show: Boolean,
@@ -92,6 +92,23 @@ const props = defineProps({
 const emit = defineEmits(["close", "updated"]);
 
 const editableSuper = reactive({});
+
+/* =============================
+   LOCK BACKGROUND SCROLL
+============================= */
+watch(() => props.show, (visible) => {
+  if (typeof document !== 'undefined') {
+    document.body.style.overflow = visible ? 'hidden' : '';
+    document.documentElement.style.overflow = visible ? 'hidden' : '';
+  }
+}, { immediate: true });
+
+onUnmounted(() => {
+  if (typeof document !== 'undefined') {
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
+  }
+});
 
 watch(
   () => props.superAdmin,
