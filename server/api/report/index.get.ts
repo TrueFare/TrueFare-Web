@@ -4,16 +4,27 @@ export default defineEventHandler(async (event) => {
   const page = parseInt(query.page as string) || 1;
   const limit = parseInt(query.limit as string) || 10;
   const search = (query.search as string) || "";
+  const todaId = query.todaId as string || "";
   const offset = (page - 1) * limit;
 
   try {
     let whereClause = "";
     let params: any[] = [];
+    const conditions: string[] = [];
 
     if (search) {
-      whereClause = `WHERE r.id LIKE ? OR r.report_details LIKE ? OR u.first_name LIKE ? OR u.last_name LIKE ? OR d.first_name LIKE ? OR d.last_name LIKE ? OR d.plate_number LIKE ?`;
+      conditions.push(`(r.id LIKE ? OR r.report_details LIKE ? OR u.first_name LIKE ? OR u.last_name LIKE ? OR d.first_name LIKE ? OR d.last_name LIKE ? OR d.plate_number LIKE ?)`);
       const searchParam = `%${search}%`;
-      params = [searchParam, searchParam, searchParam, searchParam, searchParam, searchParam, searchParam];
+      params.push(searchParam, searchParam, searchParam, searchParam, searchParam, searchParam, searchParam);
+    }
+
+    if (todaId) {
+      conditions.push(`d.toda_id = ?`);
+      params.push(todaId);
+    }
+
+    if (conditions.length > 0) {
+      whereClause = "WHERE " + conditions.join(" AND ");
     }
 
     const results = await db.prepare(

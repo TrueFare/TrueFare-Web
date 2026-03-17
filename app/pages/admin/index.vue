@@ -33,7 +33,7 @@
 import { ref } from "vue";
 import DashboardStats from "~/components/admin/DashboardStats.vue";
 import TodaManager from "~/components/admin/TodaManager.vue";
-import ReportManager from "~/components/super-admin/ReportManager.vue";
+import ReportManager from "~/components/admin/ReportManager.vue";
 
 const activeTab = useState("admin-active-tab", () => "dashboard");
 const statsRef = ref(null);
