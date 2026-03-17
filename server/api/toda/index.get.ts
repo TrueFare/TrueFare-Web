@@ -2,15 +2,22 @@ export default defineEventHandler(async (event) => {
   const db = useDb(event);
   const query = getQuery(event);
   const page = parseInt(query.page as string) || 1;
-  const limit = parseInt(query.limit as string) || 8;
-  const offset = (page - 1) * limit;
+  const limitQuery = query.limit as string;
+  const limit = limitQuery === 'all' ? -1 : (parseInt(limitQuery) || 8);
+  const offset = limit === -1 ? 0 : (page - 1) * limit;
 
   try {
+    let queryStr = `SELECT id, name, password, barangay, city, date_created, date_updated FROM toda ORDER BY date_created DESC`;
+    let params: any[] = [];
+    
+    if (limit !== -1) {
+      queryStr += ` LIMIT ? OFFSET ?`;
+      params.push(limit, offset);
+    }
+
     const results = await db
-      .prepare(
-        `SELECT id, name, password, barangay, city, date_created, date_updated FROM toda ORDER BY date_created DESC LIMIT ? OFFSET ?`,
-      )
-      .bind(limit, offset)
+      .prepare(queryStr)
+      .bind(...params)
       .all();
 
     const totalCount = await db

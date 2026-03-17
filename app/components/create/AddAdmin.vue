@@ -122,7 +122,9 @@ const form = reactive({
 /* LOAD TODAS */
 onMounted(async () => {
   try {
-    const res = await $fetch("/api/toda");
+    const res = await $fetch("/api/toda", {
+      params: { limit: 'all' }
+    });
     todas.value = res.results || [];
   } catch (err) {
     console.error("Failed loading TODAs", err);

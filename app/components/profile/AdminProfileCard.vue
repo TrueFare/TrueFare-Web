@@ -129,7 +129,9 @@ onUnmounted(() => {
 
 const fetchTodas = async () => {
   try {
-    const response = await $fetch("/api/toda");
+    const response = await $fetch("/api/toda", {
+      params: { limit: 'all' }
+    });
     todas.value = response.results || [];
   } catch (error) {
     console.error("Failed to fetch TODAs:", error);
