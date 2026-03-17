@@ -46,14 +46,14 @@
     <div class="bg-gray-50 dark:bg-gray-900 p-6 rounded-2xl shadow-inner">
       <h2 class="text-xl font-semibold mb-6">Analytics Overview</h2>
 
-      <!-- Top Performing Drivers Chart -->
-      <div class="mb-6">
-        <ChartTopTodaDriver />
-      </div>
-
       <!-- Fare Comparison -->
       <div class="mb-6">
         <FareComparison />
+      </div>
+
+      <!-- Top Performing Drivers Chart -->
+      <div class="mb-6">
+        <ChartTopTodaDriver />
       </div>
 
       <!-- Two Charts Side-by-Side -->
