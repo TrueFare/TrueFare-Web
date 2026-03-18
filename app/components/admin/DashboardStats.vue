@@ -2,12 +2,12 @@
   <div class="space-y-10">
     <!-- Statistic Cards -->
     <div
-      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-6 gap-4"
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-5 gap-4"
     >
       <DashboardCard
-        title="TODA Associations"
-        :value="loading ? '...' : totalCounts.todas"
-        icon="mdi:office-building"
+        title="Total Revenue"
+        :value="loading ? '...' : formatCurrency(totalCounts.revenue)"
+        icon="mdi:cash-multiple"
         bgColor="bg-purple-700 text-white"
         textColor="text-purple-400"
       />
@@ -27,15 +27,15 @@
       />
       <DashboardCard
         title="Total Reports"
-        value="1"
+        :value="loading ? '...' : totalCounts.reports"
         icon="mdi:alert-circle"
         bgColor="bg-yellow-700 text-white"
         textColor="text-yellow-400"
-        subText="1 pending"
+        :subText="loading ? '...' : `${totalCounts.pendingReports} pending`"
       />
       <DashboardCard
         title="TODA Admins"
-        value="1"
+        :value="loading ? '...' : totalCounts.admins"
         icon="mdi:account-group"
         bgColor="bg-purple-900 text-white"
         textColor="text-purple-400"
@@ -67,32 +67,53 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import { useAuth } from "~/composables/useAuth";
 import DashboardCard from "~/components/cards/DashboardCard.vue";
 import ChartFareTrend from "~/components/charts/ChartTripNumber.vue";
 import ChartFarePriceTrend from "~/components/charts/ChartFarePriceTrend.vue";
 import ChartTopTodaDriver from "~/components/charts/ChartTopTodaDriver.vue";
 import FareComparison from "~/components/charts/FareComparison.vue";
 
+const { user } = useAuth();
 const loading = ref(true);
 const totalCounts = ref({
-  todas: 0,
+  revenue: 0,
   drivers: 0,
   trips: 0,
+  reports: 0,
+  pendingReports: 0,
+  admins: 0,
 });
 
+const formatCurrency = (value) => {
+  return new Intl.NumberFormat("en-PH", {
+    style: "currency",
+    currency: "PHP",
+  }).format(value);
+};
+
 const fetchCounts = async () => {
+  const todaId = user.value?.toda_id;
+  if (!todaId) return;
+
   loading.value = true;
   try {
-    const [todasRes, driversRes, tripsRes] = await Promise.all([
-      $fetch("/api/toda/count"),
-      $fetch("/api/driver/count"),
-      $fetch("/api/trip/count"),
-    ]);
+    const [revenueRes, driversRes, tripsRes, reportsRes, adminsRes] =
+      await Promise.all([
+        $fetch(`/api/toda/revenue/${todaId}`),
+        $fetch(`/api/driver/count/toda/${todaId}`),
+        $fetch(`/api/trip/count/toda/${todaId}/all-time`),
+        $fetch(`/api/report/count/toda/${todaId}`),
+        $fetch(`/api/toda/count_admin/${todaId}`),
+      ]);
 
     totalCounts.value = {
-      todas: todasRes.count || 0,
+      revenue: revenueRes.total || 0,
       drivers: driversRes.count || 0,
       trips: tripsRes.count || 0,
+      reports: reportsRes.total || 0,
+      pendingReports: reportsRes.pending || 0,
+      admins: adminsRes.count || 0,
     };
   } catch (error) {
     console.error("Failed to fetch dashboard counts:", error);

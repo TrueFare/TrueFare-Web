@@ -1,7 +1,7 @@
 // server/api/toda/count_admin/[id].get.ts
 
 export default defineEventHandler(async (event) => {
-  const db = event.context.cloudflare.env.truefare_db;
+  const db = useDb(event);
   const id = getRouterParam(event, "id");
 
   try {
@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
       .bind(id)
       .first();
 
-    return { count: result?.count || 0 };
+    return { count: Number(result?.count || 0) };
   } catch (error: any) {
     throw createError({
       statusCode: 500,

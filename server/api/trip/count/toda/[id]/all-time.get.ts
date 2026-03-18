@@ -1,5 +1,5 @@
 export default defineEventHandler(async (event) => {
-  const db = event.context.cloudflare.env.truefare_db;
+  const db = useDb(event);
   const id = getRouterParam(event, "id");
 
   if (!id) {
@@ -17,9 +17,7 @@ export default defineEventHandler(async (event) => {
       .bind(id)
       .first();
 
-    const count =
-      result && (result.results?.[0]?.count ?? result[0]?.count ?? 0);
-    return { count: Number(count) };
+    return { count: Number(result?.count || 0) };
   } catch (error: any) {
     throw createError({
       statusCode: 500,
