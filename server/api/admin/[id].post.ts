@@ -3,6 +3,12 @@ export default defineEventHandler(async (event) => {
   const id = event.context.params?.id;
   const body = await readBody(event);
 
+  // Fetch old data for audit
+  const oldAdmin = await db
+    .prepare(`SELECT email, toda_id FROM admin WHERE id = ?`)
+    .bind(id)
+    .first();
+
   await db
     .prepare(
       `
@@ -13,6 +19,13 @@ export default defineEventHandler(async (event) => {
     )
     .bind(body.first_name, body.last_name, body.email, body.toda_id, id)
     .run();
+
+  if (oldAdmin) {
+    await logAudit(event, 'UPDATE', 'admin', id as string, {
+      email: { old: (oldAdmin as any).email, new: body.email },
+      toda_id: { old: (oldAdmin as any).toda_id, new: body.toda_id }
+    });
+  }
 
   return { success: true };
 });

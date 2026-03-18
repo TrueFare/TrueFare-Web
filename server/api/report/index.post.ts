@@ -8,10 +8,23 @@ export default defineEventHandler(async (event) => {
     const status = Number(body.status);
 
     try {
+      // Get old status for audit logging
+      const oldReport = await db
+        .prepare(`SELECT status FROM report WHERE id = ?`)
+        .bind(id)
+        .first();
+
       await db
         .prepare(`UPDATE report SET status = ? WHERE id = ?`)
         .bind(status, id)
         .run();
+
+      // Log the audit
+      if (oldReport) {
+        await logAudit(event, 'UPDATE', 'report', id, {
+          status: { old: (oldReport as any).status, new: status }
+        });
+      }
 
       return {
         success: true,
@@ -42,11 +55,18 @@ export default defineEventHandler(async (event) => {
       .bind(user_id, trip_id, driver_id, report_details, status)
       .run();
 
+    const reportId = result.meta.last_row_id;
+
+    // Log the audit
+    await logAudit(event, 'CREATE', 'report', reportId, {
+      status: { old: null, new: status }
+    });
+
     setResponseStatus(event, 201);
     return {
       success: true,
       message: 'Report created',
-      data: { id: result.meta.last_row_id, user_id, trip_id, driver_id, report_details, status }
+      data: { id: reportId, user_id, trip_id, driver_id, report_details, status }
     };
   } catch (error: any) {
     throw createError({ statusCode: 500, statusMessage: error.message || 'Failed to create report' });

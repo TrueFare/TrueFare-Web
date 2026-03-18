@@ -22,12 +22,26 @@ export default defineEventHandler(async (event) => {
   try {
     const date_updated = new Date().toISOString();
 
+    // Fetch old data for audit
+    const oldToda = await db
+      .prepare(`SELECT name, barangay, city FROM toda WHERE id = ?`)
+      .bind(id)
+      .first();
+
     await db
       .prepare(
         `UPDATE toda SET name = ?, password = ?, barangay = ?, city = ?, date_updated = ? WHERE id = ?`,
       )
       .bind(name, password, barangay, city, date_updated, id)
       .run();
+
+    if (oldToda) {
+      await logAudit(event, 'UPDATE', 'toda', id, {
+        name: { old: (oldToda as any).name, new: name },
+        barangay: { old: (oldToda as any).barangay, new: barangay },
+        city: { old: (oldToda as any).city, new: city }
+      });
+    }
 
     // Fetch the updated toda
     const updated = await db

@@ -36,6 +36,8 @@ export default defineEventHandler(async (event) => {
       });
     }
 
+    await logAudit(event, 'DELETE', 'toda', id);
+
     return {
       success: true,
       message: `TODA "${existing.name}" deleted successfully`,

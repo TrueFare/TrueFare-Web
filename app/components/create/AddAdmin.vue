@@ -34,13 +34,16 @@
           <input
             v-model="form.first_name"
             class="input input-bordered w-full focus:input-primary"
+            :class="{'input-error': errors.first_name}"
             placeholder="Enter first name"
           />
+          <label v-if="errors.first_name" class="label"><span class="label-text-alt text-error text-[10px] font-bold uppercase">{{ errors.first_name }}</span></label>
         </div>
 
         <div class="form-control">
           <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">Last Name</span></label>
-          <input v-model="form.last_name" class="input input-bordered w-full focus:input-primary" placeholder="Enter last name" />
+          <input v-model="form.last_name" class="input input-bordered w-full focus:input-primary" :class="{'input-error': errors.last_name}" placeholder="Enter last name" />
+          <label v-if="errors.last_name" class="label"><span class="label-text-alt text-error text-[10px] font-bold uppercase">{{ errors.last_name }}</span></label>
         </div>
 
         <div class="form-control">
@@ -49,8 +52,10 @@
             v-model="form.email"
             type="email"
             class="input input-bordered w-full focus:input-primary"
+            :class="{'input-error': errors.email}"
             placeholder="email@example.com"
           />
+          <label v-if="errors.email" class="label"><span class="label-text-alt text-error text-[10px] font-bold uppercase">{{ errors.email }}</span></label>
         </div>
 
         <div class="form-control">
@@ -59,20 +64,23 @@
             v-model="form.password"
             type="password"
             class="input input-bordered w-full focus:input-primary"
+            :class="{'input-error': errors.password}"
             placeholder="Set password"
           />
+          <label v-if="errors.password" class="label"><span class="label-text-alt text-error text-[10px] font-bold uppercase">{{ errors.password }}</span></label>
         </div>
 
         <div class="form-control md:col-span-2">
           <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">Assign to TODA</span></label>
 
-          <select v-model="form.toda_id" class="select select-bordered w-full focus:select-primary">
+          <select v-model="form.toda_id" class="select select-bordered w-full focus:select-primary" :class="{'select-error': errors.toda_id}">
             <option disabled value="">Select association</option>
 
             <option v-for="toda in todas" :key="toda.id" :value="toda.id">
               {{ toda.name }}
             </option>
           </select>
+          <label v-if="errors.toda_id" class="label"><span class="label-text-alt text-error text-[10px] font-bold uppercase">{{ errors.toda_id }}</span></label>
         </div>
       </div>
 
@@ -110,6 +118,14 @@ const emit = defineEmits(["close", "created"]);
 
 const loading = ref(false);
 const todas = ref([]);
+
+const errors = reactive({
+  first_name: "",
+  last_name: "",
+  email: "",
+  password: "",
+  toda_id: "",
+});
 
 const form = reactive({
   first_name: "",
@@ -154,6 +170,7 @@ onUnmounted(() => {
 const createAdmin = async () => {
   try {
     loading.value = true;
+    Object.assign(errors, { first_name: "", last_name: "", email: "", password: "", toda_id: "" });
 
     await $fetch("/api/admin", {
       method: "POST",
@@ -163,7 +180,12 @@ const createAdmin = async () => {
     emit("created");
     closeModal();
   } catch (err) {
-    alert(err.statusMessage || "Failed to create admin");
+    if (err.statusCode === 400) {
+      // For AddAdmin, the backend returns a statusMessage with missing fields
+      alert(err.statusMessage || "Please fix the validation errors.");
+    } else {
+      alert(err.statusMessage || "Failed to create admin");
+    }
   } finally {
     loading.value = false;
   }
@@ -172,6 +194,13 @@ const createAdmin = async () => {
 /* RESET */
 const resetForm = () => {
   Object.assign(form, {
+    first_name: "",
+    last_name: "",
+    email: "",
+    password: "",
+    toda_id: "",
+  });
+  Object.assign(errors, {
     first_name: "",
     last_name: "",
     email: "",

@@ -18,12 +18,21 @@ export default defineEventHandler(async (event) => {
       .bind(body.base_km, body.base_fare, body.fare_per_km)
       .run();
 
+    const fareId = result.meta.last_row_id;
+
+    // Log the audit
+    await logAudit(event, 'CREATE', 'fare', fareId, {
+      base_km: { old: null, new: body.base_km },
+      base_fare: { old: null, new: body.base_fare },
+      fare_per_km: { old: null, new: body.fare_per_km }
+    });
+
     setResponseStatus(event, 201);
     return {
       success: true,
       message: 'Fare created',
       data: {
-        id: result.meta.last_row_id,
+        id: fareId,
         ...body
       }
     };

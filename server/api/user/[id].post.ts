@@ -32,6 +32,12 @@ export default defineEventHandler(async (event) => {
 
   values.push(id);
 
+  // Fetch old data for audit
+  const oldUser = await db
+    .prepare(`SELECT email FROM user WHERE id = ?`)
+    .bind(id)
+    .first();
+
   await db
     .prepare(
       `UPDATE user SET ${updateFields.join(
@@ -41,6 +47,12 @@ export default defineEventHandler(async (event) => {
     )
     .bind(...values)
     .run();
+
+  if (oldUser && body.email !== undefined) {
+    await logAudit(event, 'UPDATE', 'user', id, {
+      email: { old: (oldUser as any).email, new: body.email }
+    });
+  }
 
   const updated = await db
     .prepare("SELECT * FROM user WHERE id = ?")

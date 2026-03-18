@@ -52,8 +52,10 @@
           <input
             v-model="newDriver.first_name"
             class="input input-bordered w-full focus:input-primary"
+            :class="{'input-error': errors.first_name}"
             placeholder="Enter first name"
           />
+          <label v-if="errors.first_name" class="label"><span class="label-text-alt text-error text-[10px] font-bold uppercase">{{ errors.first_name }}</span></label>
         </div>
 
         <div class="form-control">
@@ -61,8 +63,10 @@
           <input
             v-model="newDriver.last_name"
             class="input input-bordered w-full focus:input-primary"
+            :class="{'input-error': errors.last_name}"
             placeholder="Enter last name"
           />
+          <label v-if="errors.last_name" class="label"><span class="label-text-alt text-error text-[10px] font-bold uppercase">{{ errors.last_name }}</span></label>
         </div>
 
         <div class="form-control">
@@ -70,8 +74,10 @@
           <input
             v-model="newDriver.contact_number"
             class="input input-bordered w-full focus:input-primary"
+            :class="{'input-error': errors.contact_number}"
             placeholder="09..."
           />
+          <label v-if="errors.contact_number" class="label"><span class="label-text-alt text-error text-[10px] font-bold uppercase">{{ errors.contact_number }}</span></label>
         </div>
 
         <div class="form-control">
@@ -79,8 +85,10 @@
           <input
             v-model="newDriver.email"
             class="input input-bordered w-full focus:input-primary"
+            :class="{'input-error': errors.email}"
             placeholder="email@example.com"
           />
+          <label v-if="errors.email" class="label"><span class="label-text-alt text-error text-[10px] font-bold uppercase">{{ errors.email }}</span></label>
         </div>
 
         <div class="form-control">
@@ -88,8 +96,10 @@
           <input
             v-model="newDriver.plate_number"
             class="input input-bordered w-full focus:input-primary"
+            :class="{'input-error': errors.plate_number}"
             placeholder="Enter plate number"
           />
+          <label v-if="errors.plate_number" class="label"><span class="label-text-alt text-error text-[10px] font-bold uppercase">{{ errors.plate_number }}</span></label>
         </div>
 
         <div class="form-control">
@@ -97,8 +107,10 @@
           <input
             v-model="newDriver.franchise_number"
             class="input input-bordered w-full focus:input-primary"
+            :class="{'input-error': errors.franchise_number}"
             placeholder="Enter franchise number"
           />
+          <label v-if="errors.franchise_number" class="label"><span class="label-text-alt text-error text-[10px] font-bold uppercase">{{ errors.franchise_number }}</span></label>
         </div>
 
         <!-- REGISTRATION STATUS -->
@@ -121,6 +133,7 @@
           <select
             v-model="newDriver.toda_id"
             class="select select-bordered w-full focus:select-primary"
+            :class="{'select-error': errors.toda_id}"
             :disabled="!!todaId"
           >
             <option disabled value="">Select TODA</option>
@@ -129,6 +142,7 @@
               {{ toda.name }}
             </option>
           </select>
+          <label v-if="errors.toda_id" class="label"><span class="label-text-alt text-error text-[10px] font-bold uppercase">{{ errors.toda_id }}</span></label>
         </div>
       </div>
 
@@ -169,6 +183,16 @@ const saving = ref(false);
 const previewImage = ref(null);
 
 const todas = ref([]);
+
+const errors = reactive({
+  first_name: "",
+  last_name: "",
+  contact_number: "",
+  email: "",
+  plate_number: "",
+  franchise_number: "",
+  toda_id: "",
+});
 
 /* EMPTY DRIVER FORM */
 const newDriver = reactive({
@@ -247,6 +271,15 @@ const handleImageUpload = (event) => {
 const createDriver = async () => {
   try {
     saving.value = true;
+    Object.assign(errors, {
+      first_name: "",
+      last_name: "",
+      contact_number: "",
+      email: "",
+      plate_number: "",
+      franchise_number: "",
+      toda_id: "",
+    });
 
     await $fetch("/api/driver", {
       method: "POST",
@@ -258,8 +291,32 @@ const createDriver = async () => {
     emit("created");
     closeModal();
   } catch (err) {
-    console.error(err);
-    alert("Failed to create driver");
+    if (err.statusCode === 400 && err.data) {
+      const zodErrors = err.data.data || err.data;
+      let firstErrorMsg = "";
+
+      if (zodErrors) {
+        if (zodErrors.first_name) errors.first_name = zodErrors.first_name._errors?.[0];
+        if (zodErrors.last_name) errors.last_name = zodErrors.last_name._errors?.[0];
+        if (zodErrors.contact_number) errors.contact_number = zodErrors.contact_number._errors?.[0];
+        if (zodErrors.email) errors.email = zodErrors.email._errors?.[0];
+        if (zodErrors.plate_number) errors.plate_number = zodErrors.plate_number._errors?.[0];
+        if (zodErrors.franchise_number) errors.franchise_number = zodErrors.franchise_number._errors?.[0];
+        if (zodErrors.toda_id) errors.toda_id = zodErrors.toda_id._errors?.[0];
+        
+        // Find the first error to show in alert
+        for (const key in zodErrors) {
+          if (key !== "_errors" && zodErrors[key]?._errors?.[0]) {
+            firstErrorMsg = `${key}: ${zodErrors[key]._errors[0]}`;
+            break;
+          }
+        }
+      }
+      
+      alert(firstErrorMsg ? `Validation Error: ${firstErrorMsg}` : "Please fix the validation errors.");
+    } else {
+      alert(err.statusMessage || "Failed to create driver");
+    }
   } finally {
     saving.value = false;
   }
@@ -274,9 +331,18 @@ const resetForm = () => {
     email: "",
     plate_number: "",
     franchise_number: "",
-    toda_id: "",
+    toda_id: props.todaId || "",
     profile_pic: null,
     is_registered: false,
+  });
+  Object.assign(errors, {
+    first_name: "",
+    last_name: "",
+    contact_number: "",
+    email: "",
+    plate_number: "",
+    franchise_number: "",
+    toda_id: "",
   });
 
   previewImage.value = null;

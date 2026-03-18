@@ -22,6 +22,8 @@ export default defineEventHandler(async (event) => {
       });
     }
 
+    await logAudit(event, 'DELETE', 'driver', id);
+
     return {
       success: true,
       message: "Driver deleted successfully",

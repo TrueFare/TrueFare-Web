@@ -27,12 +27,21 @@ export default defineEventHandler(async (event) => {
       .bind(body.name, body.password, body.barangay, body.city, date_created, body.date_updated || null)
       .run();
 
+    const todaId = result.meta.last_row_id;
+
+    // Log the audit
+    await logAudit(event, 'CREATE', 'toda', todaId, {
+      name: { old: null, new: body.name },
+      barangay: { old: null, new: body.barangay },
+      city: { old: null, new: body.city }
+    });
+
     setResponseStatus(event, 201);
     return {
       success: true,
       message: "TODA created successfully",
       data: {
-        id: result.meta.last_row_id,
+        id: todaId,
         name: body.name,
         barangay: body.barangay,
         city: body.city,

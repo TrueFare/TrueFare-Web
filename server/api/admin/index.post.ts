@@ -39,10 +39,18 @@ export default defineEventHandler(async (event) => {
       .bind(first_name, last_name, email, password, toda_id)
       .run();
 
+    const adminId = result.meta.last_row_id;
+
+    // Log the audit
+    await logAudit(event, 'CREATE', 'admin', adminId, {
+      email: { old: null, new: email },
+      toda_id: { old: null, new: toda_id }
+    });
+
     return {
       success: true,
       message: "Admin created successfully",
-      id: result.meta.last_row_id,
+      id: adminId,
     };
   } catch (error: any) {
     throw createError({

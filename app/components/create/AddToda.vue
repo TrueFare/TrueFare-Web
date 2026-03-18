@@ -31,7 +31,8 @@
       <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="form-control">
           <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">TODA Name</span></label>
-          <input v-model="form.name" class="input input-bordered w-full focus:input-primary" placeholder="Enter TODA name" />
+          <input v-model="form.name" class="input input-bordered w-full focus:input-primary" :class="{'input-error': errors.name}" placeholder="Enter TODA name" />
+          <label v-if="errors.name" class="label"><span class="label-text-alt text-error text-[10px] font-bold uppercase">{{ errors.name }}</span></label>
         </div>
 
         <div class="form-control">
@@ -40,18 +41,22 @@
             v-model="form.password"
             type="password"
             class="input input-bordered w-full focus:input-primary"
-            placeholder="Set TODA password"
+            :class="{'input-error': errors.password}"
+            placeholder="Min. 6 characters"
           />
+          <label v-if="errors.password" class="label"><span class="label-text-alt text-error text-[10px] font-bold uppercase">{{ errors.password }}</span></label>
         </div>
 
         <div class="form-control">
           <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">Barangay</span></label>
-          <input v-model="form.barangay" class="input input-bordered w-full focus:input-primary" placeholder="Enter barangay" />
+          <input v-model="form.barangay" class="input input-bordered w-full focus:input-primary" :class="{'input-error': errors.barangay}" placeholder="Enter barangay" />
+          <label v-if="errors.barangay" class="label"><span class="label-text-alt text-error text-[10px] font-bold uppercase">{{ errors.barangay }}</span></label>
         </div>
 
         <div class="form-control">
           <label class="label"><span class="label-text text-[10px] font-black uppercase tracking-widest opacity-50">City</span></label>
-          <input v-model="form.city" class="input input-bordered w-full focus:input-primary" placeholder="Enter city" />
+          <input v-model="form.city" class="input input-bordered w-full focus:input-primary" :class="{'input-error': errors.city}" placeholder="Enter city" />
+          <label v-if="errors.city" class="label"><span class="label-text-alt text-error text-[10px] font-bold uppercase">{{ errors.city }}</span></label>
         </div>
       </div>
 
@@ -81,6 +86,12 @@ const props = defineProps({
 const emit = defineEmits(["close", "created"]);
 
 const loading = ref(false);
+const errors = reactive({
+  name: "",
+  password: "",
+  barangay: "",
+  city: "",
+});
 
 const form = reactive({
   name: "",
@@ -112,6 +123,7 @@ onUnmounted(() => {
 const createToda = async () => {
   try {
     loading.value = true;
+    Object.assign(errors, { name: "", password: "", barangay: "", city: "" });
 
     await $fetch("/api/toda", {
       method: "POST",
@@ -121,7 +133,30 @@ const createToda = async () => {
     emit("created");
     closeModal();
   } catch (err) {
-    alert(err.statusMessage || "Failed to create TODA");
+    if (err.statusCode === 400 && err.data) {
+      // Map Zod errors - try nested data first
+      const zodErrors = err.data.data || err.data;
+      let firstErrorMsg = "";
+
+      if (zodErrors) {
+        if (zodErrors.name) errors.name = zodErrors.name._errors?.[0];
+        if (zodErrors.password) errors.password = zodErrors.password._errors?.[0];
+        if (zodErrors.barangay) errors.barangay = zodErrors.barangay._errors?.[0];
+        if (zodErrors.city) errors.city = zodErrors.city._errors?.[0];
+
+        // Find the first error to show in alert
+        for (const key in zodErrors) {
+          if (key !== "_errors" && zodErrors[key]?._errors?.[0]) {
+            firstErrorMsg = `${key}: ${zodErrors[key]._errors[0]}`;
+            break;
+          }
+        }
+      }
+      
+      alert(firstErrorMsg ? `Validation Error: ${firstErrorMsg}` : "Please fix the validation errors.");
+    } else {
+      alert(err.statusMessage || "Failed to create TODA");
+    }
   } finally {
     loading.value = false;
   }
@@ -130,6 +165,12 @@ const createToda = async () => {
 /* RESET */
 const resetForm = () => {
   Object.assign(form, {
+    name: "",
+    password: "",
+    barangay: "",
+    city: "",
+  });
+  Object.assign(errors, {
     name: "",
     password: "",
     barangay: "",

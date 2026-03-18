@@ -22,6 +22,8 @@ export default defineEventHandler(async (event) => {
       });
     }
 
+    await logAudit(event, 'DELETE', 'user', id);
+
     return {
       success: true,
       message: "User deleted successfully",

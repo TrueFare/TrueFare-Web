@@ -70,6 +70,11 @@
         <ChartFareTrend />
         <ChartOverallUsers />
       </div>
+
+      <!-- Activity Log -->
+      <div class="mt-10">
+        <ActivityLog />
+      </div>
     </div>
   </div>
 </template>
@@ -84,6 +89,7 @@ import ChartTopTodaDriver from "~/components/charts/ChartTopTodaDriver.vue";
 import ChartPeakHours from "~/components/charts/ChartPeakHours.vue";
 import ChartOverallUsers from "../charts/ChartOverallUsers.vue";
 import FareComparison from "~/components/charts/FareComparison.vue";
+import ActivityLog from "~/components/charts/ActivityLog.vue";
 
 const loading = ref(true);
 const totalCounts = ref({

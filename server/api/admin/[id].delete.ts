@@ -4,5 +4,7 @@ export default defineEventHandler(async (event) => {
 
   await db.prepare(`DELETE FROM admin WHERE id = ?`).bind(id).run();
 
+  await logAudit(event, 'DELETE', 'admin', id as string);
+
   return { success: true };
 });

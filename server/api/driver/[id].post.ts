@@ -44,6 +44,12 @@ export default defineEventHandler(async (event) => {
 
   values.push(id);
 
+  // Fetch old data for audit
+  const oldDriver = await db
+    .prepare(`SELECT plate_number, franchise_number, is_registered, toda_id FROM driver WHERE id = ?`)
+    .bind(id)
+    .first();
+
   await db
     .prepare(
       `UPDATE driver SET ${updateFields.join(
@@ -53,6 +59,31 @@ export default defineEventHandler(async (event) => {
     )
     .bind(...values)
     .run();
+
+  if (oldDriver) {
+    const changes: any = {};
+    const fieldsToLog = ["plate_number", "franchise_number", "is_registered", "toda_id"];
+    let hasImportantChanges = false;
+
+    for (const field of fieldsToLog) {
+      if (body[field] !== undefined) {
+        const oldValue = (oldDriver as any)[field];
+        let newValue = body[field];
+        if (field === 'is_registered') {
+          newValue = newValue ? 1 : 0;
+        }
+        
+        if (oldValue !== newValue) {
+          changes[field] = { old: oldValue, new: newValue };
+          hasImportantChanges = true;
+        }
+      }
+    }
+
+    if (hasImportantChanges) {
+      await logAudit(event, 'UPDATE', 'driver', id, changes);
+    }
+  }
 
   const updated = await db
     .prepare("SELECT * FROM driver WHERE id = ?")
