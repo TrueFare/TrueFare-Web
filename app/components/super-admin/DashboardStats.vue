@@ -68,7 +68,7 @@
         <ChartPeakHours />
         <ChartFarePriceTrend />
         <ChartFareTrend />
-        <ChartOverallUsers />
+        <!--<ChartOverallUsers /> -->
       </div>
 
       <!-- Activity Log -->
@@ -87,7 +87,7 @@ import ChartFarePriceTrend from "~/components/charts/ChartFarePriceTrend.vue";
 import ChartTodaRevenue from "~/components/charts/ChartTodaRevenue.vue";
 import ChartTopTodaDriver from "~/components/charts/ChartTopTodaDriver.vue";
 import ChartPeakHours from "~/components/charts/ChartPeakHours.vue";
-import ChartOverallUsers from "../charts/ChartOverallUsers.vue";
+//import ChartOverallUsers from "../charts/ChartOverallUsers.vue";
 import FareComparison from "~/components/charts/FareComparison.vue";
 import ActivityLog from "~/components/charts/ActivityLog.vue";
 
