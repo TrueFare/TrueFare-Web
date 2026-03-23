@@ -148,17 +148,74 @@
               <div class="bg-base-200/50 p-4 rounded-2xl border border-base-content/5">
                 <p class="text-[10px] text-base-content/40 uppercase font-black mb-1 tracking-widest">Reporter</p>
                 <p class="font-bold text-base-content">{{ selectedReport?.user_name || ('User ' + selectedReport?.user_id) }}</p>
+                <p v-if="selectedReport?.user_contact" class="text-xs text-base-content/60 mt-1 font-medium flex items-center gap-1">
+                  <Icon name="mdi:phone" class="text-xs" />
+                  {{ selectedReport?.user_contact }}
+                </p>
               </div>
               <div class="bg-base-200/50 p-4 rounded-2xl border border-base-content/5">
                 <p class="text-[10px] text-base-content/40 uppercase font-black mb-1 tracking-widest">Driver Involved</p>
                 <p class="font-bold text-base-content">
                   {{ selectedReport?.driver_name || ('Driver ' + selectedReport?.driver_id) }}
-                  <span class="block text-[10px] text-primary">{{ selectedReport?.plate_number }}</span>
                 </p>
+                <div class="flex flex-col mt-1">
+                  <span class="text-[10px] font-black text-primary uppercase tracking-widest">{{ selectedReport?.plate_number }}</span>
+                  <p v-if="selectedReport?.driver_contact" class="text-xs text-base-content/60 mt-0.5 font-medium flex items-center gap-1">
+                    <Icon name="mdi:phone" class="text-xs" />
+                    {{ selectedReport?.driver_contact }}
+                  </p>
+                </div>
               </div>
               <div class="bg-base-200/50 p-4 rounded-2xl border border-base-content/5">
-                <p class="text-[10px] text-base-content/40 uppercase font-black mb-1 tracking-widest">Trip ID</p>
+                <p class="text-[10px] text-base-content/40 uppercase font-black mb-1 tracking-widest">Trip Details</p>
                 <p class="font-bold text-primary">#{{ selectedReport?.trip_id }}</p>
+                <p v-if="selectedReport?.trip_start" class="text-[10px] uppercase font-bold text-base-content/30 mt-1">{{ formatDateOnly(selectedReport?.trip_start) }}</p>
+              </div>
+            </div>
+
+            <!-- TRIP INFO -->
+            <div v-if="selectedReport?.start_location" class="bg-base-200/30 rounded-2xl p-5 border border-base-content/5">
+              <p class="text-[10px] text-base-content/40 uppercase font-black mb-4 tracking-widest">Trip Route Information</p>
+              <div class="flex flex-col gap-4">
+                <div class="flex items-start gap-3">
+                  <div class="mt-1">
+                    <div class="w-3 h-3 rounded-full bg-success ring-4 ring-success/20"></div>
+                  </div>
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between">
+                      <p class="text-[10px] uppercase font-black text-success tracking-widest">Start</p>
+                      <span v-if="selectedReport?.trip_start" class="text-[10px] font-black text-base-content/40 bg-base-300/50 px-2 py-0.5 rounded-md">
+                        {{ formatTime(selectedReport?.trip_start) }}
+                      </span>
+                    </div>
+                    <p class="font-bold text-base-content">{{ selectedReport?.start_location }}</p>
+                  </div>
+                </div>
+                
+                <div class="ml-1.5 border-l-2 border-dashed border-base-content/10 h-6"></div>
+
+                <div class="flex items-start gap-3">
+                  <div class="mt-1">
+                    <div class="w-3 h-3 rounded-full bg-error ring-4 ring-error/20"></div>
+                  </div>
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between">
+                      <p class="text-[10px] uppercase font-black text-error tracking-widest">Drop-off</p>
+                      <span v-if="selectedReport?.trip_end" class="text-[10px] font-black text-base-content/40 bg-base-300/50 px-2 py-0.5 rounded-md">
+                        {{ formatTime(selectedReport?.trip_end) }}
+                      </span>
+                    </div>
+                    <p class="font-bold text-base-content">{{ selectedReport?.destination }}</p>
+                  </div>
+                </div>
+
+                <div class="mt-2 pt-4 border-t border-base-content/5 flex justify-between items-center">
+                  <div class="flex items-center gap-2">
+                    <Icon name="mdi:map-marker-distance" class="text-primary text-xl" />
+                    <span class="text-xs font-black uppercase tracking-widest text-base-content/40">Total Distance</span>
+                  </div>
+                  <span class="text-xl font-black text-primary">{{ selectedReport?.distance }} <small class="text-[10px] opacity-50">KM</small></span>
+                </div>
               </div>
             </div>
 
@@ -283,6 +340,32 @@ const formatDate = (d) => {
       minute: '2-digit',
       second: '2-digit',
       hour12: true
+    });
+  } catch (e) {
+    return d;
+  }
+};
+
+const formatTime = (d) => {
+  if (!d) return '';
+  try {
+    return new Date(d).toLocaleTimeString('en-PH', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+  } catch (e) {
+    return d;
+  }
+};
+
+const formatDateOnly = (d) => {
+  if (!d) return '';
+  try {
+    return new Date(d).toLocaleDateString('en-PH', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
     });
   } catch (e) {
     return d;

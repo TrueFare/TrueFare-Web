@@ -30,11 +30,19 @@ export default defineEventHandler(async (event) => {
     const results = await db.prepare(
       `SELECT r.id, r.user_id, r.trip_id, r.driver_id, r.report_details, r.status, r.date_created,
         u.first_name || ' ' || u.last_name AS user_name,
+        u.contact_number AS user_contact,
         d.first_name || ' ' || d.last_name AS driver_name,
-        d.plate_number
+        d.plate_number,
+        d.contact_number AS driver_contact,
+        t.trip_start,
+        t.trip_end,
+        t.start_location,
+        t.destination,
+        t.distance
       FROM report r
       LEFT JOIN user u ON r.user_id = u.id
       LEFT JOIN driver d ON r.driver_id = d.id
+      LEFT JOIN trip t ON r.trip_id = t.id
       ${whereClause}
       ORDER BY r.date_created DESC
       LIMIT ? OFFSET ?`
